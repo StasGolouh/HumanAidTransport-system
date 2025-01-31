@@ -1,0 +1,119 @@
+﻿@model Carrier
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: gainsboro;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 600px;
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+        font-size: 32px;
+        margin-bottom: 30px;
+        font-weight: bold;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: 600;
+        color: #333;
+        font-size: 16px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        transition: border-color 0.3s ease;
+    }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        background-color: #007bff;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .btn:focus {
+            outline: none;
+        }
+
+    .form-group input {
+        margin-top: 8px;
+    }
+
+    .form-group label {
+        margin-bottom: 8px;
+    }
+</style>
+
+<div class="container">
+    <h1>Реєстрація перевізника</h1>
+
+    <form method="post">
+        <div class="form-group">
+            <label asp-for="Name">Ім'я перевізника</label>
+            <input type="text" asp-for="Name" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password">Пароль</label>
+            <input type="password" asp-for="Password" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ContactInfo">Контактні дані</label>
+            <input type="text" asp-for="ContactInfo" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="VehicleName">Назва машини</label>
+            <input type="text" asp-for="VehicleName" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="VehicleModel">Модель машини</label>
+            <input type="text" asp-for="VehicleModel" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="VehicleNumber">Номер машини</label>
+            <input type="text" asp-for="VehicleNumber" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn">Зареєструватися</button>
+    </form>
+</div>

@@ -1,25 +1,35 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using HumanAidTransport.Models;
 
-namespace HumanAidTransport.Models
+public class Carrier
 {
-    public class Carrier
-    {
-        [Key]
-        public int CarrierId { get; set; }
+    [Key]
+    public int CarrierId { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+    [Required]
+    public string Name { get; set; }
 
-        [Required]
-        public string Password { get; set; }
+    [Required]
+    public string Password { get; set; }
 
-        [Required]
-        public string ContactInfo { get; set; }
+    [Required]
+    public string ContactInfo { get; set; }
 
-        public ICollection<Order> Orders { get; set; }
+    // Додані поля для інформації про транспортний засіб
+    [Required]
+    public string VehicleName { get; set; }  // Назва машини
 
-        public double Rating { get; set; } = 0;
+    [Required]
+    public string VehicleModel { get; set; } // Модель машини
 
-        public int RatingCount { get; set; } = 0;
-    }
+    [Required]
+    [RegularExpression(@"^[A-Z0-9-]+$", ErrorMessage = "Некоректний номерний знак")]
+    public string VehicleNumber { get; set; } // Номер машини
+
+    public ICollection<Order> Orders { get; set; }
+
+    public double Rating { get; set; } = 0;
+
+    public int RatingCount { get; set; } = 0;
 }

@@ -1,6 +1,6 @@
-﻿using HumanAidTransport.Models; 
-using HumanitarianTransport.Data;
+﻿using HumanitarianTransport.Data;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace HumanAidTransport.Controllers
 {
@@ -23,22 +23,28 @@ namespace HumanAidTransport.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Перевірка чи існує наш користувач 
-                bool carrierExists = _context.Carriers.Any(c => c.Name == carrier.Name);
+                // Перевіряємо чи є вже такий перевізник або машина
+                bool carrierExists = _context.Carriers.Any(c => c.Name == carrier.Name || c.VehicleNumber == carrier.VehicleNumber);
 
                 if (!carrierExists)
                 {
-                    //Додаємо нашого користувача
+                    // Додаємо перевізника в базу
                     _context.Carriers.Add(carrier);
                     _context.SaveChanges();
 
+                    // Отримуємо ID щойно зареєстрованого перевізника
                     Carrier addedCarrier = _context.Carriers.FirstOrDefault(c => c.Name == carrier.Name);
 
-                    
+                    // Переадресовуємо в профіль
+                    return RedirectToAction("Profile", "Profile", new { id = addedCarrier.CarrierId });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Перевізник або номер машини вже існує.");
                 }
             }
-            return RedirectToAction("Profile", "Profile");
+
+            return View(carrier);
         }
     }
 }
-
