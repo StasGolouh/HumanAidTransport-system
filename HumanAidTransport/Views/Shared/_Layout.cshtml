@@ -4,79 +4,129 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AlwaysReady</title>
+    <link rel="icon" type="image/x-icon" href="~/images/icon.png">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HumanAidTransport.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: rgb(204, 255, 234);
+            margin: 0;
+            padding: 0;
+        }
+
+            body::-webkit-scrollbar {
+                display: none;
+            }
+
+        /* Навігація */
+        .navbar {
+            background-color: #fff;
+            border-bottom: 3px solid #28a745;
+            padding: 5px 10px;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0;
+        }
+
+        .logo {
+            max-width: 50px; 
+            height: auto;
+            margin: 0 0 10px 10px;
+        }
+
+        .nav-link {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2C3E50 !important;
+            padding: 8px 15px;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+            .nav-link:hover {
+                color: #218838 !important;
+                transform: scale(1.1);
+            }
+
+        .navbar-toggler {
+            border: none;
+            background-color: #28a745;
+            padding: 8px 10px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar-toggler-icon {
+            filter: invert(1);
+        }
+
+        .navbar-toggler:hover {
+            background-color: #218838;
+        }
+
+        .container {
+            max-width: 1100px;
+            padding: 20px;
+        }
+
+        footer {
+            background-color: #2C3E50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        .navbar-nav {
+            height: auto; 
+            display: flex;
+            align-items: center; 
+        }
+       
+
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <header class="homeheader">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AlwaysReady</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/headerlogo.png" alt="AlwaysReady Logo" class="logo">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                      
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Profile">Profile</a>
-                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Profile">Profile</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success">
-                @TempData["SuccessMessage"]
-            </div>
-        }
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <div class="alert alert-info">
-                @TempData["ErrorMessage"]
-            </div>
-        }
-
-        <style>
-            .alert {
-                padding: 20px;
-                background-color: red; /* Червоний */
-                color: white;
-                opacity: 1;
-                transition: opacity 0.6s; /* 600ms для зникнення */
-            }
-
-            .alert-success {
-                padding: 20px;
-                background-color: green; /* Зелений */
-                color: white;
-                opacity: 1;
-                transition: opacity 0.6s; /* 600ms для зникнення */
-            }
-        </style>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
+    <footer>
+        <p>&copy; 2025 AlwaysReady - All Rights Reserved</p>
+    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-
-
-                
-         

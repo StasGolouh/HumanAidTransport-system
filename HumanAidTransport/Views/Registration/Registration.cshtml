@@ -1,33 +1,44 @@
-﻿@model Carrier
+﻿@model RegistrationViewModel
 
 <style>
     body {
-        font-family: 'Roboto', sans-serif;
-        background-color: gainsboro;
+        font-family: 'Arial', sans-serif;
+        background-color: rgb(204, 255, 234);
         margin: 0;
         padding: 0;
     }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
 
     .container {
         max-width: 600px;
         background: white;
         padding: 40px;
         border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         margin-top: 50px;
         margin-bottom: 50px;
+        text-align: center;
     }
 
     h1 {
-        text-align: center;
-        color: #333;
+        font-family: 'Poppins', sans-serif;
         font-size: 32px;
-        margin-bottom: 30px;
+        color: #2C3E50;
         font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        border-bottom: 3px solid #28a745;
+        display: inline-block;
+        padding-bottom: 5px;
     }
 
     .form-group {
         margin-bottom: 20px;
+        text-align: left;
     }
 
     label {
@@ -38,38 +49,55 @@
 
     input {
         width: 100%;
-        padding: 10px;
+        padding: 12px;
         font-size: 16px;
         border: 1px solid #ddd;
         border-radius: 8px;
-        transition: border-color 0.3s ease;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
         input:focus {
             outline: none;
             border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
         }
 
     .btn {
         width: 100%;
-        padding: 12px;
-        background-color: #007bff;
-        color: white;
-        font-size: 16px;
-        border: none;
+        padding: 15px;
+        font-size: 18px;
         border-radius: 8px;
+        border: none;
+        background: #28a745;
+        color: white;
+        transition: all 0.3s ease;
         cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.3s ease;
     }
 
-        .btn:hover {
+    .btn-registration {
+        background-color: #28a745;
+        color: white;
+    }
+
+        .btn-registration:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+    .btn-login {
+        background-color: #007bff;
+        color: white;
+    }
+
+        .btn-login:hover {
             background-color: #0056b3;
             transform: scale(1.05);
         }
 
-        .btn:focus {
-            outline: none;
-        }
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+    }
 
     .form-group input {
         margin-top: 8px;
@@ -81,39 +109,81 @@
 </style>
 
 <div class="container">
-    <h1>Реєстрація перевізника</h1>
+    <h1>Реєстрація</h1>
 
     <form method="post">
+        <!-- Вибір ролі -->
         <div class="form-group">
-            <label asp-for="Name">Ім'я перевізника</label>
-            <input type="text" asp-for="Name" class="form-control" required>
+            <label>Виберіть роль</label>
+            <select id="role" name="role" class="form-control" required>
+                <option value="Carrier">Перевізник</option>
+                <option value="Customer">Замовник</option>
+            </select>
         </div>
 
-        <div class="form-group">
-            <label asp-for="Password">Пароль</label>
-            <input type="password" asp-for="Password" class="form-control" required>
+        <!-- Поля для перевізника -->
+        <div id="carrierFields" class="registration-fields">
+            <div class="form-group">
+                <label for="Carrier.Name">Ім'я перевізника</label>
+                <input type="text" id="Carrier.Name" name="Carrier.Name" class="form-control" value="@Model.Carrier.Name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Carrier.Password">Пароль</label>
+                <input type="password" id="Carrier.Password" name="Carrier.Password" class="form-control" value="@Model.Carrier.Password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Carrier.ContactInfo">Контактні дані</label>
+                <input type="text" id="Carrier.ContactInfo" name="Carrier.ContactInfo" class="form-control" value="@Model.Carrier.ContactInfo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Carrier.VehicleName">Назва машини</label>
+                <input type="text" id="Carrier.VehicleName" name="Carrier.VehicleName" class="form-control" value="@Model.Carrier.VehicleName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Carrier.VehicleModel">Модель машини</label>
+                <input type="text" id="Carrier.VehicleModel" name="Carrier.VehicleModel" class="form-control" value="@Model.Carrier.VehicleModel" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Carrier.VehicleNumber">Номер машини</label>
+                <input type="text" id="Carrier.VehicleNumber" name="Carrier.VehicleNumber" class="form-control" value="@Model.Carrier.VehicleNumber" required>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label asp-for="ContactInfo">Контактні дані</label>
-            <input type="text" asp-for="ContactInfo" class="form-control" required>
-        </div>
+        <!-- Поля для замовника -->
+        <div id="customerFields" class="registration-fields" style="display:none;">
+            <div class="form-group">
+                <label for="Customer.Username">Ім'я користувача</label>
+                <input type="text" id="Customer.Username" name="Customer.Username" class="form-control" value="@Model.Customer.Username" required>
+            </div>
 
-        <div class="form-group">
-            <label asp-for="VehicleName">Назва машини</label>
-            <input type="text" asp-for="VehicleName" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="VehicleModel">Модель машини</label>
-            <input type="text" asp-for="VehicleModel" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="VehicleNumber">Номер машини</label>
-            <input type="text" asp-for="VehicleNumber" class="form-control" required>
+            <div class="form-group">
+                <label for="Customer.Password">Пароль</label>
+                <input type="password" id="Customer.Password" name="Customer.Password" class="form-control" value="@Model.Customer.Password" required>
+            </div>
         </div>
 
         <button type="submit" class="btn">Зареєструватися</button>
     </form>
 </div>
+
+<script>
+    // Обробка зміни вибору ролі
+    document.getElementById('role').addEventListener('change', function () {
+        const role = this.value;
+        const carrierFields = document.getElementById('carrierFields');
+        const customerFields = document.getElementById('customerFields');
+
+        if (role === 'Carrier') {
+            carrierFields.style.display = 'block';
+            customerFields.style.display = 'none';
+        } else if (role === 'Customer') {
+            carrierFields.style.display = 'none';
+            customerFields.style.display = 'block';
+        }
+    });
+</script>

@@ -1,5 +1,4 @@
-﻿using HumanAidTransport.Models;
-using HumanitarianTransport.Data;
+﻿using HumanitarianTransport.Data;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -20,19 +19,50 @@ namespace HumanAidTransport.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(Carrier carrier)
+        public IActionResult Login(string role, string username, string password)
         {
-            var carrierExists = _context.Carriers.FirstOrDefault(c => c.Name == carrier.Name && c.Password == carrier.Password);
-
-            if (carrierExists != null)
+            if (string.IsNullOrEmpty(role) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                ProfileController.Carrier = carrierExists;
-                return RedirectToAction("Index", "Home");
+                ModelState.AddModelError(string.Empty, "Будь ласка, заповніть всі поля.");
+                return View();
+            }
+
+            if (role == "Carrier")
+            {
+                // Перевізник
+                var carrier = _context.Carriers.FirstOrDefault(c => c.Name == username && c.Password == password);
+
+                if (carrier != null)
+                {
+                    // Якщо перевізник знайдений, зберігаємо його у сесії
+                    HttpContext.Session.SetInt32("CarrierId", carrier.CarrierId);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Неправильне ім'я користувача або пароль для перевізника.");
+                    return View();
+                }
+            }
+            else if (role == "Customer")
+            {
+                // Замовник
+                var customer = _context.Customers.FirstOrDefault(c => c.Username == username && c.Password == password);
+
+                if (customer != null)
+                {
+                    HttpContext.Session.SetInt32("CustomerId", customer.CustomerId);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Неправильне ім'я користувача або пароль для замовника.");
+                    return View();
+                }
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Неправильне ім'я користувача або пароль");
-                ModelState.AddModelError(string.Empty, "Або Ваш акаунт не є зареєстрований");
+                ModelState.AddModelError(string.Empty, "Будь ласка, виберіть правильну роль.");
                 return View();
             }
         }

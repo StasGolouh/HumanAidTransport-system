@@ -3,10 +3,10 @@
 }
 
 <div class="text-center">
-    
-    <h1 class="display-4">Welcome on AlwaysReady</h1>
+    <h1 class="maintext">Welcome on AlwaysReady</h1>
 
     <img src="~/images/Aid.png" alt="Aid" class="mainimg" />
+
 
     <form asp-controller="Registration" asp-action="Registration" method="get" class="btn-container">
         <button type="submit" class="btn btn-registration">Registration</button>
@@ -23,9 +23,9 @@
         background-color: rgb(204, 255, 234);
     }
 
-    body::-webkit-scrollbar {
-        display: none;
-    }
+        body::-webkit-scrollbar {
+            display: none;
+        }
 
     .btn-container {
         display: inline-block;
@@ -69,10 +69,24 @@
     }
 
     .mainimg {
-        max-width: 75%;
-        height: auto;
-        justify-content:center;
-        align-content:center;
+        width: 55%;
+        height: 55%;
+        justify-content: center;
+        align-content: center;
+        margin-left: 45px;
+    }
+
+    .maintext {
+        font-family: 'Poppins', sans-serif;
+        font-size: 32px;
+        color: #2C3E50;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        border-bottom: 3px solid #28a745;
+        display: inline-block;
+        padding-bottom: 5px;
     }
 
 </style>
