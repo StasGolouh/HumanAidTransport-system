@@ -1,5 +1,4 @@
 ﻿using HumanAidTransport.Models;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace HumanitarianTransport.Data

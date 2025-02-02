@@ -15,21 +15,21 @@
     .container {
         max-width: 600px;
         background: white;
-        padding: 40px;
+        padding: 30px;
         border-radius: 12px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        margin-top: 50px;
-        margin-bottom: 50px;
+        margin-top: 30px;
+        margin-bottom: 30px;
         text-align: center;
     }
 
     h1 {
         font-family: 'Poppins', sans-serif;
-        font-size: 32px;
+        font-size: 28px;
         color: #2C3E50;
         font-weight: bold;
         text-transform: uppercase;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         border-bottom: 3px solid #28a745;
         display: inline-block;
@@ -37,7 +37,7 @@
     }
 
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         text-align: left;
     }
 
@@ -49,7 +49,7 @@
 
     input {
         width: 100%;
-        padding: 12px;
+        padding: 10px;
         font-size: 16px;
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -64,8 +64,8 @@
 
     .btn {
         width: 100%;
-        padding: 15px;
-        font-size: 18px;
+        padding: 12px;
+        font-size: 16px;
         border-radius: 8px;
         border: none;
         background: #28a745;
@@ -74,105 +74,83 @@
         cursor: pointer;
     }
 
-    .btn-registration {
-        background-color: #28a745;
-        color: white;
-    }
-
-        .btn-registration:hover {
+        .btn:hover {
             background-color: #218838;
             transform: scale(1.05);
         }
 
-    .btn-login {
-        background-color: #007bff;
-        color: white;
-    }
-
-        .btn-login:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-
-    .btn-container {
-        display: flex;
-        justify-content: space-between;
-    }
-
     .form-group input {
-        margin-top: 8px;
+        margin-top: 6px;
     }
 
     .form-group label {
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
 </style>
 
 <div class="container">
-    <h1>Реєстрація</h1>
+    <h1>
+        Registration
+    </h1>
 
     <form method="post">
-        <!-- Вибір ролі -->
         <div class="form-group">
-            <label>Виберіть роль</label>
+            <label>Select a role</label>
             <select id="role" name="role" class="form-control" required>
-                <option value="Carrier">Перевізник</option>
-                <option value="Customer">Замовник</option>
+                <option value="Carrier">Carrier</option>
+                <option value="Customer">Customer</option>
             </select>
         </div>
 
-        <!-- Поля для перевізника -->
         <div id="carrierFields" class="registration-fields">
             <div class="form-group">
-                <label for="Carrier.Name">Ім'я перевізника</label>
+                <label for="Carrier.Name">Carrier's name</label>
                 <input type="text" id="Carrier.Name" name="Carrier.Name" class="form-control" value="@Model.Carrier.Name" required>
             </div>
 
             <div class="form-group">
-                <label for="Carrier.Password">Пароль</label>
+                <label for="Carrier.Password">Password</label>
                 <input type="password" id="Carrier.Password" name="Carrier.Password" class="form-control" value="@Model.Carrier.Password" required>
             </div>
 
             <div class="form-group">
-                <label for="Carrier.ContactInfo">Контактні дані</label>
-                <input type="text" id="Carrier.ContactInfo" name="Carrier.ContactInfo" class="form-control" value="@Model.Carrier.ContactInfo" required>
+                <label for="Carrier.ContactInfo">Contacts</label>
+                <input type="text" id="Carrier.ContactInfo" name="Carrier.ContactInfo" class="form-control" value="@Model.Carrier.Contacts" required>
             </div>
 
             <div class="form-group">
-                <label for="Carrier.VehicleName">Назва машини</label>
+                <label for="Carrier.VehicleName">Car's name</label>
                 <input type="text" id="Carrier.VehicleName" name="Carrier.VehicleName" class="form-control" value="@Model.Carrier.VehicleName" required>
             </div>
 
             <div class="form-group">
-                <label for="Carrier.VehicleModel">Модель машини</label>
+                <label for="Carrier.VehicleModel">Car's model</label>
                 <input type="text" id="Carrier.VehicleModel" name="Carrier.VehicleModel" class="form-control" value="@Model.Carrier.VehicleModel" required>
             </div>
 
             <div class="form-group">
-                <label for="Carrier.VehicleNumber">Номер машини</label>
+                <label for="Carrier.VehicleNumber">Car's number</label>
                 <input type="text" id="Carrier.VehicleNumber" name="Carrier.VehicleNumber" class="form-control" value="@Model.Carrier.VehicleNumber" required>
             </div>
         </div>
 
-        <!-- Поля для замовника -->
         <div id="customerFields" class="registration-fields" style="display:none;">
             <div class="form-group">
-                <label for="Customer.Username">Ім'я користувача</label>
+                <label for="Customer.Username">Customer's name</label>
                 <input type="text" id="Customer.Username" name="Customer.Username" class="form-control" value="@Model.Customer.Username" required>
             </div>
 
             <div class="form-group">
-                <label for="Customer.Password">Пароль</label>
+                <label for="Customer.Password">Password</label>
                 <input type="password" id="Customer.Password" name="Customer.Password" class="form-control" value="@Model.Customer.Password" required>
             </div>
         </div>
 
-        <button type="submit" class="btn">Зареєструватися</button>
+        <button type="submit" class="btn">Sign up</button>
     </form>
 </div>
 
 <script>
-    // Обробка зміни вибору ролі
     document.getElementById('role').addEventListener('change', function () {
         const role = this.value;
         const carrierFields = document.getElementById('carrierFields');
@@ -181,7 +159,8 @@
         if (role === 'Carrier') {
             carrierFields.style.display = 'block';
             customerFields.style.display = 'none';
-        } else if (role === 'Customer') {
+        }
+        else if (role === 'Customer') {
             carrierFields.style.display = 'none';
             customerFields.style.display = 'block';
         }

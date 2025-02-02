@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using HumanAidTransport.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
 
 public class Carrier
 {
@@ -14,20 +13,17 @@ public class Carrier
     public string Password { get; set; }
 
     [Required]
-    public string ContactInfo { get; set; }
-
-    // Додані поля для інформації про транспортний засіб
-    [Required]
-    public string VehicleName { get; set; }  // Назва машини
+    [RegularExpression(@"^\+?[0-9]{1,4}?[ -]?[0-9]{1,3}[ -]?[0-9]{1,4}[ -]?[0-9]{1,4}$",ErrorMessage = "Невірний формат номера телефону.")]
+    public string Contacts { get; set; }
 
     [Required]
-    public string VehicleModel { get; set; } // Модель машини
+    public string VehicleName { get; set; } 
+    [Required]
+    public string VehicleModel { get; set; } 
 
     [Required]
     [RegularExpression(@"^[A-Z0-9-]+$", ErrorMessage = "Некоректний номерний знак")]
-    public string VehicleNumber { get; set; } // Номер машини
-
-    public ICollection<Order> Orders { get; set; }
+    public string VehicleNumber { get; set; }
 
     public double Rating { get; set; } = 0;
 

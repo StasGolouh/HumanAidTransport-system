@@ -16,5 +16,5 @@ public class Customer
 
     public List<Order> Orders { get; set; }
 
-    public List<Rating> Ratings { get; set; }
+    // public List<Rating> Ratings { get; set; }
 }

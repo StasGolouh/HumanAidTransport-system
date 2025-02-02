@@ -29,7 +29,6 @@ namespace HumanAidTransport.Controllers
 
             if (role == "Carrier")
             {
-                // Перевізник
                 var carrier = _context.Carriers.FirstOrDefault(c => c.Name == username && c.Password == password);
 
                 if (carrier != null)
@@ -46,7 +45,6 @@ namespace HumanAidTransport.Controllers
             }
             else if (role == "Customer")
             {
-                // Замовник
                 var customer = _context.Customers.FirstOrDefault(c => c.Username == username && c.Password == password);
 
                 if (customer != null)

@@ -13,7 +13,7 @@ namespace HumanAidTransport.Models
         public int CarrierId { get; set; }
         public Carrier Carrier { get; set; }
 
-        [Range(1, 5)] // Оцінка між 1 і 5
+        [Range(1, 5)] 
         public int RatingValue { get; set; }
 
         public string Feedback { get; set; }
