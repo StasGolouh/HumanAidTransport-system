@@ -16,16 +16,16 @@ namespace HumanAidTransport.Controllers
 
         public IActionResult Registration()
         {
-            var model = new RegistrationViewModel
+            var model = new ViewModel
             {
                 Carrier = new Carrier(), 
-                Customer = new Customer() 
+                Volunteer = new Volunteer() 
             };
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult Registration(string role, Carrier carrier, Customer customer)
+        public IActionResult Registration(string role, Carrier carrier, Volunteer customer)
         {
             if (string.IsNullOrEmpty(role))
             {
@@ -63,19 +63,19 @@ namespace HumanAidTransport.Controllers
                 if (ModelState.IsValid)
                 {
                     // Перевіряємо чи вже існує такий замовник
-                    bool customerExists = _context.Customers.Any(c => c.Username == customer.Username);
+                    bool customerExists = _context.Volunteer.Any(c => c.Username == customer.Username);
 
                     if (!customerExists)
                     {
                         // Додаємо замовника в базу
-                        _context.Customers.Add(customer);
+                        _context.Volunteer.Add(customer);
                         _context.SaveChanges();
 
                         // Отримуємо ID щойно зареєстрованого замовника
-                        Customer addedCustomer = _context.Customers.FirstOrDefault(c => c.Username == customer.Username);
+                        Volunteer addedCustomer = _context.Volunteer.FirstOrDefault(c => c.Username == customer.Username);
 
                         // Переадресовуємо в профіль замовника
-                        return RedirectToAction("Profile", "Profile", new { id = addedCustomer.CustomerId });
+                        return RedirectToAction("Profile", "Profile", new { id = addedCustomer.VolunteerId });
                     }
                     else
                     {

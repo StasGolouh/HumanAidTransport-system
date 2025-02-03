@@ -1,4 +1,4 @@
-﻿@model RegistrationViewModel
+﻿@model ViewModel
 
 <style>
     body {
@@ -50,11 +50,11 @@
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    input:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
-    }
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        }
 
     .btn {
         width: 100%;
@@ -68,10 +68,10 @@
         cursor: pointer;
     }
 
-    .btn:hover {
-        background-color: #218838;
-        transform: scale(1.05);
-    }
+        .btn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
 </style>
 
 <div class="container">
@@ -82,11 +82,10 @@
             <label for="role"> Select a role</label>
             <select id="role" name="role" class="form-control" required>
                 <option value="Carrier">Carrier</option>
-                <option value="Customer">Customer</option>
+                <option value="Volunteer">Volunteer</option>
             </select>
         </div>
 
-        <!-- Поля для Перевізника -->
         <div id="carrierFields" class="login-fields">
             <div class="form-group">
                 <label for="Carrier.Name">Carrier's name</label>
@@ -99,16 +98,15 @@
             </div>
         </div>
 
-        <!-- Поля для Замовника -->
-        <div id="customerFields" class="login-fields" style="display: none;">
+        <div id="volunteerFields" class="login-fields" style="display: none;">
             <div class="form-group">
-                <label for="Customer.Username">Customer's name'</label>
-                <input type="text" id="Customer.Username" name="Customer.Username" class="form-control" required>
+                <label for="Volunteer.Username">Volunteer's name</label>
+                <input type="text" id="Volunteer.Username" name="Volunteer.Username" class="form-control" required>
             </div>
 
             <div class="form-group">
-                <label for="Customer.Password">Password</label>
-                <input type="password" id="Customer.Password" name="Customer.Password" class="form-control" required>
+                <label for="Volunteer.Password">Password</label>
+                <input type="password" id="Volunteer.Password" name="Volunteer.Password" class="form-control" required>
             </div>
         </div>
 
@@ -120,15 +118,15 @@
     document.getElementById('role').addEventListener('change', function () {
         const role = this.value;
         const carrierFields = document.getElementById('carrierFields');
-        const customerFields = document.getElementById('customerFields');
+        const volunteerFields = document.getElementById('volunteerFields');
 
         if (role === 'Carrier') {
             carrierFields.style.display = 'block';
-            customerFields.style.display = 'none';
-        } 
-        else if (role === 'Customer') {
+            volunteerFields.style.display = 'none';
+        }
+        else if (role === 'Volunteer') {
             carrierFields.style.display = 'none';
-            customerFields.style.display = 'block';
+            volunteerFields.style.display = 'block';
         }
     });
 </script>

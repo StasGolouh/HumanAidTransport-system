@@ -25,7 +25,7 @@ public class Carrier
     [RegularExpression(@"^[A-Z0-9-]+$", ErrorMessage = "Некоректний номерний знак")]
     public string VehicleNumber { get; set; }
 
-    public double Rating { get; set; } = 0;
 
-    public int RatingCount { get; set; } = 0;
+    [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]
+    public double Rating { get; set; } = 0;
 }

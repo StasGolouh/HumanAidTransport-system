@@ -1,5 +1,5 @@
-﻿
-using HumanitarianTransport.Data;
+﻿using HumanitarianTransport.Data;
+using HumanAidTransport.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,24 +25,23 @@ namespace HumanAidTransport.Controllers
         {
             if (Carrier != null)
             {
-                var carrierOrders = _context.CarrierOrders
-                    .Where(co => co.CarrierId == Carrier.CarrierId)
-                    .Include(co => co.Orders)  
+                var carrierOrders = _context.CarrierLists
+                    .Where(cl => cl.Carrier != null && cl.Carrier.CarrierId == Carrier.CarrierId)
+                    .Include(cl => cl.HumanitarianAid)
                     .ToList();
 
                 return View(carrierOrders);
             }
             else
             {
-
                 return RedirectToAction("Index", "Home");
             }
         }
 
         public IActionResult LogOut()
         {
-            Carrier = null;  
-            return RedirectToAction("Index", "Home"); 
+            Carrier = null;
+            return RedirectToAction("Index", "Home");
         }
     }
 }

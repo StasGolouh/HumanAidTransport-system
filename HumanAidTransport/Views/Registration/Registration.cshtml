@@ -1,4 +1,4 @@
-﻿@model RegistrationViewModel
+﻿@model ViewModel
 
 <style>
     body {
@@ -98,7 +98,7 @@
             <label>Select a role</label>
             <select id="role" name="role" class="form-control" required>
                 <option value="Carrier">Carrier</option>
-                <option value="Customer">Customer</option>
+                <option value="Volunteer">Volunteer</option>
             </select>
         </div>
 
@@ -134,15 +134,15 @@
             </div>
         </div>
 
-        <div id="customerFields" class="registration-fields" style="display:none;">
+        <div id="volunteerFields" class="registration-fields" style="display:none;">
             <div class="form-group">
-                <label for="Customer.Username">Customer's name</label>
-                <input type="text" id="Customer.Username" name="Customer.Username" class="form-control" value="@Model.Customer.Username" required>
+                <label for="Volunteer.Username">Volunteer's name</label>
+                <input type="text" id="Volunteer.Username" name="Volunteer.Username" class="form-control" value="@Model.Volunteer.Username" required>
             </div>
 
             <div class="form-group">
-                <label for="Customer.Password">Password</label>
-                <input type="password" id="Customer.Password" name="Customer.Password" class="form-control" value="@Model.Customer.Password" required>
+                <label for="Volunteer.Password">Password</label>
+                <input type="password" id="Volunteer.Password" name="Volunteer.Password" class="form-control" value="@Model.Volunteer.Password" required>
             </div>
         </div>
 
@@ -154,15 +154,15 @@
     document.getElementById('role').addEventListener('change', function () {
         const role = this.value;
         const carrierFields = document.getElementById('carrierFields');
-        const customerFields = document.getElementById('customerFields');
+        const volunteerFields = document.getElementById('volunteerFields');
 
         if (role === 'Carrier') {
             carrierFields.style.display = 'block';
-            customerFields.style.display = 'none';
+            volunteerFields.style.display = 'none';
         }
-        else if (role === 'Customer') {
+        else if (role === 'Volunteer') {
             carrierFields.style.display = 'none';
-            customerFields.style.display = 'block';
+            volunteerFields.style.display = 'block';
         }
     });
 </script>

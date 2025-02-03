@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace HumanAidTransport.Models
 {
@@ -6,10 +7,40 @@ namespace HumanAidTransport.Models
     {
         [Key]
         public int HumanAidId { get; set; }
+
         [Required]
+        [StringLength(100, ErrorMessage = "Name must be at most 100 characters.")]
         public string Name { get; set; }
+
         [Required]
-        public int Quantity { get; set; }
-        public string Description { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1.")]
+        public int Quantity { get; set; } = 0;
+
+        [StringLength(500, ErrorMessage = "Description must be at most 500 characters.")]
+        public string? Description { get; set; }
+
+        [Required]
+        [StringLength(200, ErrorMessage = "Address must be at most 200 characters.")]
+        public string DestinationAddress { get; set; }
+
+        [Range(0, double.MaxValue, ErrorMessage = "Payment must be a positive number.")]
+        public double? Payment { get; set; }
+
+        public string PaymentStatus => Payment.HasValue ? Payment.Value.ToString("F2") : "Free";
+
+        [FutureDate(ErrorMessage = "Expected delivery time must be in the future.")]
+        public DateTime? ExpectedDeliveryTime { get; set; }
+    }
+
+    public class FutureDateAttribute : ValidationAttribute
+    {
+        public override bool IsValid(object? value)
+        {
+            if (value is DateTime dateTime)
+            {
+                return dateTime > DateTime.Now; // Дата має бути у майбутньому
+            }
+            return true; 
+        }
     }
 }

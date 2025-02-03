@@ -9,10 +9,11 @@ namespace HumanitarianTransport.Data
         {
         }
 
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Volunteer> Volunteer { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
         public DbSet<HumanitarianAid> HumanitarianAid { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<CarrierOrder> CarrierOrders { get; set; }
+        public DbSet<DeliveryRequest> DeliveryRequests { get; set; }
+        public DbSet<TransportOrder> TransportOrders { get; set; }
+
     }
 }

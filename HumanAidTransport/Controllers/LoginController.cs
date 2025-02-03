@@ -45,11 +45,11 @@ namespace HumanAidTransport.Controllers
             }
             else if (role == "Customer")
             {
-                var customer = _context.Customers.FirstOrDefault(c => c.Username == username && c.Password == password);
+                var customer = _context.Volunteer.FirstOrDefault(c => c.Username == username && c.Password == password);
 
                 if (customer != null)
                 {
-                    HttpContext.Session.SetInt32("CustomerId", customer.CustomerId);
+                    HttpContext.Session.SetInt32("CustomerId", customer.VolunteerId);
                     return RedirectToAction("Index", "Home");
                 }
                 else
