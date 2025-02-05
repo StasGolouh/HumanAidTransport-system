@@ -34,7 +34,7 @@ namespace HumanAidTransport.Controllers
                 if (carrier != null)
                 {
                     // Якщо перевізник знайдений, зберігаємо його у сесії
-                    HttpContext.Session.SetInt32("CarrierId", carrier.CarrierId);
+                    HttpContext.Session.SetInt32("CarrierId", carrier.Id);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -45,11 +45,11 @@ namespace HumanAidTransport.Controllers
             }
             else if (role == "Customer")
             {
-                var customer = _context.Volunteer.FirstOrDefault(c => c.Username == username && c.Password == password);
+                var customer = _context.Volunteer.FirstOrDefault(c => c.Name == username && c.Password == password);
 
                 if (customer != null)
                 {
-                    HttpContext.Session.SetInt32("CustomerId", customer.VolunteerId);
+                    HttpContext.Session.SetInt32("CustomerId", customer.Id);
                     return RedirectToAction("Index", "Home");
                 }
                 else

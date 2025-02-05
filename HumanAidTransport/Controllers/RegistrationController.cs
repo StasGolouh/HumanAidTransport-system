@@ -1,7 +1,7 @@
 ﻿using HumanAidTransport.Models;
 using HumanitarianTransport.Data;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
+
 
 namespace HumanAidTransport.Controllers
 {
@@ -50,7 +50,7 @@ namespace HumanAidTransport.Controllers
                         Carrier addedCarrier = _context.Carriers.FirstOrDefault(c => c.Name == carrier.Name);
 
                         // Переадресовуємо в профіль перевізника
-                        return RedirectToAction("Profile", "Profile", new { id = addedCarrier.CarrierId });
+                        return RedirectToAction("Profile", "Profile", new { id = addedCarrier.Id });
                     }
                     else
                     {
@@ -63,7 +63,7 @@ namespace HumanAidTransport.Controllers
                 if (ModelState.IsValid)
                 {
                     // Перевіряємо чи вже існує такий замовник
-                    bool customerExists = _context.Volunteer.Any(c => c.Username == customer.Username);
+                    bool customerExists = _context.Volunteer.Any(c => c.Name == customer.Name);
 
                     if (!customerExists)
                     {
@@ -72,10 +72,10 @@ namespace HumanAidTransport.Controllers
                         _context.SaveChanges();
 
                         // Отримуємо ID щойно зареєстрованого замовника
-                        Volunteer addedCustomer = _context.Volunteer.FirstOrDefault(c => c.Username == customer.Username);
+                        Volunteer addedCustomer = _context.Volunteer.FirstOrDefault(c => c.Name == customer.Name);
 
                         // Переадресовуємо в профіль замовника
-                        return RedirectToAction("Profile", "Profile", new { id = addedCustomer.VolunteerId });
+                        return RedirectToAction("Profile", "Profile", new { id = addedCustomer.Id });
                     }
                     else
                     {

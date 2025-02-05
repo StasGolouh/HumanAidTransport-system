@@ -21,22 +21,6 @@ namespace HumanAidTransport.Controllers
             return View();
         }
 
-        public IActionResult CarrierOrders()
-        {
-            if (Carrier != null)
-            {
-                var carrierOrders = _context.CarrierLists
-                    .Where(cl => cl.Carrier != null && cl.Carrier.CarrierId == Carrier.CarrierId)
-                    .Include(cl => cl.HumanitarianAid)
-                    .ToList();
-
-                return View(carrierOrders);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
-        }
 
         public IActionResult LogOut()
         {

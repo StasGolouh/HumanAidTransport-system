@@ -1,16 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HumanAidTransport.Models;
 
-
-public class Carrier
+public class Carrier: Person
 {
-    [Key]
-    public int CarrierId { get; set; }
-
-    [Required]
-    public string Name { get; set; }
-
-    [Required]
-    public string Password { get; set; }
 
     [Required]
     [RegularExpression(@"^\+?[0-9]{1,4}?[ -]?[0-9]{1,3}[ -]?[0-9]{1,4}[ -]?[0-9]{1,4}$",ErrorMessage = "Невірний формат номера телефону.")]

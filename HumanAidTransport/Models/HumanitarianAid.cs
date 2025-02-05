@@ -30,6 +30,12 @@ namespace HumanAidTransport.Models
 
         [FutureDate(ErrorMessage = "Expected delivery time must be in the future.")]
         public DateTime? ExpectedDeliveryTime { get; set; }
+
+        [Required]
+        public string DeliveryAddressFrom { get; set; }
+
+        [Required]
+        public string DeliveryAddressTo { get; set; }
     }
 
     public class FutureDateAttribute : ValidationAttribute

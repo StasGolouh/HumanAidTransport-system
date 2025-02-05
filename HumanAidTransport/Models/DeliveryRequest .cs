@@ -8,13 +8,14 @@ namespace HumanAidTransport.Models
         [Key]
         public int DeliveryRequestId { get; set; }
 
-        [Required]
-        public double? Rating { get; set; } = 0;
 
         [ForeignKey("CarrierId")]
         public int CarrierId { get; set; } 
 
         public Carrier? Carrier { get; set; }
+
+        [ForeignKey("HumanAidId")]
+        public int HumanAidId { get; set; }
 
     }
 }

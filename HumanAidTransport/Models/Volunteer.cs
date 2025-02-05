@@ -1,17 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using HumanAidTransport.Models;
 
-public class Volunteer
+public class Volunteer: Person
 {
-    [Key]
-    public int VolunteerId { get; set; }
-
-    [Required]
-    [StringLength(100)]
-    public string Username { get; set; }
-
-    [Required]
-    [StringLength(100)]
-    public string Password { get; set; }
 
 
 }
