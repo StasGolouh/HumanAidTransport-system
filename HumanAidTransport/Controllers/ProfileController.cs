@@ -1,13 +1,13 @@
 ﻿using HumanitarianTransport.Data;
-using HumanAidTransport.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace HumanAidTransport.Controllers
 {
     public class ProfileController : Controller
     {
         public static Carrier? Carrier;
+        public static Volunteer? Volunteer;
 
         private readonly HumanitarianDbContext _context;
 

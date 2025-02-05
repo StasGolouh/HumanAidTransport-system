@@ -1,0 +1,85 @@
+﻿using HumanitarianTransport.Data;
+using Microsoft.AspNetCore.Mvc;
+
+
+namespace HumanAidTransport.Controllers
+{
+    public class VolunteerController : Controller
+    {
+        private readonly HumanitarianDbContext _context;
+
+        public VolunteerController(HumanitarianDbContext context)
+        {
+            _context = context;
+        }
+
+        public IActionResult VolunteerRegistration()
+        {
+            return View("~/Views/Registration/VolunteerRegistration.cshtml");
+        }
+
+
+
+        [HttpPost]
+        public IActionResult VolunteerRegistration(Volunteer volunteer)
+        {
+            if (ModelState.IsValid)
+            {
+                // Перевіряємо, чи вже існує волонтер з таким ім'ям
+                bool volunteerExists = _context.Volunteer.Any(v => v.Name == volunteer.Name);
+
+                if (!volunteerExists)
+                {
+                    try
+                    {
+                        // Додаємо волонтера в базу
+                        _context.Volunteer.Add(volunteer);
+                        _context.SaveChanges();
+
+                        return RedirectToAction("Index", "Home");
+                    }
+                    catch (Exception ex)
+                    {
+                        // Логування помилки
+                        ModelState.AddModelError("", "Error saving volunteer: " + ex.Message);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "A customer with this name already exists.");
+                }
+            }
+
+            // Повертаємо з помилками на форму
+            return View(volunteer);
+        }
+
+        public IActionResult VolunteerLogin()
+        {
+            return View("~/Views/Login/VolunteerLogin.cshtml");
+        }
+
+        [HttpPost]
+        public IActionResult VolunteerLogin(string name, string password)
+        {
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
+            {
+                ModelState.AddModelError(string.Empty, "Please fill in all fields.");
+                return View();
+            }
+
+            var volunteer = _context.Volunteer.FirstOrDefault(c => c.Name == name && c.Password == password);
+
+            if (volunteer != null)
+            {
+                ProfileController.Volunteer = volunteer;
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Incorrect username or password for the carrier.");
+                return View();
+            }
+        }
+    }
+}

@@ -8,14 +8,57 @@
     <img src="~/images/Aid.png" alt="Aid" class="mainimg" />
 
 
-    <form asp-controller="Registration" asp-action="Registration" method="get" class="btn-container">
-        <button type="submit" class="btn-registration">Registration</button>
+    <form id="roleForm" method="get" class="btn-container">
+        <label for="role" style="font-size: 18px; color: #333;">Select your role:</label>
+        <select id="role" name="role" style="padding: 10px; font-size: 16px; margin-bottom: 20px;">
+            <option value="Volunteer">Volunteer</option>
+            <option value="Carrier">Carrier</option>
+        </select>
     </form>
 
-    <form asp-controller="Login" asp-action="Login" method="get" class="btn-container">
-        <button type="submit" class="btn-login">Login</button>
+    <form id="registerForm" method="get" class="btn-container">
+        <button type="submit" class="btn-registration" id="registerButton">Registration</button>
+    </form>
+
+    <form id="loginForm" method="get" class="btn-container">
+        <button type="submit" class="btn-login" id="loginButton">Login</button>
     </form>
 </div>
+
+<script>
+    document.getElementById('registerButton').addEventListener('click', function(event) {
+        event.preventDefault();
+        const role = document.getElementById('role').value;
+        let url = '';
+
+        if (role === 'Volunteer') {
+            url = '/Volunteer/VolunteerRegistration'; 
+        } 
+        
+        else if (role === 'Carrier') {
+            url = '/Carrier/CarrierRegistration'; 
+        }
+
+        // Переадресація на відповідну форму логіну
+        window.location.href = url;
+    });
+
+
+    document.getElementById('loginButton').addEventListener('click', function(event) {
+        event.preventDefault();
+        const role = document.getElementById('role').value;
+        let url = '';
+
+        if (role === 'Volunteer') {
+            url = '/Volunteer/VolunteerLogin';
+        } 
+        else if (role === 'Carrier') {
+            url = '/Carrier/CarrierLogin'; 
+        }
+
+        window.location.href = url;
+    });
+</script>
 
 <style>
     body {
@@ -88,5 +131,4 @@
         display: inline-block;
         padding-bottom: 5px;
     }
-
 </style>

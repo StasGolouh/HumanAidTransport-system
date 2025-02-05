@@ -8,7 +8,6 @@ namespace HumanitarianTransport.Data
         public HumanitarianDbContext(DbContextOptions<HumanitarianDbContext> options) : base(options)
         {
         }
-        public DbSet<Person> Persons{ get; set; }
         public DbSet<Volunteer> Volunteer { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
         public DbSet<HumanitarianAid> HumanitarianAid { get; set; }
