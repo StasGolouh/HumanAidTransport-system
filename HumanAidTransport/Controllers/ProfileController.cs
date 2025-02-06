@@ -18,13 +18,19 @@ namespace HumanAidTransport.Controllers
 
         public IActionResult VolunteerProfile()
         {
-            return View("~/Views/Profile/VolunteerProfile.cshtml");
+            // Ensure you have the necessary data for the volunteer
+            if (Volunteer != null)
+            {
+                return View("~/Views/Profile/VolunteerProfile.cshtml", Volunteer);
+            }
+
+            return RedirectToAction("VolunteerLogin", "Volunteer");
         }
 
 
         public IActionResult LogOut()
         {
-            Carrier = null;
+            Volunteer = null;
             return RedirectToAction("Index", "Home");
         }
     }

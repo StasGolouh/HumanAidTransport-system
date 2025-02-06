@@ -73,7 +73,7 @@ namespace HumanAidTransport.Controllers
             if (volunteer != null)
             {
                 ProfileController.Volunteer = volunteer;
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("VolunteerProfile", "Profile");
             }
             else
             {
