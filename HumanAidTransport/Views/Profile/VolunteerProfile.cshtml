@@ -1,0 +1,120 @@
+﻿@model HumanitarianAid
+
+@{
+    ViewData["Title"] = "Профіль Волонтера";
+}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: rgb(204, 255, 234);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            margin: 50px auto;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .upload-btn {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #007bff;
+        }
+
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            color: #2C3E50;
+            font-weight: bold;
+            margin-top: 100px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            background: #28a745;
+            color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+            .btn:hover {
+                background-color: #218838;
+                transform: scale(1.05);
+            }
+
+        .task-section {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            margin: 20px auto;
+            text-align: left;
+        }
+
+            .task-section h3 {
+                font-size: 20px;
+                color: #2C3E50;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+        .task-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="default-avatar.png" alt="Фото профілю" class="profile-pic" id="profilePic">
+        <input type="file" id="uploadPic" hidden>
+        <label for="uploadPic" class="upload-btn">Змінити фото</label>
+        <h2>@Model.Name</h2>
+        <button class="btn">Сповіщення</button>
+        <button class="btn">Чат</button>
+    </div>
+    <div class="task-section">
+        <h3>Постити завдання</h3>
+        <form asp-action="PostTask" method="post">
+            <input type="text" class="task-input" name="taskDescription" placeholder="Опишіть завдання...">
+            <button type="submit" class="btn">Опублікувати</button>
+        </form>
+    </div>
+</body>
+</html>

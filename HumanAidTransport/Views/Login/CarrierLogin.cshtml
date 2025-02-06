@@ -50,11 +50,11 @@
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    input:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
-    }
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        }
 
     .btn {
         width: 100%;
@@ -68,24 +68,40 @@
         cursor: pointer;
     }
 
-    .btn:hover {
-        background-color: #218838;
-        transform: scale(1.05);
+        .btn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+    .text-danger {
+        color: red;
+        font-size: 14px;
     }
 </style>
 
 <div class="container">
     <h2>Carrier Login</h2>
 
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary(true, "Please fix the following errors:", new { @class = "text-danger" })
+        </div>
+    }
+
     <form method="post">
         <div class="form-group">
-            <label for="CarrierName">Carrier Name</label>
-            <input type="text" asp-for="Name" class="form-control" required>
+            <label asp-for="Name">Carrier Name</label>
+            <input type="text" asp-for="Name" class="form-control" required />
+  
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label for="CarrierPassword">Password</label>
-            <input type="text" asp-for="Password" class="form-control" required>
+            <label asp-for="Password">Password</label>
+            <input type="password" asp-for="Password" class="form-control" required />
+
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         </div>
 
         <button type="submit" class="btn">Sign in</button>

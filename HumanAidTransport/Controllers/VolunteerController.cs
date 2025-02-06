@@ -51,7 +51,7 @@ namespace HumanAidTransport.Controllers
             }
 
             // Повертаємо з помилками на форму
-            return View(volunteer);
+            return View("~/Views/Registration/VolunteerRegistration.cshtml");
         }
 
         public IActionResult VolunteerLogin()
@@ -65,7 +65,7 @@ namespace HumanAidTransport.Controllers
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
             {
                 ModelState.AddModelError(string.Empty, "Please fill in all fields.");
-                return View();
+                return View("~/Views/Login/VolunteerLogin.cshtml");
             }
 
             var volunteer = _context.Volunteer.FirstOrDefault(c => c.Name == name && c.Password == password);
@@ -78,7 +78,7 @@ namespace HumanAidTransport.Controllers
             else
             {
                 ModelState.AddModelError(string.Empty, "Incorrect username or password for the carrier.");
-                return View();
+                return View("~/Views/Login/VolunteerLogin.cshtml");
             }
         }
     }

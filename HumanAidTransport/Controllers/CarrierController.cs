@@ -23,9 +23,29 @@ namespace HumanAidTransport.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Check if carrier with the same name already exists
                 bool carrierExists = _context.Carriers.Any(c => c.Name == carrier.Name);
+                if (carrierExists)
+                {
+                    ModelState.AddModelError("", "A carrier with this name already exists.");
+                }
 
-                if (!carrierExists)
+                // Check if car number already exists
+                bool vehicleNumberExists = _context.Carriers.Any(c => c.VehicleNumber == carrier.VehicleNumber);
+                if (vehicleNumberExists)
+                {
+                    ModelState.AddModelError("", "A carrier with this vehicle number already exists.");
+                }
+
+                // Check if phone number (Contacts) already exists
+                bool phoneNumberExists = _context.Carriers.Any(c => c.Contacts == carrier.Contacts);
+                if (phoneNumberExists)
+                {
+                    ModelState.AddModelError("", "A carrier with this phone number already exists.");
+                }
+
+                // If no errors, save the new carrier
+                if (!carrierExists && !vehicleNumberExists && !phoneNumberExists)
                 {
                     try
                     {
@@ -38,13 +58,13 @@ namespace HumanAidTransport.Controllers
                         ModelState.AddModelError("", "Error saving carrier: " + ex.Message);
                     }
                 }
-                else
-                {
-                    ModelState.AddModelError("", "A carrier with this name already exists.");
-                }
             }
-            return View(carrier);
+            return View("~/Views/Registration/CarrierRegistration.cshtml");
         }
+
+
+
+    //=============================Login====================================
 
         public IActionResult CarrierLogin()
         {
@@ -57,7 +77,7 @@ namespace HumanAidTransport.Controllers
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
             {
                 ModelState.AddModelError(string.Empty, "Please fill in all fields.");
-                return View();
+                return View("~/Views/Login/CarrierLogin.cshtml");
             }
 
             var carrier = _context.Carriers.FirstOrDefault(c => c.Name == name && c.Password == password);
@@ -70,7 +90,7 @@ namespace HumanAidTransport.Controllers
             else
             {
                 ModelState.AddModelError(string.Empty, "Incorrect username or password for the carrier.");
-                return View();
+                return View("~/Views/Login/CarrierLogin.cshtml");
             }
         }
     }

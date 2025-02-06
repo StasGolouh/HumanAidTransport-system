@@ -16,9 +16,9 @@ namespace HumanAidTransport.Controllers
             _context = context;
         }
 
-        public IActionResult Profile()
+        public IActionResult VolunteerProfile()
         {
-            return View();
+            return View("~/Views/Profile/VolunteerProfile.cshtml");
         }
 
 

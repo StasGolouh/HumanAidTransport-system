@@ -72,21 +72,36 @@
             background-color: #218838;
             transform: scale(1.05);
         }
-</style>
 
+    .text-danger {
+        color: red;
+        font-size: 14px;
+    }
+</style>
 
 <div class="container">
     <h2>Volunteer Login</h2>
 
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary(true, "Please fix the following errors:", new { @class = "text-danger" })
+        </div>
+    }
+
     <form method="post">
         <div class="form-group">
-            <label for="VolunteerName">Volunteer Name</label>
-            <input type="text" asp-for="Name" class="form-control" required>
+            <label asp-for="Name">Volunteer Name</label>
+            <input type="text" asp-for="Name" class="form-control" required />
+
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label for="VolunteerPassword">Password</label>
-            <input type="text" asp-for="Password" class="form-control" required>
+            <label asp-for="Password">Password</label>
+            <input type="text" asp-for="Password" class="form-control" required />
+
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         </div>
 
         <button type="submit" class="btn">Sign in</button>
