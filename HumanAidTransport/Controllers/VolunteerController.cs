@@ -26,14 +26,14 @@ namespace HumanAidTransport.Controllers
             if (ModelState.IsValid)
             {
                 // Перевіряємо, чи вже існує волонтер з таким ім'ям
-                bool volunteerExists = _context.Volunteer.Any(v => v.Name == volunteer.Name);
+                bool volunteerExists = _context.Volunteers.Any(v => v.Name == volunteer.Name);
 
                 if (!volunteerExists)
                 {
                     try
                     {
                         // Додаємо волонтера в базу
-                        _context.Volunteer.Add(volunteer);
+                        _context.Volunteers.Add(volunteer);
                         _context.SaveChanges();
 
                         return RedirectToAction("Index", "Home");
@@ -68,7 +68,7 @@ namespace HumanAidTransport.Controllers
                 return View("~/Views/Login/VolunteerLogin.cshtml");
             }
 
-            var volunteer = _context.Volunteer.FirstOrDefault(c => c.Name == name && c.Password == password);
+            var volunteer = _context.Volunteers.FirstOrDefault(c => c.Name == name && c.Password == password);
 
             if (volunteer != null)
             {
@@ -81,5 +81,7 @@ namespace HumanAidTransport.Controllers
                 return View("~/Views/Login/VolunteerLogin.cshtml");
             }
         }
+
+
     }
 }

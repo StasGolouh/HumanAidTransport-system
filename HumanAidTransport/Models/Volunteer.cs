@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HumanAidTransport.Models;
 
 public class Volunteer
 {
@@ -10,5 +11,10 @@ public class Volunteer
 
     [Required]
     public string Password { get; set; }
+
+    [Required]
+    public string ProfilePhotoURL { get; set; } = "defaultAvatar.png";
+
+    public List<HumanitarianAid> Tasks { get; set; } = new List<HumanitarianAid>();
 
 }

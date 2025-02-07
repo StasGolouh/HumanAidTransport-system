@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HumanAidTransport.Migrations
 {
     [DbContext(typeof(HumanitarianDbContext))]
-    [Migration("20250205152739_HumanAidTransportDb")]
-    partial class HumanAidTransportDb
+    [Migration("20250207095721_AidDb")]
+    partial class AidDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,11 @@ namespace HumanAidTransport.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Rating")
+                    b.Property<string>("ProfilePhotoURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Rating")
                         .HasColumnType("float");
 
                     b.Property<string>("VehicleModel")
@@ -94,6 +98,9 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HumanAidId"));
 
+                    b.Property<DateTime?>("ActualDeliveryTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DeliveryAddressFrom")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -106,11 +113,6 @@ namespace HumanAidTransport.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("DestinationAddress")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<DateTime?>("ExpectedDeliveryTime")
                         .HasColumnType("datetime2");
 
@@ -119,15 +121,20 @@ namespace HumanAidTransport.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<double?>("Payment")
+                    b.Property<double>("Payment")
                         .HasColumnType("float");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int?>("VolunteerId")
+                        .HasColumnType("int");
+
                     b.HasKey("HumanAidId");
 
-                    b.ToTable("HumanitarianAid");
+                    b.HasIndex("VolunteerId");
+
+                    b.ToTable("HumanitarianAids");
                 });
 
             modelBuilder.Entity("HumanAidTransport.Models.TransportOrder", b =>
@@ -182,9 +189,13 @@ namespace HumanAidTransport.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProfilePhotoURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Volunteer");
+                    b.ToTable("Volunteers");
                 });
 
             modelBuilder.Entity("HumanAidTransport.Models.DeliveryRequest", b =>
@@ -196,6 +207,18 @@ namespace HumanAidTransport.Migrations
                         .IsRequired();
 
                     b.Navigation("Carrier");
+                });
+
+            modelBuilder.Entity("HumanAidTransport.Models.HumanitarianAid", b =>
+                {
+                    b.HasOne("Volunteer", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("VolunteerId");
+                });
+
+            modelBuilder.Entity("Volunteer", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

@@ -21,10 +21,10 @@
             public double? Payment { get; set; }
 
             [Required]
-            public string DeliveryAddressFrom { get; set; }
+            public string? DeliveryAddressFrom { get; set; }
 
             [Required]
-            public string DeliveryAddressTo { get; set; }
+            public string? DeliveryAddressTo { get; set; }
 
         }
     }

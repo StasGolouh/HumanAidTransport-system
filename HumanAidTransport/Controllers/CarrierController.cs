@@ -84,7 +84,7 @@ namespace HumanAidTransport.Controllers
 
             if (carrier != null)
             {
-                ProfileController.Carrier = carrier;
+                //ProfileController.Carrier = carrier;
                 return RedirectToAction("Index", "Home");
             }
             else

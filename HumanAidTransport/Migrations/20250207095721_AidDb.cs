@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HumanAidTransport.Migrations
 {
     /// <inheritdoc />
-    public partial class HumanAidTransportDb : Migration
+    public partial class AidDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,31 +23,12 @@ namespace HumanAidTransport.Migrations
                     VehicleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     VehicleModel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     VehicleNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Rating = table.Column<double>(type: "float", nullable: false)
+                    Rating = table.Column<double>(type: "float", nullable: true),
+                    ProfilePhotoURL = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Carriers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HumanitarianAid",
-                columns: table => new
-                {
-                    HumanAidId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    DestinationAddress = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Payment = table.Column<double>(type: "float", nullable: true),
-                    ExpectedDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeliveryAddressFrom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeliveryAddressTo = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HumanitarianAid", x => x.HumanAidId);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,17 +51,18 @@ namespace HumanAidTransport.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Volunteer",
+                name: "Volunteers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfilePhotoURL = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Volunteer", x => x.Id);
+                    table.PrimaryKey("PK_Volunteers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,10 +85,41 @@ namespace HumanAidTransport.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "HumanitarianAids",
+                columns: table => new
+                {
+                    HumanAidId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Payment = table.Column<double>(type: "float", nullable: false),
+                    ExpectedDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ActualDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeliveryAddressFrom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DeliveryAddressTo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VolunteerId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HumanitarianAids", x => x.HumanAidId);
+                    table.ForeignKey(
+                        name: "FK_HumanitarianAids_Volunteers_VolunteerId",
+                        column: x => x.VolunteerId,
+                        principalTable: "Volunteers",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_DeliveryRequests_CarrierId",
                 table: "DeliveryRequests",
                 column: "CarrierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HumanitarianAids_VolunteerId",
+                table: "HumanitarianAids",
+                column: "VolunteerId");
         }
 
         /// <inheritdoc />
@@ -116,16 +129,16 @@ namespace HumanAidTransport.Migrations
                 name: "DeliveryRequests");
 
             migrationBuilder.DropTable(
-                name: "HumanitarianAid");
+                name: "HumanitarianAids");
 
             migrationBuilder.DropTable(
                 name: "TransportOrders");
 
             migrationBuilder.DropTable(
-                name: "Volunteer");
+                name: "Carriers");
 
             migrationBuilder.DropTable(
-                name: "Carriers");
+                name: "Volunteers");
         }
     }
 }
