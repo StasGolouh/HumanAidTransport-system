@@ -1,75 +1,224 @@
 ﻿@model Volunteer
 
-@{
-    ViewData["Title"] = "Profile Page";
-}
-
 <div class="profile-container">
     <div class="profile-sidebar">
-        <img src="@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic">
-        <input type="file" id="uploadPic" hidden>
-        <label for="uploadPic" class="upload-btn">Change photo</label>
-        <h2>@Model.Name</h2>
+        <div class="profile-pic-container">
+
+            <img src="~/images/profile_photos/@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic" id="profilePic">
+            <input type="file" id="uploadPic" hidden>
+            <label for="uploadPic" class="upload-btn">Change photo</label>
+        </div>
+        <h2 class="clientname">@Model.Name</h2>
+        <p class="role">Volunteer</p>
         <div class="sidebar-buttons">
-            <button class="btn-notf"><img src="~/images/notification.png" alt="Notification"></button>
-            <button class="btn-chat"><img src="~/images/chat.png" alt="Chat"></button>
+            <button class="notif-icon"><img src="~/images/notification.png" alt="Notification"></button>
+            <button class="chat-icon"><img src="~/images/chat.png" alt="Chat"></button>
+            <form id="logoutForm" method="post" asp-controller="VolunProfile" asp-action="LogOut">
+                <button type="submit" class="logout-icon">
+                    <img src="~/images/logout.png" alt="Logout">
+                </button>
+            </form>
+
         </div>
     </div>
 
     <div class="profile-content">
         <div class="task-section">
-            <div class="tasks-list">
-                <h3>Your tasks</h3>
-                <div class="scrollable-tasks">
-                    <ul id="taskList">
-                        @foreach (var task in Model.Tasks)
-                        {
-                            <li class="task-item">@task.Name: @task.Description</li>
-                        }
-                    </ul>
-                </div>
+            <h3 class="paragtask">Your Tasks</h3>
+            <div class="task-scroll-container">
+                <ul class="task-list">
+                    @foreach (var task in Model.Tasks)
+                    {
+                        <li class="task-item">
+                            <strong>@task.Name</strong> | @task.Description | Quantity: @task.Quantity | From: @task.DeliveryAddressFrom | To: @task.DeliveryAddressTo | Payment: @task.Payment$ | Expected Delivery: @task.ExpectedDeliveryTime
+                        </li>
+                    }
+                </ul>
             </div>
-
-            <!-- Кнопка для відкриття модального вікна -->
-            <button type="button" class="btn" onclick="openModal()">Publish</button>
+            <button class="btn-primary" onclick="openModal()">Add Task</button>
         </div>
     </div>
 </div>
 
-<!-- Модальне вікно -->
 <div id="taskModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
-        <h2>Enter Task Details</h2>
+        <h2> New Task</h2>
         <form id="taskForm" method="post" asp-action="PostTask">
-            <label>Name:</label>
-            <input type="text" name="Name" required>
-
-            <label>Quantity:</label>
-            <input type="number" name="Quantity" min="1" required>
-
-            <label>Delivery From:</label>
-            <input type="text" name="DeliveryAddressFrom" required>
-
-            <label>Delivery To:</label>
-            <input type="text" name="DeliveryAddressTo" required>
-
-            <label>Payment:</label>
-            <input type="number" name="Payment" min="0">
-
-            <label>Expected Delivery Time:</label>
-            <input type="datetime-local" name="ExpectedDeliveryTime">
-
-            <label>Description (optional):</label>
-            <textarea name="Description" rows="3"></textarea>
-
-            <button type="submit" class="btn">Submit</button>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" name="Name" required>
+                <label>Description:</label>
+                <textarea name="Description" rows="3"></textarea>
+                <label>Quantity:</label>
+                <input type="number" name="Quantity" min="1" required>
+                <label>Delivery From:</label>
+                <input type="text" name="DeliveryAddressFrom" required>
+                <label>Delivery To:</label>
+                <input type="text" name="DeliveryAddressTo" required>
+                <label>Payment($):</label>
+                <input type="number" name="Payment" min="0">
+                <label>Expected Delivery Time:</label>
+                <input type="datetime-local" name="ExpectedDeliveryTime">
+            </div>
+            <button type="submit" class="btn-primary">Submit</button>
         </form>
     </div>
 </div>
 
 <style>
-    /* Стилі модального вікна */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #ecf0f1;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .profile-container {
+        display: flex;
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-sidebar {
+        width: 300px;
+        background: #f9f9f9;
+        color: #333;
+        padding: 20px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-pic-container {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .profile-pic {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #3498db;
+    }
+
+    .upload-btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 18px;
+        background: #3498db;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+
+        .upload-btn:hover {
+            background: #2980b9;
+        }
+
+    .sidebar-buttons {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .notif-icon,.chat-icon, .logout-icon {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .notif-icon img {
+            width: 86px;
+            height: 86px;
+            transition: transform 0.3s;
+        }
+
+        .chat-icon img {
+            width: 60px;
+            height: 60px;
+            transition: transform 0.3s;
+        }
+
+        .logout-icon img {
+            width: 70px;
+            height: 70px;
+            transition: transform 0.3s;
+            left:10px;
+        }
+
+        .notif-icon img:hover, .chat-icon img:hover, .logout-icon img:hover {
+            transform: scale(1.2);
+        }
+  
+    .profile-content {
+        flex: 1;
+        padding: 25px;
+        background: #fff;
+        overflow-y: auto;
+    }
+
+    .task-section {
+        margin-bottom: 20px;
+    }
+
+    .task-scroll-container {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+    }
+
+    .task-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .task-item {
+        background: #f9f9f9;
+        padding: 12px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        transition: background 0.3s;
+    }
+
+        .task-item:hover {
+            background: #ecf0f1;
+        }
+
+    .btn-primary {
+        background: #3498db;
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
     .modal {
         display: none;
         position: fixed;
@@ -78,48 +227,82 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.6);
         justify-content: center;
         align-items: center;
     }
 
     .modal-content {
-        background-color: #fff;
-        padding: 20px;
+        background: white;
+        padding: 30px;
         border-radius: 8px;
-        width: 400px;
-        position: relative;
+        width: 90%;
+        max-width: 500px;
+        text-align: center;
     }
 
     .close {
-        position: absolute;
-        top: 10px;
-        right: 15px;
+        float: right;
         font-size: 24px;
         cursor: pointer;
     }
 
-    input, textarea {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        margin-bottom: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+    .form-group {
+        margin-bottom: 15px;
+        text-align: left;
     }
 
-    .btn {
-        width: 100%;
-        padding: 10px;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-
-        .btn:hover {
-            background-color: #218838;
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
         }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+            .form-group input:focus,
+            .form-group textarea:focus {
+                border-color: #3498db;
+            }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+    .clientname {
+        font-family: 'Poppins', sans-serif;
+        font-size: 24px; 
+        font-weight: 600; 
+        color: #2c3e50; 
+        letter-spacing: 1px; 
+        text-transform: capitalize; 
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); 
+        margin-bottom: 10px; 
+        transition: color 0.3s ease, text-shadow 0.3s ease; 
+    }
+        .clientname:hover {
+            color: #3498db; 
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+        }
+
+    .paragtask {
+        font-family: 'Arial', sans-serif; 
+        font-size: 20px; 
+        font-weight: 600; 
+        color: #34495e; 
+        margin-bottom: 10px; 
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        text-align: left; 
+    }
 </style>
 
 <script>
@@ -130,4 +313,29 @@
     function closeModal() {
         document.getElementById("taskModal").style.display = "none";
     }
+
+
+    document.getElementById("uploadPic").addEventListener("change", function(event) {
+    let file = event.target.files[0];
+
+       if (file) {
+            let formData = new FormData();
+            formData.append("profilePhoto", file);
+
+            fetch("/VolunProfile/UploadPhoto", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("profilePic").src = data.imageUrl;
+                } 
+                else {
+                    alert("Error of loading photo");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    });
 </script>

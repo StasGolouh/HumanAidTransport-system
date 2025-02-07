@@ -36,7 +36,7 @@ namespace HumanAidTransport.Controllers
                         _context.Volunteers.Add(volunteer);
                         _context.SaveChanges();
 
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("VolunteerProfile", "VolunProfile");
                     }
                     catch (Exception ex)
                     {
@@ -72,8 +72,8 @@ namespace HumanAidTransport.Controllers
 
             if (volunteer != null)
             {
-                ProfileController.Volunteer = volunteer;
-                return RedirectToAction("VolunteerProfile", "Profile");
+                VolunProfileController.Volunteer = volunteer;
+                return RedirectToAction("VolunteerProfile", "VolunProfile");
             }
             else
             {

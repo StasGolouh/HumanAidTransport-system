@@ -23,28 +23,24 @@ namespace HumanAidTransport.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Check if carrier with the same name already exists
                 bool carrierExists = _context.Carriers.Any(c => c.Name == carrier.Name);
                 if (carrierExists)
                 {
                     ModelState.AddModelError("", "A carrier with this name already exists.");
                 }
 
-                // Check if car number already exists
                 bool vehicleNumberExists = _context.Carriers.Any(c => c.VehicleNumber == carrier.VehicleNumber);
                 if (vehicleNumberExists)
                 {
                     ModelState.AddModelError("", "A carrier with this vehicle number already exists.");
                 }
 
-                // Check if phone number (Contacts) already exists
                 bool phoneNumberExists = _context.Carriers.Any(c => c.Contacts == carrier.Contacts);
                 if (phoneNumberExists)
                 {
                     ModelState.AddModelError("", "A carrier with this phone number already exists.");
                 }
 
-                // If no errors, save the new carrier
                 if (!carrierExists && !vehicleNumberExists && !phoneNumberExists)
                 {
                     try
@@ -84,7 +80,7 @@ namespace HumanAidTransport.Controllers
 
             if (carrier != null)
             {
-                //ProfileController.Carrier = carrier;
+                CarrierProfileController.Carrier = carrier;
                 return RedirectToAction("Index", "Home");
             }
             else
