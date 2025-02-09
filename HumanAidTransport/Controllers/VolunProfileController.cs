@@ -41,23 +41,24 @@ namespace HumanAidTransport.Controllers
         {
             if (ModelState.IsValid && Volunteer != null)
             {
-                // Завантажуємо волонтера 
+                // Завантажуємо волонтера з бази даних
                 var volunteerFromDb = await _context.Volunteers
                     .Include(v => v.Tasks)
                     .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
 
                 if (volunteerFromDb != null)
                 {
-                    // Додаємо нове завдання до волонтера
-                    volunteerFromDb.Tasks.Add(newTask);
-                    _context.HumanitarianAids.Add(newTask);  // Додаємо нове завдання в бд
-                    await _context.SaveChangesAsync();  // Збереження змін
+                    newTask.VolunteerId = volunteerFromDb.Id; 
+                    volunteerFromDb.Tasks.Add(newTask);  
 
-                    return RedirectToAction("VolunteerProfile");
+                    _context.HumanitarianAids.Add(newTask);  
+                    await _context.SaveChangesAsync(); 
+
+                    return RedirectToAction("VolunteerProfile"); 
                 }
             }
 
-            return View("VolunteerProfile");
+            return View("VolunteerProfile");  
         }
 
         [HttpPost]
@@ -73,21 +74,34 @@ namespace HumanAidTransport.Controllers
             if (volunteer == null)
                 return NotFound();
 
-            string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/profile_photos");
-            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(profilePhoto.FileName);
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            // Шлях до папки
+            string uploadsFolder = Path.Combine("wwwroot", "images", "profile_photos");
 
+            // Створюємо папку, якщо її немає
+            Directory.CreateDirectory(uploadsFolder);
+
+            // Отримуємо список файлів формату photoX.jpg
+            var existingFiles = Directory.GetFiles(uploadsFolder, "photo*.jpg");
+
+            // Знаходимо найбільший номер фото
+            int nextNumber = existingFiles.Length + 1;
+            string fileName = $"photo{nextNumber}.jpg";
+            string filePath = Path.Combine(uploadsFolder, fileName);
+
+            // Зберігаємо файл
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await profilePhoto.CopyToAsync(fileStream);
             }
 
-            volunteer.ProfilePhotoURL = "/images/profile_photos/" + uniqueFileName;
+            // Оновлюємо шлях у базі даних
+            volunteer.ProfilePhotoURL = $"/images/profile_photos/{fileName}";
             _context.Volunteers.Update(volunteer);
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, imageUrl = "/images/profile_photos/" + uniqueFileName });
+            return Json(new { success = true, imageUrl = volunteer.ProfilePhotoURL });
         }
+
 
         public IActionResult LogOut()
         {

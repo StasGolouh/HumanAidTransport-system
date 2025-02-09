@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HumanAidTransport.Models;
 
 public class Carrier
 {
@@ -29,4 +30,6 @@ public class Carrier
     public double? Rating { get; set; } = 1;
 
     public string ProfilePhotoURL { get; set; } = "~/images/defaultAvatar.png";
+
+    public List<HumanitarianAid> AvailableTasks { get; set; } = new List<HumanitarianAid>();
 }

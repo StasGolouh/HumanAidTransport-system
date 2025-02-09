@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HumanAidTransport.Migrations
 {
     /// <inheritdoc />
-    public partial class AidDb : Migration
+    public partial class HumanAidDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -99,21 +99,33 @@ namespace HumanAidTransport.Migrations
                     ActualDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeliveryAddressFrom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryAddressTo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    VolunteerId = table.Column<int>(type: "int", nullable: true)
+                    VolunteerId = table.Column<int>(type: "int", nullable: false),
+                    CarrierId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_HumanitarianAids", x => x.HumanAidId);
                     table.ForeignKey(
+                        name: "FK_HumanitarianAids_Carriers_CarrierId",
+                        column: x => x.CarrierId,
+                        principalTable: "Carriers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_HumanitarianAids_Volunteers_VolunteerId",
                         column: x => x.VolunteerId,
                         principalTable: "Volunteers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeliveryRequests_CarrierId",
                 table: "DeliveryRequests",
+                column: "CarrierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HumanitarianAids_CarrierId",
+                table: "HumanitarianAids",
                 column: "CarrierId");
 
             migrationBuilder.CreateIndex(

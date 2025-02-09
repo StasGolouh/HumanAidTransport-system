@@ -4,7 +4,7 @@
     <div class="profile-sidebar">
         <div class="profile-pic-container">
 
-            <img src="~/images/profile_photos/@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic" id="profilePic">
+            <img src="@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic" id="profilePic">
             <input type="file" id="uploadPic" hidden>
             <label for="uploadPic" class="upload-btn">Change photo</label>
         </div>
@@ -316,9 +316,9 @@
 
 
     document.getElementById("uploadPic").addEventListener("change", function(event) {
-    let file = event.target.files[0];
+        let file = event.target.files[0];
 
-       if (file) {
+        if (file) {
             let formData = new FormData();
             formData.append("profilePhoto", file);
 
@@ -330,9 +330,8 @@
             .then(data => {
                 if (data.success) {
                     document.getElementById("profilePic").src = data.imageUrl;
-                } 
-                else {
-                    alert("Error of loading photo");
+                } else {
+                    alert("Error uploading photo");
                 }
             })
             .catch(error => console.error("Error:", error));

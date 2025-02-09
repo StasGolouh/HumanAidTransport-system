@@ -47,7 +47,7 @@ namespace HumanAidTransport.Controllers
                     {
                         _context.Carriers.Add(carrier);
                         _context.SaveChanges();
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("CarrierProfile", "CarrierProfile");
                     }
                     catch (Exception ex)
                     {
@@ -81,7 +81,7 @@ namespace HumanAidTransport.Controllers
             if (carrier != null)
             {
                 CarrierProfileController.Carrier = carrier;
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("CarrierProfile", "CarrierProfile");
             }
             else
             {

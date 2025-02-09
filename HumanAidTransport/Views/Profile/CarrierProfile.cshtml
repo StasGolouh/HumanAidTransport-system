@@ -1,5 +1,241 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model Carrier
+
+<div class="profile-container">
+    <div class="profile-sidebar">
+        <div class="profile-pic-container">
+            <img src="@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic" id="profilePic">
+            <input type="file" id="uploadPic" hidden>
+            <label for="uploadPic" class="upload-btn">Change photo</label>
+        </div>
+        <h2 class="clientname">@Model.Name</h2>
+        <p class="role">Carrier</p>
+        <div class="sidebar-buttons">
+            <button class="notif-icon"><img src="~/images/notification.png" alt="Notification"></button>
+            <button class="chat-icon"><img src="~/images/chat.png" alt="Chat"></button>
+            <form id="logoutForm" method="post" asp-controller="CarrierProfile" asp-action="LogOut">
+                <button type="submit" class="logout-icon">
+                    <img src="~/images/logout.png" alt="Logout">
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <div class="task-section">
+            <h3 class="paragtask">Available Tasks</h3>
+            <div class="task-scroll-container">
+                <ul class="task-list">
+                    @foreach (var task in Model.AvailableTasks)
+                    {
+                        <li class="task-item">
+                            <strong>@task.Name</strong> | @task.Description | Quantity: @task.Quantity | From: @task.DeliveryAddressFrom | To: @task.DeliveryAddressTo | Payment: @task.Payment$ | Expected Delivery: @task.ExpectedDeliveryTime
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #ecf0f1;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .profile-container {
+        display: flex;
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-sidebar {
+        width: 300px;
+        background: #f9f9f9;
+        color: #333;
+        padding: 20px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-pic-container {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .profile-pic {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #3498db;
+    }
+
+    .upload-btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 18px;
+        background: #3498db;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+
+        .upload-btn:hover {
+            background: #2980b9;
+        }
+
+    .sidebar-buttons {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .notif-icon, .chat-icon, .logout-icon {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .notif-icon img {
+            width: 86px;
+            height: 86px;
+            transition: transform 0.3s;
+        }
+
+        .chat-icon img {
+            width: 60px;
+            height: 60px;
+            transition: transform 0.3s;
+        }
+
+        .logout-icon img {
+            width: 70px;
+            height: 70px;
+            transition: transform 0.3s;
+            left: 10px;
+        }
+
+            .notif-icon img:hover, .chat-icon img:hover, .logout-icon img:hover {
+                transform: scale(1.2);
+            }
+
+    .profile-content {
+        flex: 1;
+        padding: 25px;
+        background: #fff;
+        overflow-y: auto;
+    }
+
+    .task-section {
+        margin-bottom: 20px;
+    }
+
+    .task-scroll-container {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+    }
+
+    .task-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .task-item {
+        background: #f9f9f9;
+        padding: 12px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        transition: background 0.3s;
+    }
+
+        .task-item:hover {
+            background: #ecf0f1;
+        }
+
+
+    .clientname {
+        font-family: 'Poppins', sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+        color: #2c3e50;
+        letter-spacing: 1px;
+        text-transform: capitalize;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+        .clientname:hover {
+            color: #3498db;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+    .paragtask {
+        font-family: 'Arial', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: #34495e;
+        margin-bottom: 10px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        text-align: left;
+    }
+</style>
+
+<script>
+    function openModal() {
+        document.getElementById("taskModal").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("taskModal").style.display = "none";
+    }
+
+
+    document.getElementById("uploadPic").addEventListener("change", function(event) {
+        let file = event.target.files[0];
+
+        if (file) {
+            let formData = new FormData();
+            formData.append("profilePhoto", file);
+
+            fetch("/CarrierProfile/UploadPhoto", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("profilePic").src = data.imageUrl;
+                } else {
+                    alert("Error uploading photo");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    });
+</script>

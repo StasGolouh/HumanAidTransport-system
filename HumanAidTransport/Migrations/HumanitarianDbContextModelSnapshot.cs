@@ -98,6 +98,9 @@ namespace HumanAidTransport.Migrations
                     b.Property<DateTime?>("ActualDeliveryTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CarrierId")
+                        .HasColumnType("int");
+
                     b.Property<string>("DeliveryAddressFrom")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -124,10 +127,12 @@ namespace HumanAidTransport.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VolunteerId")
+                    b.Property<int>("VolunteerId")
                         .HasColumnType("int");
 
                     b.HasKey("HumanAidId");
+
+                    b.HasIndex("CarrierId");
 
                     b.HasIndex("VolunteerId");
 
@@ -208,9 +213,22 @@ namespace HumanAidTransport.Migrations
 
             modelBuilder.Entity("HumanAidTransport.Models.HumanitarianAid", b =>
                 {
-                    b.HasOne("Volunteer", null)
+                    b.HasOne("Carrier", null)
+                        .WithMany("AvailableTasks")
+                        .HasForeignKey("CarrierId");
+
+                    b.HasOne("Volunteer", "Volunteer")
                         .WithMany("Tasks")
-                        .HasForeignKey("VolunteerId");
+                        .HasForeignKey("VolunteerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Volunteer");
+                });
+
+            modelBuilder.Entity("Carrier", b =>
+                {
+                    b.Navigation("AvailableTasks");
                 });
 
             modelBuilder.Entity("Volunteer", b =>
