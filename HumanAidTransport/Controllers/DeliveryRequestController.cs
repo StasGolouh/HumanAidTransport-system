@@ -12,7 +12,6 @@ public class DeliveryRequestController : Controller
         _context = context;
     }
 
-    // Створення заявки на доставку
     [HttpPost]
     public async Task<IActionResult> CreateRequest(int carrierId, int humanAidId)
     {
@@ -27,56 +26,62 @@ public class DeliveryRequestController : Controller
             if (humanitarianAid == null)
                 return NotFound(new { message = "Humanitarian Aid not found." });
 
-            // Створюємо нову заявку на доставку
+            // Переконуємося, що є волонтер, який відповідає за цю допомогу
+            var volunteer = await _context.Volunteers.FirstOrDefaultAsync(v => v.Id == humanitarianAid.VolunteerId);
+
+            if (volunteer == null)
+                return NotFound(new { message = "Volunteer not found." });
+
+            // Створюємо новий об'єкт DeliveryRequest і додаємо його в базу
             var deliveryRequest = new DeliveryRequest
             {
                 CarrierId = carrierId,
-                HumanAidId = humanAidId,
+                Carrier = carrier,
                 CarrierRating = carrier.Rating,
                 CarrierContacts = carrier.Contacts,
-                VehicleName = carrier.VehicleName, 
+                VehicleName = carrier.VehicleName,
                 VehicleModel = carrier.VehicleModel,
                 VehicleNumber = carrier.VehicleNumber,
-                HumanAidName = humanitarianAid.Name
+                HumanAidId = humanAidId,
+                HumanitarianAid = humanitarianAid,
+                HumanAidName = humanitarianAid.Name,
+                VolunteerId = volunteer.Id, 
+                Volunteer = volunteer
             };
 
             _context.DeliveryRequests.Add(deliveryRequest);
             await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                message = "Delivery request created successfully!",
-                requestId = deliveryRequest.DeliveryRequestId
-            });
+            TempData["SuccessMessage"] = "Thank you for your feedback! Your application has been successfully created.";
+
+            return RedirectToAction("CarrierProfile", "CarrierProfile");
         }
 
         return BadRequest(new { message = "Invalid data." });
     }
-
     // Метод для того, щоб волонтер прийняв заявку
     [HttpPost]
     public async Task<IActionResult> AcceptRequest(int deliveryRequestId, int volunteerId)
     {
         // Отримуємо заявку на доставку
         var deliveryRequest = await _context.DeliveryRequests
-             .FirstOrDefaultAsync(r => r.DeliveryRequestId == deliveryRequestId);
+            .FirstOrDefaultAsync(r => r.DeliveryRequestId == deliveryRequestId);
 
         if (deliveryRequest == null)
         {
             return NotFound(new { message = "Delivery request not found." });
         }
 
-        // Отримуємо волонтера
+        // Отримуємо волонтера разом із його заявками
         var volunteer = await _context.Volunteers
+            .Include(v => v.DeliveryRequests) // Завантажуємо заявки волонтера
+            .Include(v => v.Tasks) // Завантажуємо завдання волонтера
             .FirstOrDefaultAsync(v => v.Id == volunteerId);
 
         if (volunteer == null)
         {
             return NotFound(new { message = "Volunteer not found." });
         }
-
-        // Прив'язуємо волонтера до заявки
-        deliveryRequest.VolunteerId = volunteer.Id;
 
         // Отримуємо гуманітарну допомогу, яка була вказана в заявці
         var humanitarianAid = await _context.HumanitarianAids
@@ -86,6 +91,15 @@ public class DeliveryRequestController : Controller
         {
             return NotFound(new { message = "Humanitarian Aid not found." });
         }
+
+        // Видаляємо заявку з волонтера
+        volunteer.DeliveryRequests.Remove(deliveryRequest);
+
+        // Видаляємо завдання гуманітарної допомоги з волонтера
+        volunteer.Tasks.Remove(humanitarianAid);
+
+        // Видаляємо заявку з бази даних
+        _context.DeliveryRequests.Remove(deliveryRequest);
 
         // Створюємо замовлення після прийняття заявки
         var transportOrder = new TransportOrder
@@ -106,10 +120,9 @@ public class DeliveryRequestController : Controller
         // Зберігаємо зміни в базі даних
         await _context.SaveChangesAsync();
 
-        return Ok(new { message = "Delivery request accepted by volunteer and transport order created." });
+        return Ok(new { message = "Delivery request accepted. Task and request removed from volunteer, and transport order created." });
     }
 
-    // Метод для того, щоб волонтер відхилив заявку
     [HttpPost]
     public async Task<IActionResult> RejectRequest(int deliveryRequestId, int volunteerId)
     {
@@ -129,29 +142,17 @@ public class DeliveryRequestController : Controller
             return NotFound(new { message = "Volunteer not found." });
         }
 
-        // Відхиляємо заявку (просто залишаємо її без волонтера)
-        deliveryRequest.VolunteerId = null;
+        // Видаляємо заявку у волонтера
+        if (volunteer.DeliveryRequests != null)
+        {
+            volunteer.DeliveryRequests.Remove(deliveryRequest);
+        }
+
+        // Видаляємо заявку з бази даних
+        _context.DeliveryRequests.Remove(deliveryRequest);
 
         await _context.SaveChangesAsync();
 
-        return Ok(new { message = "Delivery request rejected by volunteer." });
-    }
-
-    // Метод для отримання списку заявок для волонтера
-    public async Task<IActionResult> VolunteerRequestList(int volunteerId)
-    {
-        var volunteer = await _context.Volunteers
-            .FirstOrDefaultAsync(v => v.Id == volunteerId);
-
-        if (volunteer == null)
-        {
-            return NotFound(new { message = "Volunteer not found." });
-        }
-
-        var requests = await _context.DeliveryRequests
-            .Where(r => r.VolunteerId == null) // Тільки не прийняті заявки
-            .ToListAsync();
-
-        return View(requests);
+        return Ok(new { message = "Delivery request rejected. Removed from volunteer's list." });
     }
 }

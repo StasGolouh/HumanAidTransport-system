@@ -80,8 +80,8 @@ namespace HumanAidTransport.Migrations
                     b.Property<int>("CarrierId")
                         .HasColumnType("int");
 
-                    b.Property<double?>("CarrierRating")
-                        .HasColumnType("float");
+                    b.Property<int?>("CarrierRating")
+                        .HasColumnType("int");
 
                     b.Property<int>("HumanAidId")
                         .HasColumnType("int");
@@ -247,7 +247,7 @@ namespace HumanAidTransport.Migrations
                         .HasForeignKey("HumanitarianAidHumanAidId");
 
                     b.HasOne("Volunteer", "Volunteer")
-                        .WithMany()
+                        .WithMany("DeliveryRequests")
                         .HasForeignKey("VolunteerId");
 
                     b.Navigation("Carrier");
@@ -286,6 +286,8 @@ namespace HumanAidTransport.Migrations
 
             modelBuilder.Entity("Volunteer", b =>
                 {
+                    b.Navigation("DeliveryRequests");
+
                     b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618

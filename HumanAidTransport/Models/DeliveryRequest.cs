@@ -11,7 +11,7 @@ public class DeliveryRequest
     public int CarrierId { get; set; }
     public Carrier? Carrier { get; set; }
 
-    public double? CarrierRating { get; set; }
+    public int? CarrierRating { get; set; }
 
     public string? CarrierContacts { get; set; }
 

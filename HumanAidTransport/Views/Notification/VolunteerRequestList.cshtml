@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DeliveryRequest> // Колекція запитів
+﻿@model IEnumerable<DeliveryRequest> // Collection of delivery requests
 
 @{
     ViewData["Title"] = "Volunteer Request List";
@@ -19,7 +19,6 @@
                 <th>Vehicle Model</th>
                 <th>Vehicle Number</th>
                 <th>Humanitarian Aid</th>
-                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -31,22 +30,18 @@
                     <td>@request.Carrier?.Name</td>
                     <td>@request.CarrierContacts</td>
                     <td>@request.CarrierRating</td>
-                    <td>@request.VehicleName</td> 
-                    <td>@request.VehicleModel</td> 
-                    <td>@request.VehicleNumber</td> 
+                    <td>@request.VehicleName</td>
+                    <td>@request.VehicleModel</td>
+                    <td>@request.VehicleNumber</td>
                     <td>@request.HumanAidName</td>
-                    <td>@(request.VolunteerId.HasValue ? "Accepted" : "Pending")</td>
                     <td>
-                        @if (!request.VolunteerId.HasValue)
-                        {
-                            <form method="post" asp-action="AcceptRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="/* VolunteerId here */">
+                        <form method="post" asp-action="AcceptRequest" asp-controller="DeliveryRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId">
                                 <button type="submit" class="btn btn-primary">Accept</button>
                             </form>
 
-                            <form method="post" asp-action="RejectRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="/* VolunteerId here */">
+                        <form method="post" asp-action="RejectRequest" asp-controller="DeliveryRequest"  asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId">
                                 <button type="submit" class="btn btn-danger">Reject</button>
                             </form>
-                        }
                     </td>
                 </tr>
             }

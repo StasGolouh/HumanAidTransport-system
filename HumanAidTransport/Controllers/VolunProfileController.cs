@@ -128,9 +128,25 @@ namespace HumanAidTransport.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> VolunteerRequestList()
+        public async Task<IActionResult> VolunteerRequestList(int volunteerId)
         {
-            return View("~/Views/Notification/VolunteerRequestList.cshtml");
+            var volunteer = await _context.Volunteers
+                .FirstOrDefaultAsync(v => v.Id == volunteerId);
+
+            // Якщо волонтер не знайдений, повернути помилку
+            if (volunteer == null)
+            {
+                return NotFound(new { message = "Volunteer not found." });
+            }
+
+            var requests = await _context.DeliveryRequests
+                .Where(r => r.VolunteerId == volunteerId)
+                .Include(r => r.HumanitarianAid)  
+                .Include(r => r.Carrier)  
+                .ToListAsync();
+
+            // Повертаємо дані до вьюхи
+            return View("~/Views/Notification/VolunteerRequestList.cshtml", requests);
         }
     }
 }

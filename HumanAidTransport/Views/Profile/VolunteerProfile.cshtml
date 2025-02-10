@@ -12,6 +12,7 @@
         <p class="role">Volunteer</p>
         <div class="sidebar-buttons">
             <form id="notificationForm" method="get" asp-controller="VolunProfile" asp-action="VolunteerRequestList">
+                <input type="hidden" name="volunteerId" value="@Model.Id" />
                 <button type="submit" class="notif-icon">
                     <img src="~/images/notification.png" alt="Notification">
                 </button>
