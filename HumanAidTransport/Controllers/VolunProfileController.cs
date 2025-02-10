@@ -62,17 +62,37 @@ namespace HumanAidTransport.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> CancelTask(int taskId)
+        {
+            if (Volunteer != null)
+            {
+                // Завантажуємо волонтера і його завдання
+                var volunteerFromDb = await _context.Volunteers
+                    .Include(v => v.Tasks)
+                    .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
+
+                if (volunteerFromDb != null)
+                {
+                    var taskToCancel = volunteerFromDb.Tasks.FirstOrDefault(t => t.HumanAidId == taskId);
+                    if (taskToCancel != null)
+                    {
+                        // Видалення завдання
+                        volunteerFromDb.Tasks.Remove(taskToCancel);
+                        _context.HumanitarianAids.Remove(taskToCancel);  // Видалення з бази даних
+                        await _context.SaveChangesAsync();
+
+                        return RedirectToAction("VolunteerProfile");  
+                    }
+                }
+            }
+
+            return RedirectToAction("VolunteerLogin", "Volunteer");
+        }
+
+        [HttpPost]
         public async Task<IActionResult> UploadPhoto(IFormFile profilePhoto)
         {
-            if (profilePhoto == null || profilePhoto.Length == 0)
-                return Json(new { success = false, message = "File is not chosen" });
-
-            if (VolunProfileController.Volunteer == null)
-                return Unauthorized();
-
             var volunteer = await _context.Volunteers.FirstOrDefaultAsync(v => v.Id == VolunProfileController.Volunteer.Id);
-            if (volunteer == null)
-                return NotFound();
 
             // Шлях до папки
             string uploadsFolder = Path.Combine("wwwroot", "images", "profile_photos");
@@ -102,11 +122,15 @@ namespace HumanAidTransport.Controllers
             return Json(new { success = true, imageUrl = volunteer.ProfilePhotoURL });
         }
 
-
         public IActionResult LogOut()
         {
             Volunteer = null;
             return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> VolunteerRequestList()
+        {
+            return View("~/Views/Notification/VolunteerRequestList.cshtml");
         }
     }
 }

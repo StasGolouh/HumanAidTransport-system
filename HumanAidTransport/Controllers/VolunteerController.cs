@@ -18,8 +18,6 @@ namespace HumanAidTransport.Controllers
             return View("~/Views/Registration/VolunteerRegistration.cshtml");
         }
 
-
-
         [HttpPost]
         public IActionResult VolunteerRegistration(Volunteer volunteer)
         {
@@ -54,6 +52,9 @@ namespace HumanAidTransport.Controllers
             return View("~/Views/Registration/VolunteerRegistration.cshtml");
         }
 
+
+        //=============================Login====================================
+
         public IActionResult VolunteerLogin()
         {
             return View("~/Views/Login/VolunteerLogin.cshtml");
@@ -73,6 +74,7 @@ namespace HumanAidTransport.Controllers
             if (volunteer != null)
             {
                 VolunProfileController.Volunteer = volunteer;
+                HttpContext.Session.SetString("UserName", name);
                 return RedirectToAction("VolunteerProfile", "VolunProfile");
             }
             else

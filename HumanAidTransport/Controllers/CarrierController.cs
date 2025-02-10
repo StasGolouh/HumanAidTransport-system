@@ -59,7 +59,6 @@ namespace HumanAidTransport.Controllers
         }
 
 
-
     //=============================Login====================================
 
         public IActionResult CarrierLogin()
@@ -81,6 +80,7 @@ namespace HumanAidTransport.Controllers
             if (carrier != null)
             {
                 CarrierProfileController.Carrier = carrier;
+                HttpContext.Session.SetString("UserName", name);
                 return RedirectToAction("CarrierProfile", "CarrierProfile");
             }
             else

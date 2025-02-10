@@ -45,15 +45,7 @@ namespace HumanAidTransport.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadPhoto(IFormFile profilePhoto)
         {
-            if (profilePhoto == null || profilePhoto.Length == 0)
-                return Json(new { success = false, message = "File is not chosen" });
-
-            if (CarrierProfileController.Carrier == null)
-                return Unauthorized();
-
-            var carrier = await _context.Carriers.FirstOrDefaultAsync(c => c.Id == CarrierProfileController.Carrier.Id);
-            if (carrier == null)
-                return NotFound();
+            var carrier = await _context.Carriers.FirstOrDefaultAsync(c=> c.Id == CarrierProfileController.Carrier.Id);
 
             // Шлях до папки
             string uploadsFolder = Path.Combine("wwwroot", "images", "profile_photos");

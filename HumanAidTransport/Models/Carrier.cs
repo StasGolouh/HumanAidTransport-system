@@ -13,7 +13,7 @@ public class Carrier
     public string? Password { get; set; }
 
     [Required]
-    [RegularExpression(@"^\+?[0-9]{1,4}?[ -]?[0-9]{1,3}[ -]?[0-9]{1,4}[ -]?[0-9]{1,4}$", ErrorMessage = "Невірний формат номера телефону.")]
+    [RegularExpression(@"^\+?[0-9]{1,4}?[ -]?[0-9]{1,3}[ -]?[0-9]{1,4}[ -]?[0-9]{1,4}$", ErrorMessage = "The phone number format is incorrect.")]
     public string? Contacts { get; set; }
 
     [Required]
@@ -22,14 +22,15 @@ public class Carrier
     public string? VehicleModel { get; set; }
 
     [Required]
-    [RegularExpression(@"^[A-Z0-9-]+$", ErrorMessage = "Некоректний номерний знак")]
+    [RegularExpression(@"^[A-Z0-9-]+$", ErrorMessage = "Incorrect number plate")]
     public string? VehicleNumber { get; set; }
 
 
     [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]
-    public double? Rating { get; set; } = 1;
+    public int? Rating { get; set; } = 1;
 
-    public string ProfilePhotoURL { get; set; } = "~/images/defaultAvatar.png";
+    [Required]
+    public string ProfilePhotoURL { get; set; } = "/images/profile_photos/photodef.jpg";
 
     public List<HumanitarianAid> AvailableTasks { get; set; } = new List<HumanitarianAid>();
 }

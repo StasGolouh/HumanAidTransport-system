@@ -11,7 +11,11 @@
         <h2 class="clientname">@Model.Name</h2>
         <p class="role">Volunteer</p>
         <div class="sidebar-buttons">
-            <button class="notif-icon"><img src="~/images/notification.png" alt="Notification"></button>
+            <form id="notificationForm" method="get" asp-controller="VolunProfile" asp-action="VolunteerRequestList">
+                <button type="submit" class="notif-icon">
+                    <img src="~/images/notification.png" alt="Notification">
+                </button>
+            </form>
             <button class="chat-icon"><img src="~/images/chat.png" alt="Chat"></button>
             <form id="logoutForm" method="post" asp-controller="VolunProfile" asp-action="LogOut">
                 <button type="submit" class="logout-icon">
@@ -30,7 +34,10 @@
                     @foreach (var task in Model.Tasks)
                     {
                         <li class="task-item">
-                            <strong>@task.Name</strong> | @task.Description | Quantity: @task.Quantity | From: @task.DeliveryAddressFrom | To: @task.DeliveryAddressTo | Payment: @task.Payment$ | Expected Delivery: @task.ExpectedDeliveryTime
+                            <strong>@task.Name</strong> Description: @task.Description Quantity: @task.Quantity From: @task.DeliveryAddressFrom To: @task.DeliveryAddressTo Payment: @task.Payment$ Expected Delivery: @task.ExpectedDeliveryTime
+                            <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
+                                <button type="submit" class="btn-danger">Cancel Task</button>
+                            </form>
                         </li>
                     }
                 </ul>
@@ -303,6 +310,21 @@
         text-transform: uppercase;
         text-align: left; 
     }
+
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
 </style>
 
 <script>

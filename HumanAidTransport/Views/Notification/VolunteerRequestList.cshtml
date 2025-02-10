@@ -1,0 +1,59 @@
+﻿@model IEnumerable<DeliveryRequest> // Колекція запитів
+
+@{
+    ViewData["Title"] = "Volunteer Request List";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Carrier Name</th>
+                <th>Carrier Contacts</th>
+                <th>Carrier Rating</th>
+                <th>Vehicle Name</th>
+                <th>Vehicle Model</th>
+                <th>Vehicle Number</th>
+                <th>Humanitarian Aid</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in Model)
+            {
+                <tr>
+                    <td>@request.DeliveryRequestId</td>
+                    <td>@request.Carrier?.Name</td>
+                    <td>@request.CarrierContacts</td>
+                    <td>@request.CarrierRating</td>
+                    <td>@request.VehicleName</td> 
+                    <td>@request.VehicleModel</td> 
+                    <td>@request.VehicleNumber</td> 
+                    <td>@request.HumanAidName</td>
+                    <td>@(request.VolunteerId.HasValue ? "Accepted" : "Pending")</td>
+                    <td>
+                        @if (!request.VolunteerId.HasValue)
+                        {
+                            <form method="post" asp-action="AcceptRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="/* VolunteerId here */">
+                                <button type="submit" class="btn btn-primary">Accept</button>
+                            </form>
+
+                            <form method="post" asp-action="RejectRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="/* VolunteerId here */">
+                                <button type="submit" class="btn btn-danger">Reject</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No delivery requests available for this volunteer.</p>
+}

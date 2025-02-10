@@ -46,8 +46,8 @@ namespace HumanAidTransport.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Rating")
-                        .HasColumnType("float");
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int");
 
                     b.Property<string>("VehicleModel")
                         .IsRequired()
@@ -66,7 +66,7 @@ namespace HumanAidTransport.Migrations
                     b.ToTable("Carriers");
                 });
 
-            modelBuilder.Entity("HumanAidTransport.Models.DeliveryRequest", b =>
+            modelBuilder.Entity("DeliveryRequest", b =>
                 {
                     b.Property<int>("DeliveryRequestId")
                         .ValueGeneratedOnAdd()
@@ -74,15 +74,43 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DeliveryRequestId"));
 
+                    b.Property<string>("CarrierContacts")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("CarrierId")
                         .HasColumnType("int");
 
+                    b.Property<double?>("CarrierRating")
+                        .HasColumnType("float");
+
                     b.Property<int>("HumanAidId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HumanAidName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("HumanitarianAidHumanAidId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VehicleModel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VehicleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VehicleNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("VolunteerId")
                         .HasColumnType("int");
 
                     b.HasKey("DeliveryRequestId");
 
                     b.HasIndex("CarrierId");
+
+                    b.HasIndex("HumanitarianAidHumanAidId");
+
+                    b.HasIndex("VolunteerId");
 
                     b.ToTable("DeliveryRequests");
                 });
@@ -94,9 +122,6 @@ namespace HumanAidTransport.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HumanAidId"));
-
-                    b.Property<DateTime?>("ActualDeliveryTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int?>("CarrierId")
                         .HasColumnType("int");
@@ -147,9 +172,6 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<DateTime?>("ActualDeliveryTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -167,10 +189,22 @@ namespace HumanAidTransport.Migrations
                     b.Property<DateTime?>("ExpectedDeliveryTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("HumanAidId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HumanitarianAidHumanAidId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double?>("Payment")
                         .HasColumnType("float");
 
                     b.HasKey("OrderId");
+
+                    b.HasIndex("HumanitarianAidHumanAidId");
 
                     b.ToTable("TransportOrders");
                 });
@@ -200,7 +234,7 @@ namespace HumanAidTransport.Migrations
                     b.ToTable("Volunteers");
                 });
 
-            modelBuilder.Entity("HumanAidTransport.Models.DeliveryRequest", b =>
+            modelBuilder.Entity("DeliveryRequest", b =>
                 {
                     b.HasOne("Carrier", "Carrier")
                         .WithMany()
@@ -208,7 +242,19 @@ namespace HumanAidTransport.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HumanAidTransport.Models.HumanitarianAid", "HumanitarianAid")
+                        .WithMany()
+                        .HasForeignKey("HumanitarianAidHumanAidId");
+
+                    b.HasOne("Volunteer", "Volunteer")
+                        .WithMany()
+                        .HasForeignKey("VolunteerId");
+
                     b.Navigation("Carrier");
+
+                    b.Navigation("HumanitarianAid");
+
+                    b.Navigation("Volunteer");
                 });
 
             modelBuilder.Entity("HumanAidTransport.Models.HumanitarianAid", b =>
@@ -217,13 +263,20 @@ namespace HumanAidTransport.Migrations
                         .WithMany("AvailableTasks")
                         .HasForeignKey("CarrierId");
 
-                    b.HasOne("Volunteer", "Volunteer")
+                    b.HasOne("Volunteer", null)
                         .WithMany("Tasks")
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Volunteer");
+            modelBuilder.Entity("HumanAidTransport.Models.TransportOrder", b =>
+                {
+                    b.HasOne("HumanAidTransport.Models.HumanitarianAid", "HumanitarianAid")
+                        .WithMany()
+                        .HasForeignKey("HumanitarianAidHumanAidId");
+
+                    b.Navigation("HumanitarianAid");
                 });
 
             modelBuilder.Entity("Carrier", b =>

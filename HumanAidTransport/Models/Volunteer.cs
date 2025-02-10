@@ -13,7 +13,7 @@ public class Volunteer
     public string Password { get; set; }
 
     [Required]
-    public string ProfilePhotoURL { get; set; } = "defaultAvatar.png";
+    public string ProfilePhotoURL { get; set; } = "/images/profile_photos/photodef.jpg";
 
     public List<HumanitarianAid> Tasks { get; set; } = new List<HumanitarianAid>();
 

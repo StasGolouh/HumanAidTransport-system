@@ -32,7 +32,7 @@
         }
 
         .logo {
-            max-width: 50px; 
+            max-width: 50px;
             height: auto;
             margin: 0 0 10px 10px;
         }
@@ -72,11 +72,23 @@
         }
 
         .navbar-nav {
-            height: auto; 
+            height: auto;
             display: flex;
-            align-items: center; 
+            align-items: center;
         }
-       
+
+        .alert-message {
+            margin-top: 150px;
+            text-align: center;
+        }
+
+        .alert-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+        }
 
     </style>
 </head>
@@ -97,13 +109,20 @@
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Profile">Profile</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="MainProfile">Profile</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-danger alert-message alert-container" role="alert">
+            @TempData["Message"]
+        </div>
+    }
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -113,5 +132,13 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () {
+                $(".alert-message").fadeOut("slow");
+            }, 5000); 
+        });
+    </script>
 </body>
 </html>

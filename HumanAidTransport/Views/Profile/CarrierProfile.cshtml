@@ -3,12 +3,27 @@
 <div class="profile-container">
     <div class="profile-sidebar">
         <div class="profile-pic-container">
+
             <img src="@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic" id="profilePic">
             <input type="file" id="uploadPic" hidden>
             <label for="uploadPic" class="upload-btn">Change photo</label>
         </div>
         <h2 class="clientname">@Model.Name</h2>
         <p class="role">Carrier</p>
+        <h5>
+            Rating:
+            @for (int i = 1; i <= 5; i++)
+            {
+                if (i <= Model.Rating)
+                {
+                    <span class="star filled">★</span> 
+                }
+                else
+                {
+                    <span class="star empty">☆</span> 
+                }
+            }
+        </h5>
         <div class="sidebar-buttons">
             <button class="notif-icon"><img src="~/images/notification.png" alt="Notification"></button>
             <button class="chat-icon"><img src="~/images/chat.png" alt="Chat"></button>
@@ -29,14 +44,21 @@
                     {
                         <li class="task-item">
                             <strong>@task.Name</strong> | @task.Description | Quantity: @task.Quantity | From: @task.DeliveryAddressFrom | To: @task.DeliveryAddressTo | Payment: @task.Payment$ | Expected Delivery: @task.ExpectedDeliveryTime
+
+                            <form method="post" asp-action="CreateRequest" asp-controller="DeliveryRequest" style="display: inline;">
+                                <input type="hidden" name="carrierId" value="@Model.Id" />
+                                <input type="hidden" name="humanAidId" value="@task.HumanAidId" />
+                                <input type="hidden" name="humanAidId" value="@task.VolunteerId" />
+                                <button type="submit" class="btn-respond">Відгукнутися</button>
+                            </form>
                         </li>
+
                     }
                 </ul>
             </div>
         </div>
     </div>
 </div>
-
 
 <style>
     body {
@@ -176,7 +198,6 @@
             background: #ecf0f1;
         }
 
-
     .clientname {
         font-family: 'Poppins', sans-serif;
         font-size: 24px;
@@ -204,18 +225,39 @@
         text-transform: uppercase;
         text-align: left;
     }
+
+    .star {
+        font-size: 20px;
+        color: #f1c40f;
+        margin-right: 5px;
+    }
+
+        .star.filled {
+            color: #f39c12; 
+        }
+
+        .star.empty {
+            color: #bdc3c7;
+        }
+
+    .btn-respond {
+        margin-left: 10px;
+        padding: 8px 15px;
+        background: #27ae60;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+
+        .btn-respond:hover {
+            background: #219150;
+        }
 </style>
 
 <script>
-    function openModal() {
-        document.getElementById("taskModal").style.display = "flex";
-    }
-
-    function closeModal() {
-        document.getElementById("taskModal").style.display = "none";
-    }
-
-
     document.getElementById("uploadPic").addEventListener("change", function(event) {
         let file = event.target.files[0];
 

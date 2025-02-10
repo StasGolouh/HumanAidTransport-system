@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HumanAidTransport.Models
 {
@@ -29,8 +27,6 @@ namespace HumanAidTransport.Models
 
         [FutureDate(ErrorMessage = "Expected delivery time must be in the future.")]
         public DateTime? ExpectedDeliveryTime { get; set; }
-
-        public DateTime? ActualDeliveryTime { get; set; }
 
         [Required]
         public string DeliveryAddressFrom { get; set; }
