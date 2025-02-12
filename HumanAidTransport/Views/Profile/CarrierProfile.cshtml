@@ -16,11 +16,11 @@
             {
                 if (i <= Model.Rating)
                 {
-                    <span class="star filled">★</span> 
+                    <span class="star filled">★</span>
                 }
                 else
                 {
-                    <span class="star empty">☆</span> 
+                    <span class="star empty">☆</span>
                 }
             }
         </h5>
@@ -37,6 +37,24 @@
 
     <div class="profile-content">
         <div class="task-section">
+            @if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null)
+            {
+                <div id="message" class="alert @(TempData["SuccessMessage"] != null ? "alert-success" : "alert-danger")">
+                    @(TempData["SuccessMessage"] ?? TempData["ErrorMessage"])
+                </div>
+            }
+
+            <script>
+                setTimeout(function() {
+                    var message = document.getElementById("message");
+                    if (message) {
+                        message.style.transition = "opacity 0.5s";
+                        message.style.opacity = "0";
+                        setTimeout(function() { message.style.display = "none"; }, 500);
+                    }
+                }, 3000);
+            </script>
+
             <h3 class="paragtask">Available Tasks</h3>
             <div class="task-scroll-container">
                 <ul class="task-list">
@@ -50,32 +68,14 @@
                                 <input type="hidden" name="humanAidId" value="@task.HumanAidId" />
                                 <input type="hidden" name="humanAidId" value="@task.VolunteerId" />
                                 <button type="submit" class="btn-respond">Respond</button>
-                                @if (TempData["SuccessMessage"] != null)
-                                {
-                                    <div id="successMessage" class="alert alert-success">
-                                        @TempData["SuccessMessage"]
-                                    </div>
-
-                                    <script>
-                                        setTimeout(function() {
-                                            var message = document.getElementById("successMessage");
-                                            if (message) {
-                                                message.style.transition = "opacity 0.5s";
-                                                message.style.opacity = "0";
-                                                setTimeout(function() { message.style.display = "none"; }, 500);
-                                            }
-                                        }, 3000);
-                                    </script>
-                                }
-
                             </form>
                         </li>
-
                     }
                 </ul>
             </div>
         </div>
     </div>
+
 </div>
 
 
@@ -253,7 +253,7 @@
     }
 
         .star.filled {
-            color: #f39c12; 
+            color: #f39c12;
         }
 
         .star.empty {
@@ -275,7 +275,7 @@
         .btn-respond:hover {
             background: #219150;
         }
-    
+
 
     .alert {
         margin-top: 10px;
@@ -290,6 +290,14 @@
         background-color: #dff0d8;
         color: #3c763d;
         border: 1px solid #3c763d;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        padding: 15px;
+        border-radius: 5px;
     }
 </style>
 

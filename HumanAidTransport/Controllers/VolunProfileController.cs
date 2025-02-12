@@ -122,12 +122,6 @@ namespace HumanAidTransport.Controllers
             return Json(new { success = true, imageUrl = volunteer.ProfilePhotoURL });
         }
 
-        public IActionResult LogOut()
-        {
-            Volunteer = null;
-            return RedirectToAction("Index", "Home");
-        }
-
         public async Task<IActionResult> VolunteerRequestList(int volunteerId)
         {
             var volunteer = await _context.Volunteers
@@ -147,6 +141,12 @@ namespace HumanAidTransport.Controllers
 
             // Повертаємо дані до вьюхи
             return View("~/Views/Notification/VolunteerRequestList.cshtml", requests);
+        }
+
+        public IActionResult LogOut()
+        {
+            Volunteer = null;
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -32,7 +32,15 @@ public class DeliveryRequestController : Controller
             if (volunteer == null)
                 return NotFound(new { message = "Volunteer not found." });
 
-            // Створюємо новий об'єкт DeliveryRequest і додаємо його в базу
+            var existingRequest = await _context.DeliveryRequests
+                .FirstOrDefaultAsync(dr => dr.CarrierId == carrierId && dr.HumanAidId == humanAidId);
+
+            if (existingRequest != null)
+            {
+                TempData["ErrorMessage"] = "You have already responded to this task.";
+                return RedirectToAction("CarrierProfile", "CarrierProfile");
+            }
+
             var deliveryRequest = new DeliveryRequest
             {
                 CarrierId = carrierId,
@@ -45,7 +53,7 @@ public class DeliveryRequestController : Controller
                 HumanAidId = humanAidId,
                 HumanitarianAid = humanitarianAid,
                 HumanAidName = humanitarianAid.Name,
-                VolunteerId = volunteer.Id, 
+                VolunteerId = volunteer.Id,
                 Volunteer = volunteer
             };
 
@@ -59,6 +67,7 @@ public class DeliveryRequestController : Controller
 
         return BadRequest(new { message = "Invalid data." });
     }
+
     // Метод для того, щоб волонтер прийняв заявку
     [HttpPost]
     public async Task<IActionResult> AcceptRequest(int deliveryRequestId, int volunteerId)
@@ -120,7 +129,15 @@ public class DeliveryRequestController : Controller
         // Зберігаємо зміни в базі даних
         await _context.SaveChangesAsync();
 
-        return Ok(new { message = "Delivery request accepted. Task and request removed from volunteer, and transport order created." });
+        // Оновлюємо список заявок для волонтера
+        var updatedVolunteer = await _context.Volunteers
+            .Include(v => v.DeliveryRequests) // Завантажуємо заявки волонтера
+            .FirstOrDefaultAsync(v => v.Id == volunteerId);
+
+        TempData["AcceptMessage"] = "Delivery request accepted. Transport order created for Carrier.";
+
+        // Повертаємо оновлений список заявок
+        return View("~/Views/Notification/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);
     }
 
     [HttpPost]
@@ -153,6 +170,14 @@ public class DeliveryRequestController : Controller
 
         await _context.SaveChangesAsync();
 
-        return Ok(new { message = "Delivery request rejected. Removed from volunteer's list." });
+        // Оновлюємо список заявок для волонтера
+        var updatedVolunteer = await _context.Volunteers
+            .Include(v => v.DeliveryRequests) // Завантажуємо заявки волонтера
+            .FirstOrDefaultAsync(v => v.Id == volunteerId);
+
+        TempData["RejectMessage"] = "Delivery request rejected. Removed from volunteer's list.";
+
+        // Повертаємо оновлений список заявок
+        return View("~/Views/Notification/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);
     }
 }
