@@ -19,4 +19,6 @@ public class Volunteer
 
     public List<DeliveryRequest> DeliveryRequests { get; set; } = new List<DeliveryRequest>();
 
+   // public List<HumanitarianAid> EndedTasks { get; set; } = new List<HumanitarianAid>(); //Успішно закінчені завдання
+
 }

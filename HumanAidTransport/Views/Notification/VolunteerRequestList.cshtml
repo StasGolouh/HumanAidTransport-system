@@ -21,7 +21,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Request ID</th>
+                <th>Request №</th>
                 <th>Carrier Name</th>
                 <th>Carrier Contacts</th>
                 <th>Carrier Rating</th>
@@ -46,11 +46,11 @@
                     <td>@request.HumanAidName</td>
                     <td>
                         <form method="post" asp-action="AcceptRequest" asp-controller="DeliveryRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId">
-                            <button type="submit" class="btn accept-btn">Accept</button>
+                            <button type="submit" class="btn accept-btn">✔Accept</button>
                         </form>
 
                         <form method="post" asp-action="RejectRequest" asp-controller="DeliveryRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId">
-                            <button type="submit" class="btn reject-btn">Reject</button>
+                            <button type="submit" class="btn reject-btn">✖Reject</button>
                         </form>
                     </td>
                 </tr>
@@ -93,21 +93,36 @@ else
         }
 
     .btn {
-        padding: 8px 12px;
+        padding: 10px 15px;
+        border-radius: 8px;
         border: none;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.2s;
         cursor: pointer;
-        border-radius: 5px;
+        margin-bottom: 15px;
+        display: inline-block;
+        text-align: center;
     }
 
     .accept-btn {
-        background-color: #4CAF50;
+        background-color: #28a745;
         color: white;
     }
 
+        .accept-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
     .reject-btn {
-        background-color: #d9534f;
+        background-color: #dc3545;
         color: white;
     }
+
+        .reject-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
 
     .no-requests {
         text-align: center;

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using HumanAidTransport.Models;
 
 public class Carrier
@@ -18,6 +19,7 @@ public class Carrier
 
     [Required]
     public string? VehicleName { get; set; }
+
     [Required]
     public string? VehicleModel { get; set; }
 
@@ -25,12 +27,14 @@ public class Carrier
     [RegularExpression(@"^[A-Z0-9-]+$", ErrorMessage = "Incorrect number plate")]
     public string? VehicleNumber { get; set; }
 
-
-    [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]
-    public int? Rating { get; set; } = 1;
-
     [Required]
     public string ProfilePhotoURL { get; set; } = "/images/profile_photos/photodef.jpg";
 
     public List<HumanitarianAid> AvailableTasks { get; set; } = new List<HumanitarianAid>();
+
+    // ⭐ Додаємо список оцінок (один-to-багато)
+    public List<CarrierRating> Ratings { get; set; } = new List<CarrierRating>();
+
+    [Required]
+    public int AverageRating => Ratings.Any() ? (int)Math.Round(Ratings.Average(r => r.Rating)): 1;
 }

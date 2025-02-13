@@ -14,7 +14,7 @@
             Rating:
             @for (int i = 1; i <= 5; i++)
             {
-                if (i <= Model.Rating)
+                if (i <= Model.AverageRating)
                 {
                     <span class="star filled">★</span>
                 }
@@ -25,7 +25,12 @@
             }
         </h5>
         <div class="sidebar-buttons">
-            <button class="notif-icon"><img src="~/images/notification.png" alt="Notification"></button>
+            <form id="notificationForm" method="get" asp-controller="OrderTask" asp-action="CarrierOrderList">
+                <input type="hidden" name="carrierId" value="@Model.Id" />
+                <button type="submit" class="notif-icon">
+                    <img src="~/images/notification.png" alt="Notification">
+                </button>
+            </form>
             <button class="chat-icon"><img src="~/images/chat.png" alt="Chat"></button>
             <form id="logoutForm" method="post" asp-controller="CarrierProfile" asp-action="LogOut">
                 <button type="submit" class="logout-icon">

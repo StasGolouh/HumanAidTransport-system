@@ -13,6 +13,6 @@ namespace HumanitarianTransport.Data
         public DbSet<HumanitarianAid> HumanitarianAids { get; set; }
         public DbSet<DeliveryRequest> DeliveryRequests { get; set; }
         public DbSet<TransportOrder> TransportOrders { get; set; }
-
+        public DbSet<CarrierRating> CarrierRatings { get; set; }
     }
 }

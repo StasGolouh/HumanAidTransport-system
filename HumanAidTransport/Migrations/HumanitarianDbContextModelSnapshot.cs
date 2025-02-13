@@ -46,9 +46,6 @@ namespace HumanAidTransport.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Rating")
-                        .HasColumnType("int");
-
                     b.Property<string>("VehicleModel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -64,6 +61,27 @@ namespace HumanAidTransport.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Carriers");
+                });
+
+            modelBuilder.Entity("CarrierRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CarrierId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarrierId");
+
+                    b.ToTable("CarrierRatings");
                 });
 
             modelBuilder.Entity("DeliveryRequest", b =>
@@ -172,9 +190,6 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("DeliveryAddressFrom")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -201,6 +216,10 @@ namespace HumanAidTransport.Migrations
 
                     b.Property<double?>("Payment")
                         .HasColumnType("float");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderId");
 
@@ -232,6 +251,17 @@ namespace HumanAidTransport.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Volunteers");
+                });
+
+            modelBuilder.Entity("CarrierRating", b =>
+                {
+                    b.HasOne("Carrier", "Carrier")
+                        .WithMany("Ratings")
+                        .HasForeignKey("CarrierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Carrier");
                 });
 
             modelBuilder.Entity("DeliveryRequest", b =>
@@ -282,6 +312,8 @@ namespace HumanAidTransport.Migrations
             modelBuilder.Entity("Carrier", b =>
                 {
                     b.Navigation("AvailableTasks");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("Volunteer", b =>

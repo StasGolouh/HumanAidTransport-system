@@ -1,5 +1,210 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<TransportOrder> // Колекція замовлень на перевезення
+
 @{
+    ViewData["Title"] = "Carrier Order List";
 }
+
+@if (TempData["CompleteMessage"] != null)
+{
+    <div class="alert success-alert" id="success-alert">@TempData["CompleteMessage"]</div>
+}
+
+@if (TempData["CancelMessage"] != null)
+{
+    <div class="alert error-alert" id="error-alert">@TempData["CancelMessage"]</div>
+}
+
+<h2 class="title">@ViewData["Title"]</h2>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order №</th>
+                <th>Task Name</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Payment ($)</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr class="@(order.Status == "Completed" ? "completed" : order.Status == "Canceled" ? "canceled" : "pending")">
+                    <td>@order.OrderId</td>
+                    <td>@order.Name</td>
+                    <td>@order.DeliveryAddressFrom</td>
+                    <td>@order.DeliveryAddressTo</td>
+                    <td>@order.Payment</td>
+                    <td class="status-column">
+                        <span class="@(order.Status == "Completed" ? "completed-status" : order.Status == "Canceled" ? "canceled-status" : "pending-status")">@order.Status</span>
+                    </td>
+                    <td>
+                        @if (order.Status == "Pending")
+                        {
+                            <form method="post" asp-controller="OrderTask" asp-action="MarkAsCompleted" asp-route-orderId="@order.OrderId">
+                                <button type="submit" class="btn complete-btn">✔ Mark as Completed</button>
+                            </form>
+                            <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
+                                <button type="submit" class="btn cancel-btn">✖ Cancel Task</button>
+                            </form>
+                        }
+                        @if (order.Status == "Completed" || order.Status == "Canceled")
+                        {
+                            <form method="post" asp-action="DeleteTask" asp-route-orderId="@order.OrderId" asp-controller="OrderTask">
+                                <button type="submit" class="btn delete-btn">🗑️ Delete Task</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="no-requests">No transport orders available for this carrier.</p>
+}
+
+<style>
+    .title {
+        text-align: center;
+        color: #2d572c;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+        .table th, .table td {
+            border: 1px solid #2d572c;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #2d572c;
+            color: white;
+        }
+
+    .btn {
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: none;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.2s;
+        cursor: pointer;
+        margin-bottom: 15px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .complete-btn {
+        background-color: #28a745;
+        color: white;
+    }
+
+        .complete-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+    .cancel-btn {
+        background-color: #dc3545;
+        color: white;
+    }
+
+        .cancel-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+    .delete-btn {
+        background-color: #ffc107;
+        color: white;
+    }
+
+        .delete-btn:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+        }
+
+    .completed {
+        background-color: #28a745; 
+    }
+
+    .canceled {
+        background-color: #dc3545; /* Red for canceled */
+    }
+
+    .pending {
+        background-color: #ffc107; /* Yellow for pending */
+    }
+
+    .completed-status {
+        color: black;
+    }
+
+    .canceled-status {
+        color: black;
+    }
+
+    .pending-status {
+        color: black;
+    }
+
+    .no-requests {
+        text-align: center;
+        font-size: 18px;
+        color: #666;
+        margin-top: 20px;
+    }
+
+    .alert-container {
+        margin-bottom: 20px;
+    }
+
+    .alert-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        border-radius: 8px;
+    }
+
+    .success-alert {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .error-alert {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .alert-table td {
+        padding: 12px;
+        text-align: center;
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    setTimeout(function() {
+        var successAlert = document.querySelector('.success-alert');
+        if (successAlert) {
+            successAlert.closest('table').style.display = 'none';
+        }
+
+        var errorAlert = document.querySelector('.error-alert');
+        if (errorAlert) {
+            errorAlert.closest('table').style.display = 'none';
+        }
+    }, 3000);
+</script>

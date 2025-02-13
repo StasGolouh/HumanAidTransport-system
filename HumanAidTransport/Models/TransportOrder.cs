@@ -9,7 +9,6 @@
             public int OrderId { get; set; }
 
             [ForeignKey("DeliveryRequestId")]
-            [Required]
             public int DeliveryRequestId { get; set; }
 
             [ForeignKey("HumanAidId")]
@@ -18,9 +17,9 @@
 
             [Required]
             public string? Name { get; set; }
-
+            
             [Required]
-            public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+            public string? Status { get; set; }
             public DateTime? ExpectedDeliveryTime { get; set; }
 
             public string PaymentStatus => Payment.HasValue ? Payment.Value.ToString("F2") : "Free";

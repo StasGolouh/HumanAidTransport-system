@@ -45,7 +45,7 @@ public class DeliveryRequestController : Controller
             {
                 CarrierId = carrierId,
                 Carrier = carrier,
-                CarrierRating = carrier.Rating,
+                CarrierRating = carrier.AverageRating,
                 CarrierContacts = carrier.Contacts,
                 VehicleName = carrier.VehicleName,
                 VehicleModel = carrier.VehicleModel,
@@ -107,16 +107,13 @@ public class DeliveryRequestController : Controller
         // Видаляємо завдання гуманітарної допомоги з волонтера
         volunteer.Tasks.Remove(humanitarianAid);
 
-        // Видаляємо заявку з бази даних
-        _context.DeliveryRequests.Remove(deliveryRequest);
-
         // Створюємо замовлення після прийняття заявки
         var transportOrder = new TransportOrder
         {
             DeliveryRequestId = deliveryRequest.DeliveryRequestId,
             HumanAidId = humanitarianAid.HumanAidId,
             Name = deliveryRequest.HumanAidName,
-            CreatedAt = DateTime.UtcNow,
+            Status = "Pending",
             ExpectedDeliveryTime = humanitarianAid.ExpectedDeliveryTime,
             Payment = humanitarianAid.Payment,
             DeliveryAddressFrom = humanitarianAid.DeliveryAddressFrom,
@@ -164,9 +161,6 @@ public class DeliveryRequestController : Controller
         {
             volunteer.DeliveryRequests.Remove(deliveryRequest);
         }
-
-        // Видаляємо заявку з бази даних
-        _context.DeliveryRequests.Remove(deliveryRequest);
 
         await _context.SaveChangesAsync();
 
