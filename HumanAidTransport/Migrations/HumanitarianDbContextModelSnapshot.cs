@@ -170,6 +170,10 @@ namespace HumanAidTransport.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("VolunteerId")
                         .HasColumnType("int");
 
@@ -180,6 +184,34 @@ namespace HumanAidTransport.Migrations
                     b.HasIndex("VolunteerId");
 
                     b.ToTable("HumanitarianAids");
+                });
+
+            modelBuilder.Entity("HumanAidTransport.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VolunteerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VolunteerId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("HumanAidTransport.Models.TransportOrder", b =>
@@ -220,6 +252,9 @@ namespace HumanAidTransport.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VolunteerId")
+                        .HasColumnType("int");
 
                     b.HasKey("OrderId");
 
@@ -298,6 +333,17 @@ namespace HumanAidTransport.Migrations
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HumanAidTransport.Models.Notification", b =>
+                {
+                    b.HasOne("Volunteer", "Volunteer")
+                        .WithMany()
+                        .HasForeignKey("VolunteerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Volunteer");
                 });
 
             modelBuilder.Entity("HumanAidTransport.Models.TransportOrder", b =>

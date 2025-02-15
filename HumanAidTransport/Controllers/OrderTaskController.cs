@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HumanitarianTransport.Data;
+using HumanAidTransport.Models;
 
 namespace HumanAidTransport.Controllers
 {
@@ -35,7 +36,6 @@ namespace HumanAidTransport.Controllers
             return View("~/Views/Notification/CarrierTasksList.cshtml", orders);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> MarkAsCompleted(int orderId)
         {
@@ -43,29 +43,33 @@ namespace HumanAidTransport.Controllers
             var order = await _context.TransportOrders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
 
-            // Якщо замовлення не знайдено, повертаємо помилку
             if (order == null)
             {
                 return NotFound(new { message = "Order not found." });
             }
 
-            // Оновлюємо статус замовлення на "Completed"
             order.Status = "Completed";
             await _context.SaveChangesAsync(); // Зберігаємо зміни в базі даних
 
-            // Виводимо повідомлення
-            TempData["CompleteMessage"] = "Task completed successfully.";
-
-            // Оновлюємо список замовлень для цього перевізника
+            // Оновлюємо список всіх замовлень для цього перевізника
             var updatedCarrierOrders = await _context.TransportOrders
-                .Where(o => o.HumanAidId == order.HumanAidId) // Фільтруємо замовлення за HumanAidId
-                .Include(o => o.HumanitarianAid) // Завантажуємо пов'язані дані про гуманітарну допомогу
+                .Where(o => o.HumanAidId == order.HumanAidId)  
+                .Include(o => o.HumanitarianAid) 
                 .ToListAsync();
 
-            // Повертаємо оновлений список замовлень до відповідної вьюхи
+            var notification = new Notification
+            {
+                VolunteerId = order.VolunteerId,
+                Message = $"Your assigned task (Order '{order.Name}') has been successfully completed. Thank you for your hard work!",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // Повідомлення
+            TempData["CompleteMessage"] = "Task completed successfully.";
+
+            // Повертаємо оновлений список замовлень на відповідну вьюху
             return View("~/Views/Notification/CarrierTasksList.cshtml", updatedCarrierOrders);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> CancelTask(int orderId)
@@ -74,7 +78,6 @@ namespace HumanAidTransport.Controllers
             var order = await _context.TransportOrders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
 
-            // Якщо замовлення не знайдено, повертаємо помилку
             if (order == null)
             {
                 return NotFound(new { message = "Order not found." });
@@ -84,7 +87,6 @@ namespace HumanAidTransport.Controllers
             order.Status = "Canceled";
             await _context.SaveChangesAsync(); // Зберігаємо зміни в базі даних
 
-            // Виводимо повідомлення
             TempData["CancelMessage"] = "Task canceled successfully.";
 
             // Оновлюємо список замовлень для цього перевізника
@@ -93,7 +95,17 @@ namespace HumanAidTransport.Controllers
                 .Include(o => o.HumanitarianAid) // Завантажуємо пов'язані дані про гуманітарну допомогу
                 .ToListAsync();
 
-            // Повертаємо оновлений список замовлень до відповідної вьюхи
+            // Повідомлення
+            var notification = new Notification
+            {
+                VolunteerId = order.VolunteerId,
+                Message = $"Your assigned task (Order '{order.Name}') has been canceled and is now available for others.",
+                CreatedAt = DateTime.UtcNow
+            };
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync(); // Зберігаємо повідомлення
+
+            // Повертаємо оновлений список замовлень
             return View("~/Views/Notification/CarrierTasksList.cshtml", updatedCarrierOrders);
         }
 
@@ -125,6 +137,23 @@ namespace HumanAidTransport.Controllers
 
             // Повертаємо оновлений список замовлень до відповідної вьюхи
             return View("~/Views/Notification/CarrierTasksList.cshtml", updatedCarrierOrders);
+        }
+
+        public async Task<IActionResult> VolunteerNotifications(int volunteerId)
+        {
+            // Отримуємо всі сповіщення для даного волонтера
+            var notifications = await _context.Notifications
+                .Where(n => n.VolunteerId == volunteerId)
+                .OrderByDescending(n => n.CreatedAt) 
+                .ToListAsync();
+
+            if (!notifications.Any())
+            {
+                return View("NoNotifications"); //Переробити тут 
+            }
+
+            // Повертаємо сповіщення на відповідну вьюху
+            return View("~/Views/NotificationVolunteerNotifications", notifications);   //Напиши вьюху для сповіщень і підвяжи кнопку
         }
     }
 }

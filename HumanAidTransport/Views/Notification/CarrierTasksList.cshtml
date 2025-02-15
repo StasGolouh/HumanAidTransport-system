@@ -135,7 +135,7 @@ else
         }
 
     .completed {
-        background-color: #28a745; 
+        background-color: #28a745;
     }
 
     .canceled {
@@ -199,12 +199,12 @@ else
     setTimeout(function() {
         var successAlert = document.querySelector('.success-alert');
         if (successAlert) {
-            successAlert.closest('table').style.display = 'none';
+            successAlert.style.display = 'none';
         }
 
         var errorAlert = document.querySelector('.error-alert');
         if (errorAlert) {
-            errorAlert.closest('table').style.display = 'none';
+            errorAlert.style.display = 'none';
         }
     }, 3000);
 </script>

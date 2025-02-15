@@ -14,5 +14,6 @@ namespace HumanitarianTransport.Data
         public DbSet<DeliveryRequest> DeliveryRequests { get; set; }
         public DbSet<TransportOrder> TransportOrders { get; set; }
         public DbSet<CarrierRating> CarrierRatings { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
     }
 }

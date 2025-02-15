@@ -69,7 +69,6 @@ public class DeliveryRequestController : Controller
     }
 
     // Метод для того, щоб волонтер прийняв заявку
-    [HttpPost]
     public async Task<IActionResult> AcceptRequest(int deliveryRequestId, int volunteerId)
     {
         // Отримуємо заявку на доставку
@@ -81,10 +80,10 @@ public class DeliveryRequestController : Controller
             return NotFound(new { message = "Delivery request not found." });
         }
 
-        // Отримуємо волонтера разом із його заявками
+        // Отримуємо волонтера разом із його заявками і завданнями
         var volunteer = await _context.Volunteers
-            .Include(v => v.DeliveryRequests) // Завантажуємо заявки волонтера
-            .Include(v => v.Tasks) // Завантажуємо завдання волонтера
+            .Include(v => v.DeliveryRequests)
+            .Include(v => v.Tasks)  // Завантажуємо також завдання волонтера
             .FirstOrDefaultAsync(v => v.Id == volunteerId);
 
         if (volunteer == null)
@@ -104,9 +103,6 @@ public class DeliveryRequestController : Controller
         // Видаляємо заявку з волонтера
         volunteer.DeliveryRequests.Remove(deliveryRequest);
 
-        // Видаляємо завдання гуманітарної допомоги з волонтера
-        volunteer.Tasks.Remove(humanitarianAid);
-
         // Створюємо замовлення після прийняття заявки
         var transportOrder = new TransportOrder
         {
@@ -117,25 +113,37 @@ public class DeliveryRequestController : Controller
             ExpectedDeliveryTime = humanitarianAid.ExpectedDeliveryTime,
             Payment = humanitarianAid.Payment,
             DeliveryAddressFrom = humanitarianAid.DeliveryAddressFrom,
-            DeliveryAddressTo = humanitarianAid.DeliveryAddressTo
+            DeliveryAddressTo = humanitarianAid.DeliveryAddressTo,
+            VolunteerId = volunteer.Id
         };
 
         // Додаємо нове замовлення до бази даних
         _context.TransportOrders.Add(transportOrder);
 
+        // Оновлюємо статус гуманітарної допомоги
+        humanitarianAid.Status = "Accepted";
+
         // Зберігаємо зміни в базі даних
         await _context.SaveChangesAsync();
 
-        // Оновлюємо список заявок для волонтера
+        // Оновлюємо список завдань для волонтера
         var updatedVolunteer = await _context.Volunteers
-            .Include(v => v.DeliveryRequests) // Завантажуємо заявки волонтера
+            .Include(v => v.Tasks)  // Завантажуємо лише завдання волонтера
             .FirstOrDefaultAsync(v => v.Id == volunteerId);
+
+        // Фільтруємо завдання, щоб не показувати завдання зі статусом "Accepted"
+        var filteredTasks = updatedVolunteer.Tasks
+            .Where(t => t.Status != "Accepted")  // Фільтруємо завдання
+            .ToList();
 
         TempData["AcceptMessage"] = "Delivery request accepted. Transport order created for Carrier.";
 
-        // Повертаємо оновлений список заявок
-        return View("~/Views/Notification/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);
+        // Повертаємо волонтера з відфільтрованими завданнями
+        updatedVolunteer.Tasks = filteredTasks;
+
+        return View("~/Views/Profile/VolunteerProfile.cshtml", updatedVolunteer);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> RejectRequest(int deliveryRequestId, int volunteerId)

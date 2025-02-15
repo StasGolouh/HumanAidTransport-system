@@ -24,11 +24,14 @@ namespace HumanAidTransport.Controllers
             {
                 // Завантаження волонтера з бази даних і його завдань
                 var volunteerFromDb = await _context.Volunteers
-                    .Include(v => v.Tasks) // Завантаження завдань волонтера
+                    .Include(v => v.Tasks)
                     .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
 
                 if (volunteerFromDb != null)
                 {
+                    var acceptedTasks = volunteerFromDb.Tasks.Where(t => t.Status == "Pending").ToList();
+                    volunteerFromDb.Tasks = acceptedTasks;
+
                     return View("~/Views/Profile/VolunteerProfile.cshtml", volunteerFromDb);
                 }
             }
@@ -76,12 +79,22 @@ namespace HumanAidTransport.Controllers
                     var taskToCancel = volunteerFromDb.Tasks.FirstOrDefault(t => t.HumanAidId == taskId);
                     if (taskToCancel != null)
                     {
-                        // Видалення завдання
+                        // Перевіряємо, чи є завдання, пов'язані з цією гуманітарною допомогою
+                        var deliveryRequests = await _context.DeliveryRequests
+                            .Where(dr => dr.HumanAidId == taskToCancel.HumanAidId)
+                            .ToListAsync();
+
+
+                        // Видаляємо завдання
                         volunteerFromDb.Tasks.Remove(taskToCancel);
-                        _context.HumanitarianAids.Remove(taskToCancel);  // Видалення з бази даних
+
+                        // Видаляти гуманітарну допомогу можна, тільки якщо це безпечно
+                        _context.HumanitarianAids.Remove(taskToCancel);
+
+                        // Зберігаємо зміни в базі даних
                         await _context.SaveChangesAsync();
 
-                        return RedirectToAction("VolunteerProfile");  
+                        return RedirectToAction("VolunteerProfile");
                     }
                 }
             }

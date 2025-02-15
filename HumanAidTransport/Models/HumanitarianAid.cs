@@ -36,6 +36,9 @@ namespace HumanAidTransport.Models
 
         // Зв'язок з волонтером
         public int VolunteerId { get; set; }
+
+        public string Status { get; set; } = "Pending";
+
     }
 
 

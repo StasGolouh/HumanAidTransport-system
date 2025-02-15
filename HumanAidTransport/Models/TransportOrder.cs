@@ -31,5 +31,8 @@
             [Required]
             public string? DeliveryAddressTo { get; set; }
 
+            [Required]
+            public int VolunteerId { get; set; } 
+
         }
     }

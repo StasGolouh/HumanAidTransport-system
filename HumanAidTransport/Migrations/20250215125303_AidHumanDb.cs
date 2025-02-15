@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HumanAidTransport.Migrations
 {
     /// <inheritdoc />
-    public partial class AidDb : Migration
+    public partial class AidHumanDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -79,6 +79,7 @@ namespace HumanAidTransport.Migrations
                     DeliveryAddressFrom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryAddressTo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     VolunteerId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CarrierId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -91,6 +92,28 @@ namespace HumanAidTransport.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_HumanitarianAids_Volunteers_VolunteerId",
+                        column: x => x.VolunteerId,
+                        principalTable: "Volunteers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VolunteerId = table.Column<int>(type: "int", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_Volunteers_VolunteerId",
                         column: x => x.VolunteerId,
                         principalTable: "Volunteers",
                         principalColumn: "Id",
@@ -149,7 +172,8 @@ namespace HumanAidTransport.Migrations
                     ExpectedDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Payment = table.Column<double>(type: "float", nullable: true),
                     DeliveryAddressFrom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeliveryAddressTo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DeliveryAddressTo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VolunteerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -192,6 +216,11 @@ namespace HumanAidTransport.Migrations
                 column: "VolunteerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_VolunteerId",
+                table: "Notifications",
+                column: "VolunteerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TransportOrders_HumanitarianAidHumanAidId",
                 table: "TransportOrders",
                 column: "HumanitarianAidHumanAidId");
@@ -205,6 +234,9 @@ namespace HumanAidTransport.Migrations
 
             migrationBuilder.DropTable(
                 name: "DeliveryRequests");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "TransportOrders");
