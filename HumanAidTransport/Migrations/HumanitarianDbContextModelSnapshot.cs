@@ -74,6 +74,9 @@ namespace HumanAidTransport.Migrations
                     b.Property<int>("CarrierId")
                         .HasColumnType("int");
 
+                    b.Property<int>("NotificationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
@@ -194,6 +197,9 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CarrierId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -201,6 +207,10 @@ namespace HumanAidTransport.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

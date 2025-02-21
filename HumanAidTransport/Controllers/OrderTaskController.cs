@@ -22,11 +22,6 @@ namespace HumanAidTransport.Controllers
                 .Select(r => r.DeliveryRequestId)
                 .ToListAsync();
 
-            if (!requestIds.Any())
-            {
-                return NotFound(new { message = "Requests not found." });
-            }
-
             // Отримуємо всі замовлення для цих запитів
             var orders = await _context.TransportOrders
                 .Where(o => requestIds.Contains(o.DeliveryRequestId))
@@ -39,121 +34,93 @@ namespace HumanAidTransport.Controllers
         [HttpPost]
         public async Task<IActionResult> MarkAsCompleted(int orderId)
         {
-            // Отримуємо замовлення по ID
-            var order = await _context.TransportOrders
-                .FirstOrDefaultAsync(o => o.OrderId == orderId);
-
+            var order = await _context.TransportOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null)
             {
                 return NotFound(new { message = "Order not found." });
             }
+            
+            var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
 
             order.Status = "Completed";
-            await _context.SaveChangesAsync(); // Зберігаємо зміни в базі даних
-
-            // Оновлюємо список всіх замовлень для цього перевізника
-            var updatedCarrierOrders = await _context.TransportOrders
-                .Where(o => o.HumanAidId == order.HumanAidId)  
-                .Include(o => o.HumanitarianAid) 
-                .ToListAsync();
+            await _context.SaveChangesAsync();
 
             var notification = new Notification
             {
                 VolunteerId = order.VolunteerId,
-                Message = $"Your assigned task (Order '{order.Name}') has been successfully completed. Thank you for your hard work!",
-                CreatedAt = DateTime.UtcNow
-            };
+                CarrierId = deliveryRequest.CarrierId,
+                Message = $"Your assigned task (Order '{order.Name}') has been successfully completed",
+                CreatedAt = DateTime.UtcNow,
+                Status = "Completed"
 
-            // Повідомлення
+            };
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+
             TempData["CompleteMessage"] = "Task completed successfully.";
 
-            // Повертаємо оновлений список замовлень на відповідну вьюху
-            return View("~/Views/Notification/CarrierTasksList.cshtml", updatedCarrierOrders);
+            var updatedCarrierOrders = await _context.TransportOrders
+                .Where(o => o.HumanAidId == order.HumanAidId)
+                .Include(o => o.HumanitarianAid)
+                .ToListAsync();
+
+            return RedirectToAction("CarrierOrderList", new { carrierId = deliveryRequest.CarrierId });
         }
 
         [HttpPost]
         public async Task<IActionResult> CancelTask(int orderId)
         {
-            // Отримуємо замовлення по ID
-            var order = await _context.TransportOrders
-                .FirstOrDefaultAsync(o => o.OrderId == orderId);
-
+            var order = await _context.TransportOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null)
             {
                 return NotFound(new { message = "Order not found." });
             }
 
-            // Оновлюємо статус замовлення на "Canceled"
+            var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
+
             order.Status = "Canceled";
-            await _context.SaveChangesAsync(); // Зберігаємо зміни в базі даних
+            await _context.SaveChangesAsync();
 
-            TempData["CancelMessage"] = "Task canceled successfully.";
-
-            // Оновлюємо список замовлень для цього перевізника
-            var updatedCarrierOrders = await _context.TransportOrders
-                .Where(o => o.HumanAidId == order.HumanAidId) // Фільтруємо замовлення за HumanAidId
-                .Include(o => o.HumanitarianAid) // Завантажуємо пов'язані дані про гуманітарну допомогу
-                .ToListAsync();
-
-            // Повідомлення
             var notification = new Notification
             {
                 VolunteerId = order.VolunteerId,
+                CarrierId = deliveryRequest.CarrierId,
                 Message = $"Your assigned task (Order '{order.Name}') has been canceled and is now available for others.",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Status = "Canceled"
             };
             _context.Notifications.Add(notification);
-            await _context.SaveChangesAsync(); // Зберігаємо повідомлення
+            await _context.SaveChangesAsync();
 
-            // Повертаємо оновлений список замовлень
-            return View("~/Views/Notification/CarrierTasksList.cshtml", updatedCarrierOrders);
+            TempData["CancelMessage"] = "Task canceled successfully.";
+
+            var updatedCarrierOrders = await _context.TransportOrders
+                .Where(o => o.HumanAidId == order.HumanAidId)
+                .Include(o => o.HumanitarianAid)
+                .ToListAsync();
+
+            return RedirectToAction("CarrierOrderList", new { carrierId = deliveryRequest.CarrierId });
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteTask(int orderId)
         {
-            // Отримуємо замовлення по ID
             var order = await _context.TransportOrders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
 
-            // Якщо замовлення не знайдено, повертаємо помилку
-            if (order == null)
-            {
-                return NotFound(new { message = "Order not found." });
-            }
+            var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
 
-            // Видаляємо замовлення з бази даних
             _context.TransportOrders.Remove(order);
-            await _context.SaveChangesAsync(); // Зберігаємо зміни в базі даних
+            await _context.SaveChangesAsync(); 
 
-            // Виводимо повідомлення
             TempData["DeleteMessage"] = "Task deleted successfully.";
 
-            // Оновлюємо список замовлень для цього перевізника
             var updatedCarrierOrders = await _context.TransportOrders
-                .Where(o => o.HumanAidId == order.HumanAidId) // Фільтруємо замовлення за HumanAidId
-                .Include(o => o.HumanitarianAid) // Завантажуємо пов'язані дані про гуманітарну допомогу
+                .Where(o => o.HumanAidId == order.HumanAidId) 
+                .Include(o => o.HumanitarianAid) 
                 .ToListAsync();
 
-            // Повертаємо оновлений список замовлень до відповідної вьюхи
-            return View("~/Views/Notification/CarrierTasksList.cshtml", updatedCarrierOrders);
-        }
-
-        public async Task<IActionResult> VolunteerNotifications(int volunteerId)
-        {
-            // Отримуємо всі сповіщення для даного волонтера
-            var notifications = await _context.Notifications
-                .Where(n => n.VolunteerId == volunteerId)
-                .OrderByDescending(n => n.CreatedAt) 
-                .ToListAsync();
-
-            if (!notifications.Any())
-            {
-                return View("NoNotifications"); //Переробити тут 
-            }
-
-            // Повертаємо сповіщення на відповідну вьюху
-            return View("~/Views/NotificationVolunteerNotifications", notifications);   //Напиши вьюху для сповіщень і підвяжи кнопку
+            return RedirectToAction("CarrierOrderList", new { carrierId = deliveryRequest.CarrierId });
         }
     }
 }

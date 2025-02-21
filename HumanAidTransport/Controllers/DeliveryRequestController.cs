@@ -17,7 +17,9 @@ public class DeliveryRequestController : Controller
     {
         if (ModelState.IsValid)
         {
-            var carrier = await _context.Carriers.FirstOrDefaultAsync(c => c.Id == carrierId);
+            var carrier = await _context.Carriers
+                .Include(c => c.Ratings) 
+                .FirstOrDefaultAsync(c => c.Id == carrierId);
             var humanitarianAid = await _context.HumanitarianAids.FirstOrDefaultAsync(h => h.HumanAidId == humanAidId);
 
             if (carrier == null)
@@ -58,6 +60,9 @@ public class DeliveryRequestController : Controller
             };
 
             _context.DeliveryRequests.Add(deliveryRequest);
+            await _context.SaveChangesAsync();
+
+            _context.Carriers.Update(carrier);  
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Thank you for your feedback! Your application has been successfully created.";
@@ -141,7 +146,7 @@ public class DeliveryRequestController : Controller
         // Повертаємо волонтера з відфільтрованими завданнями
         updatedVolunteer.Tasks = filteredTasks;
 
-        return View("~/Views/Profile/VolunteerProfile.cshtml", updatedVolunteer);
+        return View("~/Views/Notification/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);
     }
 
 

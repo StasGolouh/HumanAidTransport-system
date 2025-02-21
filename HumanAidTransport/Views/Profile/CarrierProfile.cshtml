@@ -27,11 +27,11 @@
         <div class="sidebar-buttons">
             <form id="notificationForm" method="get" asp-controller="OrderTask" asp-action="CarrierOrderList">
                 <input type="hidden" name="carrierId" value="@Model.Id" />
-                <button type="submit" class="notif-icon">
-                    <img src="~/images/notification.png" alt="Notification">
+                <button type="submit" class="tasks-icon">
+                    <img src="~/images/tasks.png" alt="Tasks">
                 </button>
             </form>
-            <button class="chat-icon"><img src="~/images/chat.png" alt="Chat"></button>
+            <button class="notif-icon"><img src="~/images/notifications.png" alt="notification"></button>
             <form id="logoutForm" method="post" asp-controller="CarrierProfile" asp-action="LogOut">
                 <button type="submit" class="logout-icon">
                     <img src="~/images/logout.png" alt="Logout">
@@ -154,7 +154,7 @@
         width: 100%;
     }
 
-    .notif-icon, .chat-icon, .logout-icon {
+    .tasks-icon, .notif-icon, .logout-icon {
         background: none;
         border: none;
         cursor: pointer;
@@ -165,26 +165,29 @@
         align-items: center;
     }
 
+        .tasks-icon img {
+            width: 100px;
+            height: 100px;
+            transition: transform 0.3s;
+            margin-right: 10px;
+        }
+
         .notif-icon img {
-            width: 86px;
-            height: 86px;
+            width: 70px;
+            height: 70px;
+            margin: 0 10px 10px 0;
             transition: transform 0.3s;
         }
 
-        .chat-icon img {
-            width: 60px;
-            height: 60px;
-            transition: transform 0.3s;
-        }
 
         .logout-icon img {
             width: 70px;
             height: 70px;
             transition: transform 0.3s;
-            left: 10px;
+            margin-left: 8px;
         }
 
-            .notif-icon img:hover, .chat-icon img:hover, .logout-icon img:hover {
+            .tasks-icon img:hover, .notif-icon img:hover, .logout-icon img:hover {
                 transform: scale(1.2);
             }
 

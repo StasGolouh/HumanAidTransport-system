@@ -79,16 +79,16 @@ namespace HumanAidTransport.Controllers
                     var taskToCancel = volunteerFromDb.Tasks.FirstOrDefault(t => t.HumanAidId == taskId);
                     if (taskToCancel != null)
                     {
-                        // Перевіряємо, чи є завдання, пов'язані з цією гуманітарною допомогою
+                        // Видаляємо всі пов'язані заявки
                         var deliveryRequests = await _context.DeliveryRequests
                             .Where(dr => dr.HumanAidId == taskToCancel.HumanAidId)
                             .ToListAsync();
-
+                        _context.DeliveryRequests.RemoveRange(deliveryRequests);
 
                         // Видаляємо завдання
                         volunteerFromDb.Tasks.Remove(taskToCancel);
 
-                        // Видаляти гуманітарну допомогу можна, тільки якщо це безпечно
+                        // Видаляємо гуманітарну допомогу
                         _context.HumanitarianAids.Remove(taskToCancel);
 
                         // Зберігаємо зміни в базі даних
@@ -139,12 +139,6 @@ namespace HumanAidTransport.Controllers
         {
             var volunteer = await _context.Volunteers
                 .FirstOrDefaultAsync(v => v.Id == volunteerId);
-
-            // Якщо волонтер не знайдений, повернути помилку
-            if (volunteer == null)
-            {
-                return NotFound(new { message = "Volunteer not found." });
-            }
 
             var requests = await _context.DeliveryRequests
                 .Where(r => r.VolunteerId == volunteerId)

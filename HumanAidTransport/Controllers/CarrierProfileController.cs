@@ -27,14 +27,15 @@ namespace HumanAidTransport.Controllers
 
                 // Завантажуємо перевізника та його завдання
                 var carrierWithTasks = await _context.Carriers
-                    .Include(c => c.AvailableTasks) 
+                    .Include(c => c.AvailableTasks)
+                    .Include(c => c.Ratings)
                     .FirstOrDefaultAsync(c => c.Id == Carrier.Id);
+
 
                 if (carrierWithTasks != null)
                 {
                     carrierWithTasks.AvailableTasks.AddRange(availableTasks);
 
-                    // Відправляємо перевізника з завданнями до представлення
                     return View("~/Views/Profile/CarrierProfile.cshtml", carrierWithTasks);
                 }
             }

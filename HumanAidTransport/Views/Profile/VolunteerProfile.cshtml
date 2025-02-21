@@ -11,13 +11,18 @@
         <h2 class="clientname">@Model.Name</h2>
         <p class="role">Volunteer</p>
         <div class="sidebar-buttons">
-            <form id="notificationForm" method="get" asp-controller="VolunProfile" asp-action="VolunteerRequestList">
+            <form id="requestForm" method="get" asp-controller="VolunProfile" asp-action="VolunteerRequestList">
                 <input type="hidden" name="volunteerId" value="@Model.Id" />
-                <button type="submit" class="notif-icon">
-                    <img src="~/images/notification.png" alt="Notification">
+                <button type="submit" class="request-icon">
+                    <img src="~/images/requests.png" alt="Requests">
                 </button>
             </form>
-            <button class="chat-icon"><img src="~/images/chat.png" alt="Chat"></button>
+            <form id="notificationForm" method="get" asp-controller="Notification" asp-action="VolunteerNotifications">
+                <input type="hidden" name="volunteerId" value="@Model.Id" />
+                <button type="submit" class="notif-icon">
+                    <img src="~/images/notifications.png" alt="Notifications">
+                </button>
+            </form>
             <form id="logoutForm" method="post" asp-controller="VolunProfile" asp-action="LogOut">
                 <button type="submit" class="logout-icon">
                     <img src="~/images/logout.png" alt="Logout">
@@ -143,7 +148,7 @@
         width: 100%;
     }
 
-    .notif-icon,.chat-icon, .logout-icon {
+    .request-icon,.notif-icon, .logout-icon {
         background: none;
         border: none;
         cursor: pointer;
@@ -154,15 +159,16 @@
         align-items: center;
     }
 
-        .notif-icon img {
-            width: 86px;
-            height: 86px;
+        .request-icon img {
+            width: 70px;
+            height: 70px;
             transition: transform 0.3s;
         }
 
-        .chat-icon img {
-            width: 60px;
-            height: 60px;
+        .notif-icon img {
+            width: 70px;
+            height: 70px;
+            margin-right: 10px;
             transition: transform 0.3s;
         }
 
@@ -170,10 +176,10 @@
             width: 70px;
             height: 70px;
             transition: transform 0.3s;
-            left:10px;
+            margin-left:8px;
         }
 
-        .notif-icon img:hover, .chat-icon img:hover, .logout-icon img:hover {
+        .request-icon img:hover, .notif-icon img:hover, .logout-icon img:hover {
             transform: scale(1.2);
         }
   

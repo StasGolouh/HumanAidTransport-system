@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HumanAidTransport.Migrations
 {
     [DbContext(typeof(HumanitarianDbContext))]
-    [Migration("20250215125303_AidHumanDb")]
-    partial class AidHumanDb
+    [Migration("20250221132833_HumanAidDb")]
+    partial class HumanAidDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,9 @@ namespace HumanAidTransport.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CarrierId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotificationId")
                         .HasColumnType("int");
 
                     b.Property<int>("Rating")
@@ -197,6 +200,9 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CarrierId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -204,6 +210,10 @@ namespace HumanAidTransport.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

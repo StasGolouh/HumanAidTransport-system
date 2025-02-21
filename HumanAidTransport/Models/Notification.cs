@@ -14,5 +14,8 @@ namespace HumanAidTransport.Models
         public bool IsRead { get; set; } = false; 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
         public Volunteer Volunteer { get; set; }
+        public string Status { get; set; }
+
+        public int CarrierId { get; set; }
     }
 }
