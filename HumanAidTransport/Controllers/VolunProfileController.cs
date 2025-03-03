@@ -42,27 +42,64 @@ namespace HumanAidTransport.Controllers
         [HttpPost]
         public async Task<IActionResult> PostTask(HumanitarianAid newTask)
         {
-            if (ModelState.IsValid && Volunteer != null)
+            if (Volunteer == null)
             {
-                // Завантажуємо волонтера з бази даних
-                var volunteerFromDb = await _context.Volunteers
-                    .Include(v => v.Tasks)
-                    .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
-
-                if (volunteerFromDb != null)
-                {
-                    newTask.VolunteerId = volunteerFromDb.Id; 
-                    volunteerFromDb.Tasks.Add(newTask);  
-
-                    _context.HumanitarianAids.Add(newTask);  
-                    await _context.SaveChangesAsync(); 
-
-                    return RedirectToAction("VolunteerProfile"); 
-                }
+                TempData["Error"] = "You are not authorized!";
+                return RedirectToAction("VolunteerLogin", "Volunteer");
             }
 
-            return View("VolunteerProfile");  
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "Please check the entered data!";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            // Logical validation
+            if (newTask.Quantity <= 0)
+            {
+                TempData["Error"] = "Quantity must be greater than 0!";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            if (newTask.Payment < 0)
+            {
+                TempData["Error"] = "Payment cannot be negative!";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            if (string.IsNullOrWhiteSpace(newTask.DeliveryAddressFrom) || string.IsNullOrWhiteSpace(newTask.DeliveryAddressTo))
+            {
+                TempData["Error"] = "Delivery addresses cannot be empty!";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            // Date validation: must be in the future
+            if (newTask.ExpectedDeliveryTime  <= DateTime.Now)
+            {
+                TempData["Error"] = "The delivery date must be in the future!";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            // Load the volunteer from the database
+            var volunteerFromDb = await _context.Volunteers
+                .Include(v => v.Tasks)
+                .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
+
+            if (volunteerFromDb == null)
+            {
+                TempData["Error"] = "Volunteer not found!";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            newTask.VolunteerId = volunteerFromDb.Id;
+            volunteerFromDb.Tasks.Add(newTask);
+            _context.HumanitarianAids.Add(newTask);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessVol"] = "The task has been successfully added!";
+            return RedirectToAction("VolunteerProfile");
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CancelTask(int taskId)

@@ -38,7 +38,7 @@
                         <form method="post" asp-action="MarkAsRead" asp-controller="Notification">
                             <input type="hidden" name="notificationId" value="@notification.Id" />
                             <input type="hidden" name="volunteerId" value="@notification.VolunteerId" />
-                            <button type="submit" class="mark-read-button">Mark as Read</button>
+                            <button type="submit" class="mark-read-button">Delete</button>
                         </form>
 
                         @if (notification.Status == "Completed")
@@ -124,7 +124,7 @@ else
     }
 
     .mark-read-button {
-        background-color: #10b981;
+        background-color: #dc2626;
         color: white;
         padding: 0.5rem 1rem;
         border-radius: 0.25rem;

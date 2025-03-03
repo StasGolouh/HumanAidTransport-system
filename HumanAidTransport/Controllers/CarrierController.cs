@@ -47,6 +47,8 @@ namespace HumanAidTransport.Controllers
                     {
                         _context.Carriers.Add(carrier);
                         _context.SaveChanges();
+
+                        TempData["RegistMessage"] = "Registration was successful, please log in.";
                         return RedirectToAction("CarrierProfile", "CarrierProfile");
                     }
                     catch (Exception ex)
