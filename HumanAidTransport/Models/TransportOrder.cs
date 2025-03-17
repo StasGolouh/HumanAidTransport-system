@@ -22,7 +22,6 @@
             public string? Status { get; set; }
             public DateTime? ExpectedDeliveryTime { get; set; }
 
-            public string PaymentStatus => Payment.HasValue ? Payment.Value.ToString("F2") : "Free";
             public double? Payment { get; set; }
 
             [Required]

@@ -27,9 +27,13 @@ public class Carrier
     [Required]
     public string ProfilePhotoURL { get; set; } = "/images/profile_photos/photodef.jpg";
 
+    [Required]
+    public int Capacity { get; set; } 
+
+    [Required]
+    public string? Dimensions { get; set; } 
+
     public List<HumanitarianAid> AvailableTasks { get; set; } = new List<HumanitarianAid>();
-
-
 
     public List<CarrierRating> Ratings { get; set; } = new List<CarrierRating>();
 
@@ -37,7 +41,7 @@ public class Carrier
     {
         get
         {
-            return (Ratings != null && Ratings.Count > 0)? (int)Math.Round(Ratings.Average(r=>r.Rating)): 1;
+            return (Ratings != null && Ratings.Count > 0) ? (int)Math.Round(Ratings.Average(r => r.Rating)) : 1;
         }
     }
 }

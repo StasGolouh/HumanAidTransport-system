@@ -28,6 +28,8 @@
                 <th>Vehicle Name</th>
                 <th>Vehicle Model</th>
                 <th>Vehicle Number</th>
+                <th>Carrying Capacity (kg)</th>
+                <th>Dimensions (L x W x H)</th>
                 <th>Humanitarian Aid</th>
                 <th>Actions</th>
             </tr>
@@ -43,6 +45,8 @@
                     <td>@request.VehicleName</td>
                     <td>@request.VehicleModel</td>
                     <td>@request.VehicleNumber</td>
+                    <td>@request.Capacity</td>
+                    <td>@request.Dimensions</td>
                     <td>@request.HumanAidName</td>
                     <td>
                         <form method="post" asp-action="AcceptRequest" asp-controller="DeliveryRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId">

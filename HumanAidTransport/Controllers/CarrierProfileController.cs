@@ -22,7 +22,7 @@ namespace HumanAidTransport.Controllers
             {
                 var availableTasks = await _context.Volunteers
                     .SelectMany(v => v.Tasks)  
-                    .Where(t => t.Status !="Accepted")
+                    .Where(t => t.Status == "New")
                     .ToListAsync(); 
 
                 // Завантажуємо перевізника та його завдання

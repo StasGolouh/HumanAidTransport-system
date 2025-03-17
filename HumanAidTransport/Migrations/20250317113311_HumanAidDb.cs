@@ -23,7 +23,9 @@ namespace HumanAidTransport.Migrations
                     VehicleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     VehicleModel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     VehicleNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProfilePhotoURL = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ProfilePhotoURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    Dimensions = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,11 +74,11 @@ namespace HumanAidTransport.Migrations
                 {
                     HumanAidId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Payment = table.Column<double>(type: "float", nullable: false),
-                    ExpectedDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpectedDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeliveryAddressFrom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryAddressTo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     VolunteerId = table.Column<int>(type: "int", nullable: false),
@@ -138,7 +140,9 @@ namespace HumanAidTransport.Migrations
                     HumanAidId = table.Column<int>(type: "int", nullable: false),
                     HumanitarianAidHumanAidId = table.Column<int>(type: "int", nullable: true),
                     HumanAidName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VolunteerId = table.Column<int>(type: "int", nullable: true)
+                    VolunteerId = table.Column<int>(type: "int", nullable: true),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    Dimensions = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

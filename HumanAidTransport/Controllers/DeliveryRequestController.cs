@@ -56,8 +56,12 @@ public class DeliveryRequestController : Controller
                 HumanitarianAid = humanitarianAid,
                 HumanAidName = humanitarianAid.Name,
                 VolunteerId = volunteer.Id,
-                Volunteer = volunteer
+                Volunteer = volunteer,
+                Capacity = carrier.Capacity,
+                Dimensions = carrier.Dimensions
             };
+
+            humanitarianAid.Status = "Pending";
 
             _context.DeliveryRequests.Add(deliveryRequest);
             await _context.SaveChangesAsync();
@@ -126,7 +130,7 @@ public class DeliveryRequestController : Controller
         _context.TransportOrders.Add(transportOrder);
 
         // Оновлюємо статус гуманітарної допомоги
-        humanitarianAid.Status = "Accepted";
+        humanitarianAid.Status = "Confirmed";
 
         // Зберігаємо зміни в базі даних
         await _context.SaveChangesAsync();
@@ -136,15 +140,8 @@ public class DeliveryRequestController : Controller
             .Include(v => v.Tasks)  // Завантажуємо лише завдання волонтера
             .FirstOrDefaultAsync(v => v.Id == volunteerId);
 
-        // Фільтруємо завдання, щоб не показувати завдання зі статусом "Accepted"
-        var filteredTasks = updatedVolunteer.Tasks
-            .Where(t => t.Status != "Accepted")  // Фільтруємо завдання
-            .ToList();
-
         TempData["AcceptMessage"] = "Delivery request accepted. Transport order created for Carrier.";
 
-        // Повертаємо волонтера з відфільтрованими завданнями
-        updatedVolunteer.Tasks = filteredTasks;
 
         return View("~/Views/Notification/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);
     }
@@ -168,6 +165,16 @@ public class DeliveryRequestController : Controller
         {
             return NotFound(new { message = "Volunteer not found." });
         }
+
+        var humanitarianAid = await _context.HumanitarianAids
+           .FirstOrDefaultAsync(h => h.HumanAidId == deliveryRequest.HumanAidId);
+
+        if (humanitarianAid == null)
+        {
+            return NotFound(new { message = "Humanitarian Aid not found." });
+        }
+
+        humanitarianAid.Status = "Canceled";
 
         // Видаляємо заявку у волонтера
         if (volunteer.DeliveryRequests != null)

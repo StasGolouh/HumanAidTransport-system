@@ -28,4 +28,7 @@ public class DeliveryRequest
     [ForeignKey("VolunteerId")]
     public int? VolunteerId { get; set; }
     public Volunteer? Volunteer { get; set; }
+
+    public int Capacity { get; set; } 
+    public string? Dimensions { get; set; } 
 }

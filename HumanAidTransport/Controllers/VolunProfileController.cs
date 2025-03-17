@@ -29,7 +29,7 @@ namespace HumanAidTransport.Controllers
 
                 if (volunteerFromDb != null)
                 {
-                    var acceptedTasks = volunteerFromDb.Tasks.Where(t => t.Status == "Pending").ToList();
+                    var acceptedTasks = volunteerFromDb.Tasks.ToList();
                     volunteerFromDb.Tasks = acceptedTasks;
 
                     return View("~/Views/Profile/VolunteerProfile.cshtml", volunteerFromDb);
@@ -54,7 +54,6 @@ namespace HumanAidTransport.Controllers
                 return RedirectToAction("VolunteerProfile");
             }
 
-            // Logical validation
             if (newTask.Quantity <= 0)
             {
                 TempData["Error"] = "Quantity must be greater than 0!";
@@ -73,14 +72,12 @@ namespace HumanAidTransport.Controllers
                 return RedirectToAction("VolunteerProfile");
             }
 
-            // Date validation: must be in the future
             if (newTask.ExpectedDeliveryTime  <= DateTime.Now)
             {
                 TempData["Error"] = "The delivery date must be in the future!";
                 return RedirectToAction("VolunteerProfile");
             }
 
-            // Load the volunteer from the database
             var volunteerFromDb = await _context.Volunteers
                 .Include(v => v.Tasks)
                 .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
@@ -92,6 +89,7 @@ namespace HumanAidTransport.Controllers
             }
 
             newTask.VolunteerId = volunteerFromDb.Id;
+            newTask.Status = "New";
             volunteerFromDb.Tasks.Add(newTask);
             _context.HumanitarianAids.Add(newTask);
             await _context.SaveChangesAsync();

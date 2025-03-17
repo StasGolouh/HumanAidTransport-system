@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HumanAidTransport.Migrations
 {
     [DbContext(typeof(HumanitarianDbContext))]
-    [Migration("20250221132833_HumanAidDb")]
+    [Migration("20250317113311_HumanAidDb")]
     partial class HumanAidDb
     {
         /// <inheritdoc />
@@ -33,7 +33,14 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
                     b.Property<string>("Contacts")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Dimensions")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -98,6 +105,9 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DeliveryRequestId"));
 
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
                     b.Property<string>("CarrierContacts")
                         .HasColumnType("nvarchar(max)");
 
@@ -106,6 +116,9 @@ namespace HumanAidTransport.Migrations
 
                     b.Property<int?>("CarrierRating")
                         .HasColumnType("int");
+
+                    b.Property<string>("Dimensions")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("HumanAidId")
                         .HasColumnType("int");
@@ -159,16 +172,14 @@ namespace HumanAidTransport.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ExpectedDeliveryTime")
+                    b.Property<DateTime>("ExpectedDeliveryTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Payment")
                         .HasColumnType("float");

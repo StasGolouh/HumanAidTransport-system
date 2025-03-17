@@ -3,7 +3,6 @@
 <div class="profile-container">
     <div class="profile-sidebar">
         <div class="profile-pic-container">
-
             <img src="@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic" id="profilePic">
             <input type="file" id="uploadPic" hidden>
             <label for="uploadPic" class="upload-btn">Change photo</label>
@@ -30,12 +29,15 @@
                 <button type="submit" class="tasks-icon">
                     <img src="~/images/tasks.png" alt="Tasks">
                 </button>
+                <p class="task-label">Your tasks</p> 
             </form>
             <button class="notif-icon"><img src="~/images/notifications.png" alt="notification"></button>
+            <p class="notif-label">Notifications</p> 
             <form id="logoutForm" method="post" asp-controller="CarrierProfile" asp-action="LogOut">
                 <button type="submit" class="logout-icon">
                     <img src="~/images/logout.png" alt="Logout">
                 </button>
+                <p class="logout-label">Log out </p>
             </form>
         </div>
     </div>
@@ -80,7 +82,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 
@@ -166,23 +167,23 @@
     }
 
         .tasks-icon img {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             transition: transform 0.3s;
             margin-right: 10px;
         }
 
         .notif-icon img {
-            width: 70px;
-            height: 70px;
+            width: 50px;
+            height: 50px;
             margin: 0 10px 10px 0;
             transition: transform 0.3s;
         }
 
 
         .logout-icon img {
-            width: 70px;
-            height: 70px;
+            width: 50px;
+            height: 50px;
             transition: transform 0.3s;
             margin-left: 8px;
         }
@@ -306,6 +307,27 @@
         border: 1px solid #f5c6cb;
         padding: 15px;
         border-radius: 5px;
+    }
+
+    .logout-label, .notif-label, .task-label {
+        font-size: 12px;
+        font-style: italic;
+        font-weight: bold;
+        color: #7f8c8d;
+        margin-right: 10px;
+        text-align: center;
+    }
+
+    .logout-label {
+      margin-top: 3px;
+    }
+
+    .notif-label{
+      margin-top: -15px;
+    }
+
+    .task-label {
+       margin-bottom: -8px;
     }
 </style>
 

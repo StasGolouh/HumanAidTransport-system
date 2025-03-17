@@ -30,17 +30,20 @@
                 <button type="submit" class="request-icon">
                     <img src="~/images/requests.png" alt="Requests">
                 </button>
+                <p class="request-label">Your requests</p>
             </form>
             <form id="notificationForm" method="get" asp-controller="Notification" asp-action="VolunteerNotifications">
                 <input type="hidden" name="volunteerId" value="@Model.Id" />
                 <button type="submit" class="notif-icon">
                     <img src="~/images/notifications.png" alt="Notifications">
                 </button>
+                <p class="notif-label">Notifications</p>
             </form>
             <form id="logoutForm" method="post" asp-controller="VolunProfile" asp-action="LogOut">
                 <button type="submit" class="logout-icon">
                     <img src="~/images/logout.png" alt="Logout">
                 </button>
+                <p class="logout-label">Log out </p>
             </form>
 
         </div>
@@ -53,8 +56,16 @@
                 <ul class="task-list">
                     @foreach (var task in Model.Tasks)
                     {
-                        <li class="task-item">
-                            <strong>@task.Name</strong> Description: @task.Description Quantity: @task.Quantity From: @task.DeliveryAddressFrom To: @task.DeliveryAddressTo Payment: @task.Payment$ Expected Delivery: @task.ExpectedDeliveryTime
+                        <li class="task-item @((task.Status == "New") ? "task-new" : (task.Status == "Confirmed" ? "task-confirmed" : (task.Status == "Canceled" ? "task-canceled" : "task-pending")))">
+                            <strong>@task.Name</strong><br>
+                            Description: @task.Description <br>
+                            Quantity: @task.Quantity <br>
+                            From: @task.DeliveryAddressFrom <br>
+                            To: @task.DeliveryAddressTo <br>
+                            Payment: @task.Payment$ <br>
+                            Expected Delivery: @task.ExpectedDeliveryTime <br>
+                            Status:
+                            <span class="status-label @((task.Status == "Confirmed") ? "status-confirmed" : (task.Status == "Canceled" ? "status-canceled" : (task.Status == "Pending" ? "status-pending" : "")))">@task.Status</span>
                             <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
                                 <button type="submit" class="btn-danger">Cancel Task</button>
                             </form>
@@ -174,21 +185,23 @@
     }
 
         .request-icon img {
-            width: 70px;
-            height: 70px;
+            width: 50px;
+            height: 50px;
             transition: transform 0.3s;
         }
 
         .notif-icon img {
-            width: 70px;
-            height: 70px;
+            margin-top: 7px;
+            width: 60px;
+            height: 60px;
             margin-right: 10px;
             transition: transform 0.3s;
         }
 
         .logout-icon img {
-            width: 70px;
-            height: 70px;
+            margin-top: -10px;
+            width: 60px;
+            height: 60px;
             transition: transform 0.3s;
             margin-left:8px;
         }
@@ -367,6 +380,80 @@
         background-color: #d4edda;
         color: #155724;
         border: 1px solid #c3e6cb;
+    }
+
+    .logout-label, .notif-label, .request-label {
+        font-size: 12px;
+        font-style: italic;
+        font-weight: bold;
+        color: #7f8c8d;
+        margin-right: 10px;
+        text-align: center;
+    }
+
+    .logout-label {
+        margin-top: 3px;
+    }
+
+    .notif-label {
+        margin-top: 3px;
+    }
+
+    .request-label {
+        margin-bottom: -8px;
+    }
+
+    .task-new {
+        border-left: 5px solid #3498db; 
+        background-color: #ecf8ff; 
+        padding-left: 15px;
+    }
+
+    .status-new {
+        color: #3498db;
+        font-weight: bold;
+        background-color: #d5e9f7; 
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+
+    .task-confirmed {
+        background-color: #d4edda;
+        border-left: 5px solid #28a745; 
+    }
+
+    .status-confirmed {
+        color: #28a745;
+        font-weight: bold;
+        background-color: #d5f8e4; 
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+
+    .task-canceled {
+        background-color: #f8d7da; 
+        border-left: 5px solid #dc3545; 
+    }
+
+    .status-canceled {
+        color: #dc3545;
+        font-weight: bold;
+        background-color: #f5c6cb; 
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+
+    .task-pending {
+        background-color: #fff3cd;
+        border-left: 5px solid #ffc107; 
+    }
+
+    .status-pending {
+        color: #ffc107;
+        font-weight: bold;
+        background-color: #fff4b2; 
+        padding: 2px 5px;
+        border-radius: 5px;
     }
 </style>
 
