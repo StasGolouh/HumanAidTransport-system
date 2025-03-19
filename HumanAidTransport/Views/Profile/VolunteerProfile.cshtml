@@ -14,6 +14,20 @@
         @TempData["SuccessVol"]
     </div>
 }
+
+@if (TempData["DeleteMess"] != null){
+    <div class="alert alert-success custom-alert">
+        @TempData["DeleteMess"]
+    </div>
+}
+
+@if (TempData["CanceledMess"] != null)
+{
+    <div class="alert alert-success custom-alert">
+        @TempData["CanceledMess"]
+    </div>
+}
+
 <div class="profile-container">
     <div class="profile-sidebar">
         <div class="profile-pic-container">
@@ -48,7 +62,6 @@
 
         </div>
     </div>
-
     <div class="profile-content">
         <div class="task-section">
             <h3 class="paragtask">Your Tasks</h3>
@@ -56,20 +69,50 @@
                 <ul class="task-list">
                     @foreach (var task in Model.Tasks)
                     {
-                        <li class="task-item @((task.Status == "New") ? "task-new" : (task.Status == "Confirmed" ? "task-confirmed" : (task.Status == "Canceled" ? "task-canceled" : "task-pending")))">
-                            <strong>@task.Name</strong><br>
-                            Description: @task.Description <br>
-                            Quantity: @task.Quantity <br>
-                            From: @task.DeliveryAddressFrom <br>
-                            To: @task.DeliveryAddressTo <br>
-                            Payment: @task.Payment$ <br>
-                            Expected Delivery: @task.ExpectedDeliveryTime <br>
-                            Status:
-                            <span class="status-label @((task.Status == "Confirmed") ? "status-confirmed" : (task.Status == "Canceled" ? "status-canceled" : (task.Status == "Pending" ? "status-pending" : "")))">@task.Status</span>
+                        <li class="task-item
+                        @((task.Status == "New") ? "task-new" :
+                        (task.Status == "Confirmed" ? "task-confirmed" :
+                        (task.Status == "Canceled" ? "task-canceled" :
+                        (task.Status == "Pending" ? "task-pending" :
+                        (task.Status == "Completed" ? "task-completed" :
+                        (task.Status == "Rejected" ? "task-rejected" : ""))))))">
+                        <strong>@task.Name</strong><br>
+                        Description: @task.Description <br>
+                        Quantity: @task.Quantity <br>
+                        From: @task.DeliveryAddressFrom <br>
+                        To: @task.DeliveryAddressTo <br>
+                        Payment: @task.Payment$ <br>
+                        Expected Delivery: @task.ExpectedDeliveryTime <br>
+
+
+                        Status:
+                        <span class="status-label
+                        @((task.Status == "New") ? "status-new" :
+                        (task.Status == "Confirmed") ? "status-confirmed" :
+                        (task.Status == "Canceled" ? "status-canceled" :
+                        (task.Status == "Pending") ? "status-pending" :
+                        (task.Status == "Completed" ? "status-completed" :
+                        (task.Status == "Rejected" ? "status-rejected" : ""))))">
+                        @task.Status
+                        </span>
+
+                        @if (task.Status == "Canceled")
+                        {
+                            <form method="post" asp-action="RestoreTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
+                                <button type="submit" class="btn-restore">Restore Task</button>
+                            </form>
+                        }
+                          
+                            @if (task.Status != "Completed" && task.Status != "Rejected")
+                        {
                             <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
                                 <button type="submit" class="btn-danger">Cancel Task</button>
                             </form>
-                        </li>
+                        }
+                        <form method="post" asp-action="DeleteTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
+                            <button type="submit" class="btn-delete" title="Delete Task">🗑️</button>
+                        </form>
+                    </li>
                     }
                 </ul>
             </div>
@@ -455,6 +498,65 @@
         padding: 2px 5px;
         border-radius: 5px;
     }
+
+    .btn-restore {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s, transform 0.2s;
+    }
+
+        .btn-restore:hover {
+            background: #218838; 
+            transform: scale(1.05);
+        }
+
+    .btn-delete {
+        background: orange; 
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s, transform 0.2s;
+    }
+
+        .btn-delete:hover {
+            background: #c0392b; 
+            transform: scale(1.05);
+        }
+
+    .task-completed {
+        background-color: #d4edda;
+        border-left: 5px solid #28a745;
+    }
+
+    .status-completed {
+        color: #28a745;
+        font-weight: bold;
+        background-color: #d5f8e4;
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+
+    .task-rejected {
+        background-color: #f8d7da;
+        border-left: 5px solid #dc3545;
+    }
+
+    .status-rejected {
+        color: #dc3545;
+        font-weight: bold;
+        background-color: #f5c6cb;
+        padding: 2px 5px;
+        border-radius: 5px;
+        }
+
 </style>
 
 <script>
@@ -488,5 +590,16 @@
             })
             .catch(error => console.error("Error:", error));
         }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            let alerts = document.querySelectorAll(".custom-alert");
+            alerts.forEach(alert => {
+                alert.style.transition = "opacity 0.5s";
+                alert.style.opacity = "0";
+                setTimeout(() => alert.remove(), 500); // Видалення після завершення анімації
+            });
+        }, 3000);
     });
 </script>

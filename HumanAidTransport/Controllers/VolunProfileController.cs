@@ -120,15 +120,79 @@ namespace HumanAidTransport.Controllers
                             .ToListAsync();
                         _context.DeliveryRequests.RemoveRange(deliveryRequests);
 
-                        // Видаляємо завдання
-                        volunteerFromDb.Tasks.Remove(taskToCancel);
-
-                        // Видаляємо гуманітарну допомогу
-                        _context.HumanitarianAids.Remove(taskToCancel);
+                        // Оновлюємо статус завдання
+                        taskToCancel.Status = "Canceled";
 
                         // Зберігаємо зміни в базі даних
                         await _context.SaveChangesAsync();
 
+                        TempData["CanceledMess"] = $"Task {taskToCancel.Name} has been successfully canceled.";
+                        return RedirectToAction("VolunteerProfile");
+                    }
+                }
+            }
+
+            return RedirectToAction("VolunteerLogin", "Volunteer");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RestoreTask(int taskId)
+        {
+            if (Volunteer != null)
+            {
+                // Завантажуємо волонтера і його завдання
+                var volunteerFromDb = await _context.Volunteers
+                    .Include(v => v.Tasks)
+                    .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
+
+                if (volunteerFromDb != null)
+                {
+                    var taskToRestore = volunteerFromDb.Tasks.FirstOrDefault(t => t.HumanAidId == taskId);
+                    if (taskToRestore != null)
+                    {
+                        // Відновлюємо статус завдання
+                        taskToRestore.Status = "New";
+
+                        // Зберігаємо зміни в базі даних
+                        await _context.SaveChangesAsync();
+
+                        TempData["SuccessVol"] = $"Task { taskToRestore.Name } has been successfully restored.";
+                        return RedirectToAction("VolunteerProfile");
+                    }
+                }
+            }
+
+            return RedirectToAction("VolunteerLogin", "Volunteer");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteTask(int taskId)
+        {
+            if (Volunteer != null)
+            {
+                // Завантажуємо волонтера і його завдання
+                var volunteerFromDb = await _context.Volunteers
+                    .Include(v => v.Tasks)
+                    .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
+
+                if (volunteerFromDb != null)
+                {
+                    var taskToCancel = volunteerFromDb.Tasks.FirstOrDefault(t => t.HumanAidId == taskId);
+                    if (taskToCancel != null)
+                    {
+                        // Видаляємо всі пов'язані заявки
+                        var deliveryRequests = await _context.DeliveryRequests
+                            .Where(dr => dr.HumanAidId == taskToCancel.HumanAidId)
+                            .ToListAsync();
+                        _context.DeliveryRequests.RemoveRange(deliveryRequests);
+
+                        // Видаляємо завдання
+                        volunteerFromDb.Tasks.Remove(taskToCancel);
+
+                        // Зберігаємо зміни в базі даних
+                        await _context.SaveChangesAsync();
+
+                        TempData["DeleteMess"] = $"Task {taskToCancel.Name} has been successfully deleted.";
                         return RedirectToAction("VolunteerProfile");
                     }
                 }

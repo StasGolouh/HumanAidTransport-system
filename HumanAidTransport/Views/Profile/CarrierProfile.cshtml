@@ -67,15 +67,25 @@
                 <ul class="task-list">
                     @foreach (var task in Model.AvailableTasks)
                     {
-                        <li class="task-item">
-                            <strong>@task.Name</strong> | @task.Description | Quantity: @task.Quantity | From: @task.DeliveryAddressFrom | To: @task.DeliveryAddressTo | Payment: @task.Payment$ | Expected Delivery: @task.ExpectedDeliveryTime
+                        <li class="task-item @((task.Status == "New") ? "task-new" : (task.Status == "Completed" ? "task-completed" : (task.Status == "Rejected" ? "task-rejected" : "task-pending")))">
+                            <strong>@task.Name</strong><br>
+                            Description: @task.Description <br>
+                            Quantity: @task.Quantity <br>
+                            From: @task.DeliveryAddressFrom <br>
+                            To: @task.DeliveryAddressTo <br>
+                            Payment: @task.Payment$ <br>
+                            Expected Delivery: @task.ExpectedDeliveryTime <br>
+                            Status:
+                            <span class="status-label  @((task.Status == "New") ? "status-new" : (task.Status == "Completed") ? "status-completed" : (task.Status == "Rejected" ? "status-rejected" : (task.Status == "Pending" ? "status-pending" : "")))">@task.Status</span>
 
-                            <form method="post" asp-action="CreateRequest" asp-controller="DeliveryRequest" style="display: inline;">
-                                <input type="hidden" name="carrierId" value="@Model.Id" />
-                                <input type="hidden" name="humanAidId" value="@task.HumanAidId" />
-                                <input type="hidden" name="humanAidId" value="@task.VolunteerId" />
-                                <button type="submit" class="btn-respond">Respond</button>
-                            </form>
+                            <div class="task-actions">
+                                <form method="post" asp-action="CreateRequest" asp-controller="DeliveryRequest" style="display: inline;" onsubmit="hideButton(this);">
+                                    <input type="hidden" name="carrierId" value="@Model.Id" />
+                                    <input type="hidden" name="humanAidId" value="@task.HumanAidId" />
+                                    <input type="hidden" name="volunteerId" value="@task.VolunteerId" />
+                                    <button type="submit" class="btn-respond" id="respondBtn_@task.HumanAidId">Respond</button>
+                                </form>
+                            </div>
                         </li>
                     }
                 </ul>
@@ -270,6 +280,7 @@
         }
 
     .btn-respond {
+        margin-top: 10px;
         margin-left: 10px;
         padding: 8px 15px;
         background: #27ae60;
@@ -329,6 +340,59 @@
     .task-label {
        margin-bottom: -8px;
     }
+
+    .task-new {
+        border-left: 5px solid #3498db;
+        background-color: #ecf8ff;
+        padding-left: 15px;
+    }
+
+    .status-new {
+        color: #3498db;
+        font-weight: bold;
+        background-color: #d5e9f7;
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+
+    .task-pending {
+        background-color: #fff3cd;
+        border-left: 5px solid #ffc107;
+    }
+
+    .status-pending {
+        color: #ffc107;
+        font-weight: bold;
+        background-color: #fff4b2;
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+
+    .task-completed {
+        background-color: #d4edda;
+        border-left: 5px solid #28a745;
+    }
+
+    .status-completed {
+        color: #28a745;
+        font-weight: bold;
+        background-color: #d5f8e4;
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+
+    .task-rejected {
+        background-color: #f8d7da;
+        border-left: 5px solid #dc3545;
+    }
+
+    .status-rejected {
+        color: #dc3545;
+        font-weight: bold;
+        background-color: #f5c6cb;
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
 </style>
 
 <script>
@@ -353,5 +417,31 @@
             })
             .catch(error => console.error("Error:", error));
         }
+    });
+
+
+    // Функція для приховування кнопки та збереження стану в localStorage
+    function hideButton(form) {
+        var button = form.querySelector('button');
+        var buttonId = button.id; // Отримуємо унікальний id кнопки
+
+        button.style.display = 'none';
+
+        // Зберігаємо інформацію в localStorage для кожної кнопки окремо
+        localStorage.setItem('buttonClicked_' + buttonId, 'true');
+    }
+
+    // Перевіряємо, чи кнопка була натиснута при завантаженні сторінки
+    document.addEventListener('DOMContentLoaded', function() {
+        var buttons = document.querySelectorAll('.btn-respond');
+
+        buttons.forEach(function(button) {
+            var buttonId = button.id; 
+
+            // Перевіряємо, чи кнопка була натиснута, зберігається в localStorage
+            if (localStorage.getItem('buttonClicked_' + buttonId) === 'true') {
+                button.style.display = 'none'; 
+            }
+        });
     });
 </script>

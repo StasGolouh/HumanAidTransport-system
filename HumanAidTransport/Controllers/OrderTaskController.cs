@@ -45,6 +45,10 @@ namespace HumanAidTransport.Controllers
             order.Status = "Completed";
             await _context.SaveChangesAsync();
 
+            var humanAid = _context.HumanitarianAids.FirstOrDefault(humanAid => humanAid.HumanAidId == deliveryRequest.HumanAidId);
+
+            humanAid.Status = "Completed";
+
             var notification = new Notification
             {
                 VolunteerId = order.VolunteerId,
@@ -80,6 +84,10 @@ namespace HumanAidTransport.Controllers
 
             order.Status = "Canceled";
             await _context.SaveChangesAsync();
+
+            var humanAid = _context.HumanitarianAids.FirstOrDefault(humanAid => humanAid.HumanAidId == deliveryRequest.HumanAidId);
+
+            humanAid.Status = "Rejected";
 
             var notification = new Notification
             {

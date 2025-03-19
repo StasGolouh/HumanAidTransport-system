@@ -174,8 +174,6 @@ public class DeliveryRequestController : Controller
             return NotFound(new { message = "Humanitarian Aid not found." });
         }
 
-        humanitarianAid.Status = "Canceled";
-
         // Видаляємо заявку у волонтера
         if (volunteer.DeliveryRequests != null)
         {

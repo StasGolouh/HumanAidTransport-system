@@ -20,10 +20,11 @@ namespace HumanAidTransport.Controllers
         {
             if (Carrier != null)
             {
+                // Завантажуємо доступні завдання зі статусами "New" або "Pending"
                 var availableTasks = await _context.Volunteers
-                    .SelectMany(v => v.Tasks)  
-                    .Where(t => t.Status == "New")
-                    .ToListAsync(); 
+                    .SelectMany(v => v.Tasks)
+                    .Where(t => t.Status == "New" || t.Status == "Pending")
+                    .ToListAsync();
 
                 // Завантажуємо перевізника та його завдання
                 var carrierWithTasks = await _context.Carriers
@@ -31,10 +32,23 @@ namespace HumanAidTransport.Controllers
                     .Include(c => c.Ratings)
                     .FirstOrDefaultAsync(c => c.Id == Carrier.Id);
 
+                // Завантажуємо гуманітарну допомогу, що має статус "Completed" або "Rejected"
+                var delRequests = await _context.DeliveryRequests
+                    .Where(req => req.CarrierId == Carrier.Id)
+                    .ToListAsync();
 
+                var completedOrRejectedHumanAid = await _context.HumanitarianAids
+                    .Where(h => delRequests.Select(dr => dr.HumanAidId).Contains(h.HumanAidId) &&
+                                (h.Status == "Completed" || h.Status == "Rejected"))
+                    .ToListAsync();
+
+                // Якщо перевізник знайдений
                 if (carrierWithTasks != null)
                 {
+                    // Додаємо доступні завдання
                     carrierWithTasks.AvailableTasks.AddRange(availableTasks);
+
+                   carrierWithTasks.AvailableTasks.AddRange(completedOrRejectedHumanAid);
 
                     return View("~/Views/Profile/CarrierProfile.cshtml", carrierWithTasks);
                 }
