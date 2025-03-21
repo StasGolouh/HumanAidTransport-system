@@ -118,7 +118,7 @@ public class DeliveryRequestController : Controller
             DeliveryRequestId = deliveryRequest.DeliveryRequestId,
             HumanAidId = humanitarianAid.HumanAidId,
             Name = deliveryRequest.HumanAidName,
-            Status = "Pending",
+            Status = "New",
             ExpectedDeliveryTime = humanitarianAid.ExpectedDeliveryTime,
             Payment = humanitarianAid.Payment,
             DeliveryAddressFrom = humanitarianAid.DeliveryAddressFrom,

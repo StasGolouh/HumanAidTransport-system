@@ -31,10 +31,53 @@ namespace HumanAidTransport.Controllers
             return View("~/Views/Notification/CarrierTasksList.cshtml", orders);
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> MarkAsInProgress(int orderId)
+        {
+            var order = await _context.TransportOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+            {
+                return NotFound(new { message = "Order not found." });
+            }
+
+            var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
+
+            order.Status = "In progress";
+            await _context.SaveChangesAsync();
+
+            var humanAid = _context.HumanitarianAids.FirstOrDefault(humanAid => humanAid.HumanAidId == deliveryRequest.HumanAidId);
+
+            humanAid.Status = "In progress";
+
+            var notification = new Notification
+            {
+                VolunteerId = order.VolunteerId,
+                CarrierId = deliveryRequest.CarrierId,
+                Message = $"Your assigned task (order '{order.Name}') is in progress",
+                CreatedAt = DateTime.UtcNow,
+                Status = "In progress"
+
+            };
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+
+            TempData["ProgressMessage"] = "Task was marked in progress.";
+
+            var updatedCarrierOrders = await _context.TransportOrders
+                .Where(o => o.HumanAidId == order.HumanAidId)
+                .Include(o => o.HumanitarianAid)
+                .ToListAsync();
+
+            return RedirectToAction("CarrierOrderList", new { carrierId = deliveryRequest.CarrierId });
+        }
+
         [HttpPost]
         public async Task<IActionResult> MarkAsCompleted(int orderId)
         {
             var order = await _context.TransportOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+
             if (order == null)
             {
                 return NotFound(new { message = "Order not found." });

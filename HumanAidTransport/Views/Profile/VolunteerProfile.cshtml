@@ -65,59 +65,77 @@
     <div class="profile-content">
         <div class="task-section">
             <h3 class="paragtask">Your Tasks</h3>
+
+            <!-- Search Filters -->
+            <div class="search-filters">
+                <input type="text" id="taskNameSearch" placeholder="Search by Task Name" oninput="filterTasks()">
+                <select id="taskStatusSearch" onchange="filterTasks()">
+                    <option value="">All Statuses</option>
+                    <option value="New">New</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Canceled">Canceled</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                    <option value="In progress">In progress</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+
             <div class="task-scroll-container">
-                <ul class="task-list">
+                <ul class="task-list" id="taskList">
                     @foreach (var task in Model.Tasks)
                     {
                         <li class="task-item
-                        @((task.Status == "New") ? "task-new" :
-                        (task.Status == "Confirmed" ? "task-confirmed" :
-                        (task.Status == "Canceled" ? "task-canceled" :
-                        (task.Status == "Pending" ? "task-pending" :
-                        (task.Status == "Completed" ? "task-completed" :
-                        (task.Status == "Rejected" ? "task-rejected" : ""))))))">
-                        <strong>@task.Name</strong><br>
-                        Description: @task.Description <br>
-                        Quantity: @task.Quantity <br>
-                        From: @task.DeliveryAddressFrom <br>
-                        To: @task.DeliveryAddressTo <br>
-                        Payment: @task.Payment$ <br>
-                        Expected Delivery: @task.ExpectedDeliveryTime <br>
+                    @((task.Status == "New") ? "task-new" :
+                    (task.Status == "Confirmed" ? "task-confirmed" :
+                    (task.Status == "Canceled" ? "task-canceled" :
+                    (task.Status == "Pending" ? "task-pending" :
+                    (task.Status == "Completed" ? "task-completed" :
+                    (task.Status == "In progress" ? "task-progress":
+                    (task.Status == "Rejected" ? "task-rejected" : "")))))))" data-name="@task.Name" data-status="@task.Status">
+                            <strong>@task.Name</strong><br>
+                            Description: @task.Description <br>
+                            Quantity: @task.Quantity <br>
+                            From: @task.DeliveryAddressFrom <br>
+                            To: @task.DeliveryAddressTo <br>
+                            Payment: @task.Payment$ <br>
+                            Expected Delivery: @task.ExpectedDeliveryTime <br>
 
+                            Status:
+                            <span class="status-label
+                    @((task.Status == "New") ? "status-new" :
+                    (task.Status == "Confirmed") ? "status-confirmed" :
+                    (task.Status == "Canceled" ? "status-canceled" :
+                    (task.Status == "Pending") ? "status-pending" :
+                    (task.Status == "Completed" ? "status-completed" :
+                    (task.Status == "In progress" ? "status-progress":
+                    (task.Status == "Rejected" ? "status-rejected" : "")))))">
+                                @task.Status
+                            </span>
 
-                        Status:
-                        <span class="status-label
-                        @((task.Status == "New") ? "status-new" :
-                        (task.Status == "Confirmed") ? "status-confirmed" :
-                        (task.Status == "Canceled" ? "status-canceled" :
-                        (task.Status == "Pending") ? "status-pending" :
-                        (task.Status == "Completed" ? "status-completed" :
-                        (task.Status == "Rejected" ? "status-rejected" : ""))))">
-                        @task.Status
-                        </span>
+                            @if (task.Status == "Canceled" || task.Status == "Rejected")
+                            {
+                                <form method="post" asp-action="RestoreTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
+                                    <button type="submit" class="btn-restore">Restore Task</button>
+                                </form>
+                            }
 
-                        @if (task.Status == "Canceled")
-                        {
-                            <form method="post" asp-action="RestoreTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
-                                <button type="submit" class="btn-restore">Restore Task</button>
-                            </form>
-                        }
-                          
                             @if (task.Status != "Completed" && task.Status != "Rejected")
-                        {
-                            <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
-                                <button type="submit" class="btn-danger">Cancel Task</button>
+                            {
+                                <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
+                                    <button type="submit" class="btn-danger">Cancel Task</button>
+                                </form>
+                            }
+                            <form method="post" asp-action="DeleteTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
+                                <button type="submit" class="btn-delete" title="Delete Task">🗑️</button>
                             </form>
-                        }
-                        <form method="post" asp-action="DeleteTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
-                            <button type="submit" class="btn-delete" title="Delete Task">🗑️</button>
-                        </form>
-                    </li>
+                        </li>
                     }
                 </ul>
             </div>
             <button class="btn-primary" onclick="openModal()">Add Task</button>
         </div>
+    </div>
     </div>
 </div>
 
@@ -557,6 +575,89 @@
         border-radius: 5px;
         }
 
+    .task-progress{
+        background-color: #fff3cd;
+        border-left: 5px solid #ff9800;
+    }
+
+    .status-progress{
+        color: #ff9800;
+        font-weight: bold;
+        background-color: #f5c6cb;
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+
+
+    .search-filters {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Style for task name search input */
+    #taskNameSearch {
+        padding: 8px;
+        font-size: 14px;
+        width: 250px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        transition: border 0.3s;
+        background-color: #fff;
+    }
+
+        /* Focus effect on task name input */
+        #taskNameSearch:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+    /* Style for task status dropdown */
+    #taskStatusSearch {
+        padding: 8px;
+        font-size: 14px;
+        width: 200px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        transition: border 0.3s;
+        background-color: #fff;
+    }
+
+        /* Focus effect on status dropdown */
+        #taskStatusSearch:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+    /* Style for the search button */
+    .search-btn {
+        padding: 8px 15px;
+        background: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+
+        .search-btn:hover {
+            background: #2980b9;
+        }
+
+    /* Task List Container */
+    .task-scroll-container {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+    }
+
+    .task-list {
+        list-style: none;
+        padding: 0;
+    }
 </style>
 
 <script>
@@ -602,4 +703,24 @@
             });
         }, 3000);
     });
+
+      function filterTasks() {
+        var taskNameSearch = document.getElementById("taskNameSearch").value.toLowerCase();
+        var taskStatusSearch = document.getElementById("taskStatusSearch").value;
+        var tasks = document.querySelectorAll(".task-item");
+
+        tasks.forEach(function(task) {
+            var taskName = task.getAttribute("data-name").toLowerCase();
+            var taskStatus = task.getAttribute("data-status");
+
+            var isNameMatch = taskName.includes(taskNameSearch);
+            var isStatusMatch = taskStatus.includes(taskStatusSearch) || taskStatusSearch === "";
+
+            if (isNameMatch && isStatusMatch) {
+                task.style.display = "block";
+            } else {
+                task.style.display = "none";
+            }
+        });
+    }
 </script>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TransportOrder> // Колекція замовлень на перевезення
+﻿@model IEnumerable<TransportOrder>
 
 @{
     ViewData["Title"] = "Carrier Order List";
@@ -12,6 +12,11 @@
 @if (TempData["CancelMessage"] != null)
 {
     <div class="alert error-alert" id="error-alert">@TempData["CancelMessage"]</div>
+}
+
+@if (TempData["ProgressMessage"] != null)
+{
+    <div class="alert progress-alert" id="progress-alert">@TempData["ProgressMessage"]</div>
 }
 
 <h2 class="title">@ViewData["Title"]</h2>
@@ -33,30 +38,45 @@
         <tbody>
             @foreach (var order in Model)
             {
-                <tr class="@(order.Status == "Completed" ? "completed" : order.Status == "Canceled" ? "canceled" : "pending")">
+                <tr class="@(order.Status == "Completed" ? "task-completed" : order.Status == "Canceled" ? "task-rejected" : order.Status == "New" ? "task-new" : "task-pending")">
                     <td>@order.OrderId</td>
                     <td>@order.Name</td>
                     <td>@order.DeliveryAddressFrom</td>
                     <td>@order.DeliveryAddressTo</td>
                     <td>@order.Payment</td>
                     <td class="status-column">
-                        <span class="@(order.Status == "Completed" ? "completed-status" : order.Status == "Canceled" ? "canceled-status" : "pending-status")">@order.Status</span>
+                        <span class="@(order.Status == "Completed" ? "status-completed" : order.Status == "Canceled" ? "status-rejected" : order.Status == "New" ? "status-new" : "status-pending")">@order.Status</span>
                     </td>
                     <td>
-                        @if (order.Status == "Pending")
+                        @if (order.Status == "New")
                         {
-                            <form method="post" asp-controller="OrderTask" asp-action="MarkAsCompleted" asp-route-orderId="@order.OrderId">
-                                <button type="submit" class="btn complete-btn">✔ Mark as Completed</button>
-                            </form>
-                            <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
-                                <button type="submit" class="btn cancel-btn">✖ Cancel Task</button>
-                            </form>
+                            <div class="task-card new">
+                                <form method="post" asp-controller="OrderTask" asp-action="MarkAsInProgress" asp-route-orderId="@order.OrderId">
+                                    <button type="submit" class="btn in-progress-btn">🔄 Mark as In Progress</button>
+                                </form>
+                                <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
+                                    <button type="submit" class="btn cancel-btn">✖ Refuse</button>
+                                </form>
+                            </div>
+                        }
+                        @if (order.Status == "In progress")
+                        {
+                            <div class="task-card in-progress task-buttons">
+                                <form method="post" asp-controller="OrderTask" asp-action="MarkAsCompleted" asp-route-orderId="@order.OrderId">
+                                    <button type="submit" class="btn complete-btn">✔ Complete Task</button>
+                                </form>
+                                <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
+                                    <button type="submit" class="btn cancel-btn">✖ Reject</button>
+                                </form>
+                            </div>
                         }
                         @if (order.Status == "Completed" || order.Status == "Canceled")
                         {
-                            <form method="post" asp-action="DeleteTask" asp-route-orderId="@order.OrderId" asp-controller="OrderTask">
-                                <button type="submit" class="btn delete-btn">🗑️ Delete Task</button>
-                            </form>
+                            <div class="task-card completed">
+                                <form method="post" asp-action="DeleteTask" asp-route-orderId="@order.OrderId" asp-controller="OrderTask">
+                                    <button type="submit" class="btn delete-btn" title="Delete Task">🗑️</button>
+                                </form>
+                            </div>
                         }
                     </td>
                 </tr>
@@ -70,39 +90,74 @@ else
 }
 
 <style>
-    .title {
-        text-align: center;
-        color: #2d572c;
+    .task-new {
+        background-color: #ecf8ff;
+        border-left: 5px solid #3498db;
     }
 
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
+    .task-pending {
+        background-color: #fff3cd;
+        border-left: 5px solid #ffc107;
     }
 
-        .table th, .table td {
-            border: 1px solid #2d572c;
-            padding: 10px;
-            text-align: left;
-        }
+    .task-completed {
+        background-color: #d4edda;
+        border-left: 5px solid #28a745;
+    }
 
-        .table th {
-            background-color: #2d572c;
-            color: white;
-        }
+    .task-rejected {
+        background-color: #f8d7da;
+        border-left: 5px solid #dc3545;
+    }
+
+    .status-new, .status-pending, .status-completed, .status-rejected {
+        font-weight: bold;
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+
+    .status-new {
+        color: #3498db;
+        background-color: #d5e9f7;
+    }
+
+    .status-pending {
+        color: #ffc107;
+        background-color: #fff4b2;
+    }
+
+    .status-completed {
+        color: #28a745;
+        background-color: #d5f8e4;
+    }
+
+    .status-rejected {
+        color: #dc3545;
+        background-color: #f5c6cb;
+    }
+
+    .task-buttons {
+        display: flex;
+        gap: 10px;
+    }
 
     .btn {
-        padding: 10px 15px;
-        border-radius: 8px;
+        padding: 8px 12px;
+        border-radius: 5px;
         border: none;
-        font-weight: bold;
-        transition: background-color 0.3s, transform 0.2s;
         cursor: pointer;
-        margin-bottom: 15px;
-        display: inline-block;
-        text-align: center;
+        font-size: 14px;
     }
+
+    .in-progress-btn {
+        background-color: #f39c12;
+        color: white;
+    }
+
+        .in-progress-btn:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+        }
 
     .complete-btn {
         background-color: #28a745;
@@ -111,7 +166,6 @@ else
 
         .complete-btn:hover {
             background-color: #218838;
-            transform: translateY(-2px);
         }
 
     .cancel-btn {
@@ -121,42 +175,16 @@ else
 
         .cancel-btn:hover {
             background-color: #c82333;
-            transform: translateY(-2px);
         }
 
     .delete-btn {
-        background-color: #ffc107;
+        background-color: orange;
         color: white;
     }
 
         .delete-btn:hover {
-            background-color: #e0a800;
-            transform: translateY(-2px);
+            background-color: yellow;
         }
-
-    .completed {
-        background-color: #28a745;
-    }
-
-    .canceled {
-        background-color: #dc3545; /* Red for canceled */
-    }
-
-    .pending {
-        background-color: #ffc107; /* Yellow for pending */
-    }
-
-    .completed-status {
-        color: black;
-    }
-
-    .canceled-status {
-        color: black;
-    }
-
-    .pending-status {
-        color: black;
-    }
 
     .no-requests {
         text-align: center;
@@ -188,6 +216,11 @@ else
         border: 1px solid #f5c6cb;
     }
 
+    .progress-alert {
+        background-color: yellow;
+        border: 1px solid #f5c6cb;
+    }
+
     .alert-table td {
         padding: 12px;
         text-align: center;
@@ -205,6 +238,11 @@ else
         var errorAlert = document.querySelector('.error-alert');
         if (errorAlert) {
             errorAlert.style.display = 'none';
+        }
+
+        var progressAlert = document.querySelector('.progress-alert');
+        if (progressAlert) {
+            progressAlert.style.display = 'none';
         }
     }, 3000);
 </script>

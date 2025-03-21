@@ -53,12 +53,12 @@
 
             <script>
                 setTimeout(function() {
-                    var message = document.getElementById("message");
-                    if (message) {
-                        message.style.transition = "opacity 0.5s";
-                        message.style.opacity = "0";
-                        setTimeout(function() { message.style.display = "none"; }, 500);
-                    }
+                var message = document.getElementById("message");
+                if (message) {
+                message.style.transition = "opacity 0.5s";
+                message.style.opacity = "0";
+                setTimeout(function() { message.style.display = "none"; }, 500);
+                }
                 }, 3000);
             </script>
 
@@ -78,14 +78,17 @@
                             Status:
                             <span class="status-label  @((task.Status == "New") ? "status-new" : (task.Status == "Completed") ? "status-completed" : (task.Status == "Rejected" ? "status-rejected" : (task.Status == "Pending" ? "status-pending" : "")))">@task.Status</span>
 
-                            <div class="task-actions">
-                                <form method="post" asp-action="CreateRequest" asp-controller="DeliveryRequest" style="display: inline;" onsubmit="hideButton(this);">
-                                    <input type="hidden" name="carrierId" value="@Model.Id" />
-                                    <input type="hidden" name="humanAidId" value="@task.HumanAidId" />
-                                    <input type="hidden" name="volunteerId" value="@task.VolunteerId" />
-                                    <button type="submit" class="btn-respond" id="respondBtn_@task.HumanAidId">Respond</button>
-                                </form>
-                            </div>
+                            @if (task.Status != "Completed" && task.Status != "Rejected" && task.Status != "In progress")
+                            {
+                                <div class="task-actions">
+                                    <form method="post" asp-action="CreateRequest" asp-controller="DeliveryRequest" style="display: inline;">
+                                        <input type="hidden" name="carrierId" value="@Model.Id" />
+                                        <input type="hidden" name="humanAidId" value="@task.HumanAidId" />
+                                        <input type="hidden" name="volunteerId" value="@task.VolunteerId" />
+                                        <button type="submit" class="btn-respond" id="respondBtn_@task.HumanAidId">Respond</button>
+                                    </form>
+                                </div>
+                            }
                         </li>
                     }
                 </ul>
@@ -419,29 +422,4 @@
         }
     });
 
-
-    // Функція для приховування кнопки та збереження стану в localStorage
-    function hideButton(form) {
-        var button = form.querySelector('button');
-        var buttonId = button.id; // Отримуємо унікальний id кнопки
-
-        button.style.display = 'none';
-
-        // Зберігаємо інформацію в localStorage для кожної кнопки окремо
-        localStorage.setItem('buttonClicked_' + buttonId, 'true');
-    }
-
-    // Перевіряємо, чи кнопка була натиснута при завантаженні сторінки
-    document.addEventListener('DOMContentLoaded', function() {
-        var buttons = document.querySelectorAll('.btn-respond');
-
-        buttons.forEach(function(button) {
-            var buttonId = button.id; 
-
-            // Перевіряємо, чи кнопка була натиснута, зберігається в localStorage
-            if (localStorage.getItem('buttonClicked_' + buttonId) === 'true') {
-                button.style.display = 'none'; 
-            }
-        });
-    });
 </script>
