@@ -1,0 +1,195 @@
+﻿@model IEnumerable<DeliveryRequest> // Колекція заявок на доставку
+
+@{
+    ViewData["Title"] = "Volunteer Request List";
+}
+
+@if (TempData["AcceptMessage"] != null)
+{
+    <div class="alert success-alert" id="success-alert">@TempData["AcceptMessage"]</div>
+}
+
+@if (TempData["RejectMessage"] != null)
+{
+    <div class="alert error-alert" id="error-alert">@TempData["RejectMessage"]</div>
+}
+
+<h2 class="title">@ViewData["Title"]</h2>
+
+@if (Model != null && Model.Any())
+{
+    <div class="task-scroll-container">
+        <ul class="task-list">
+            @foreach (var request in Model)
+            {
+                <li class="task-item">
+                    <div class="task-content">
+                        <span><strong>№ @request.DeliveryRequestId</strong> | Carrier: @request.Carrier?.Name | Contacts: @request.CarrierContacts | Rating: @request.CarrierRating | Vehicle: @request.VehicleName (@request.VehicleModel) | Number: @request.VehicleNumber | Capacity: @request.Capacity kg | Dimensions: @request.Dimensions | Humanitarian Aid: <strong> @request.HumanAidName </span>
+                    </div>
+
+                    <div class="task-actions">
+                        <form method="post" asp-action="AcceptRequest" asp-controller="DeliveryRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId" style="display: inline;">
+                            <button type="submit" class="btn accept-btn">✔ Accept</button>
+                        </form>
+
+                        <form method="post" asp-action="RejectRequest" asp-controller="DeliveryRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId" style="display: inline;">
+                            <button type="submit" class="btn reject-btn">✖ Reject</button>
+                        </form>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+}
+else
+{
+    <p class="no-requests">No delivery requests available for this volunteer.</p>
+}
+
+<style>
+    body {
+        background-color: white;
+        color: #2d572c;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .title {
+        text-align: center;
+        font-size: 32px;
+        font-weight: bold;
+        margin-top: 20px;
+        color: #0056b3;
+    }
+
+    .task-scroll-container {
+        max-height: 600px;
+        width: 100%; 
+        max-width: 1500px; 
+        overflow-y: auto;
+        padding: 20px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center; 
+    }
+
+    .task-list {
+        list-style-type: none;
+        padding: 0;
+        width: 100%; 
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .task-item {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border-left: 5px solid #2d572c;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%; 
+        max-width: 1400px;
+        margin: 0 auto; 
+        text-align: center; 
+    }
+
+        .task-item:hover {
+            background-color: #e9ecef;
+            transform: scale(1.01);
+        }
+
+    .task-content {
+        font-size: 14px;
+        word-wrap: break-word; /* Ensure long words break to fit */
+        line-height: 1.5; /* Improve readability with better line spacing */
+    }
+
+    .task-actions {
+        display: flex;
+        justify-content: center; /* Center the buttons */
+        gap: 10px;
+        margin-top: 10px; /* Add some spacing between text and buttons */
+    }
+
+    .btn {
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: none;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.2s;
+        cursor: pointer;
+        text-transform: uppercase;
+    }
+
+    .accept-btn {
+        background-color: #28a745;
+        color: white;
+        border: 1px solid #28a745;
+    }
+
+        .accept-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+    .reject-btn {
+        background-color: #dc3545;
+        color: white;
+        border: 1px solid #dc3545;
+    }
+
+        .reject-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+    .no-requests {
+        text-align: center;
+        font-size: 18px;
+        margin-top: 20px;
+        color: #888;
+    }
+
+    .alert {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
+        max-width: 1500px; /* Match container width */
+        width: 100%;
+    }
+
+    .success-alert {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .error-alert {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+</style>
+
+<script>
+    setTimeout(function() {
+        var successAlert = document.getElementById('success-alert');
+        if (successAlert) {
+            successAlert.style.display = 'none';
+        }
+
+        var errorAlert = document.getElementById('error-alert');
+        if (errorAlert) {
+            errorAlert.style.display = 'none';
+        }
+    }, 3000);
+</script>

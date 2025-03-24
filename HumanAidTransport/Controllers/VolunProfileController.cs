@@ -246,7 +246,7 @@ namespace HumanAidTransport.Controllers
                 .ToListAsync();
 
             // Повертаємо дані до вьюхи
-            return View("~/Views/Notification/VolunteerRequestList.cshtml", requests);
+            return View("~/Views/Lists/VolunteerRequestList.cshtml", requests);
         }
 
         public IActionResult LogOut()

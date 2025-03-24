@@ -28,7 +28,7 @@ namespace HumanAidTransport.Controllers
                 .Include(o => o.HumanitarianAid)
                 .ToListAsync();
 
-            return View("~/Views/Notification/CarrierTasksList.cshtml", orders);
+            return View("~/Views/Lists/CarrierTasksList.cshtml", orders);
         }
 
 
@@ -125,7 +125,7 @@ namespace HumanAidTransport.Controllers
 
             var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
 
-            order.Status = "Canceled";
+            order.Status = "Rejected";
             await _context.SaveChangesAsync();
 
             var humanAid = _context.HumanitarianAids.FirstOrDefault(humanAid => humanAid.HumanAidId == deliveryRequest.HumanAidId);
@@ -136,7 +136,7 @@ namespace HumanAidTransport.Controllers
             {
                 VolunteerId = order.VolunteerId,
                 CarrierId = deliveryRequest.CarrierId,
-                Message = $"Your assigned task (Order '{order.Name}') has been canceled and is now available for others.",
+                Message = $"Your assigned task (Order '{order.Name}') has been canceled and you make it available for others.",
                 CreatedAt = DateTime.UtcNow,
                 Status = "Canceled"
             };

@@ -63,11 +63,34 @@
             </script>
 
             <h3 class="paragtask">Available Tasks</h3>
+            <div class="task-filters">
+                <input type="text" id="searchTask" class="filter-input" placeholder="Search by task name...">
+
+                <select id="statusFilter" class="filter-dropdown">
+                    <option value="">All Statuses</option>
+                    <option value="New">New</option>
+                    <option value="Pending">Pending</option>
+                </select>
+
+                <select id="quantityFilter" class="filter-dropdown">
+                    <option value="">All Quantities</option>
+                    <option value="small">1-10</option>
+                    <option value="medium">11-50</option>
+                    <option value="large">50+</option>
+                </select>
+
+                <select id="paymentFilter" class="filter-dropdown">
+                    <option value="">All Payments</option>
+                    <option value="low">Less than $100</option>
+                    <option value="medium">$100 - $1000</option>
+                    <option value="high">More than $1000</option>
+                </select>
+            </div>
             <div class="task-scroll-container">
                 <ul class="task-list">
                     @foreach (var task in Model.AvailableTasks)
                     {
-                        <li class="task-item @((task.Status == "New") ? "task-new" : (task.Status == "Completed" ? "task-completed" : (task.Status == "Rejected" ? "task-rejected" : "task-pending")))">
+                        <li class="task-item @((task.Status == "New") ? "task-new" : (task.Status == "Pending" ? "task-pending" : ""))">
                             <strong>@task.Name</strong><br>
                             Description: @task.Description <br>
                             Quantity: @task.Quantity <br>
@@ -76,10 +99,8 @@
                             Payment: @task.Payment$ <br>
                             Expected Delivery: @task.ExpectedDeliveryTime <br>
                             Status:
-                            <span class="status-label  @((task.Status == "New") ? "status-new" : (task.Status == "Completed") ? "status-completed" : (task.Status == "Rejected" ? "status-rejected" : (task.Status == "Pending" ? "status-pending" : "")))">@task.Status</span>
+                            <span class="status-label @((task.Status == "New") ? "status-new" : (task.Status == "Pending" ? "status-pending" : ""))">@task.Status</span>
 
-                            @if (task.Status != "Completed" && task.Status != "Rejected" && task.Status != "In progress")
-                            {
                                 <div class="task-actions">
                                     <form method="post" asp-action="CreateRequest" asp-controller="DeliveryRequest" style="display: inline;">
                                         <input type="hidden" name="carrierId" value="@Model.Id" />
@@ -88,7 +109,6 @@
                                         <button type="submit" class="btn-respond" id="respondBtn_@task.HumanAidId">Respond</button>
                                     </form>
                                 </div>
-                            }
                         </li>
                     }
                 </ul>
@@ -371,30 +391,31 @@
         border-radius: 5px;
     }
 
-    .task-completed {
-        background-color: #d4edda;
-        border-left: 5px solid #28a745;
+    .task-filters {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #f1f1f1;
+        border-radius: 8px;
+        flex-wrap: wrap;
     }
 
-    .status-completed {
-        color: #28a745;
-        font-weight: bold;
-        background-color: #d5f8e4;
-        padding: 2px 5px;
+    .filter-input {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
         border-radius: 5px;
+        flex: 1;
     }
 
-    .task-rejected {
-        background-color: #f8d7da;
-        border-left: 5px solid #dc3545;
-    }
-
-    .status-rejected {
-        color: #dc3545;
-        font-weight: bold;
-        background-color: #f5c6cb;
-        padding: 2px 5px;
+    .filter-dropdown {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
         border-radius: 5px;
+        cursor: pointer;
+        background: #fff;
     }
 </style>
 
@@ -420,6 +441,51 @@
             })
             .catch(error => console.error("Error:", error));
         }
+    });
+
+        document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById("searchTask");
+        const statusFilter = document.getElementById("statusFilter");
+        const quantityFilter = document.getElementById("quantityFilter");
+        const paymentFilter = document.getElementById("paymentFilter");
+
+        function filterTasks() {
+            const searchText = searchInput.value.toLowerCase();
+            const status = statusFilter.value;
+            const quantity = quantityFilter.value;
+            const payment = paymentFilter.value;
+
+            document.querySelectorAll(".task-item").forEach(task => {
+                const taskName = task.querySelector("strong").innerText.toLowerCase();
+                const taskStatus = task.querySelector(".status-label").innerText;
+                const taskQuantity = parseInt(task.innerText.match(/Quantity:\s*(\d+)/)?.[1] || "0");
+                const taskPayment = parseInt(task.innerText.match(/Payment:\s*(\d+)/)?.[1] || "0");
+
+                let showTask = true;
+
+                if (searchText && !taskName.includes(searchText)) showTask = false;
+                if (status && taskStatus !== status) showTask = false;
+
+                if (quantity) {
+                    if (quantity === "small" && !(taskQuantity >= 1 && taskQuantity <= 10)) showTask = false;
+                    if (quantity === "medium" && !(taskQuantity > 10 && taskQuantity <= 50)) showTask = false;
+                    if (quantity === "large" && taskQuantity <= 50) showTask = false;
+                }
+
+                if (payment) {
+                    if (payment === "low" && taskPayment >= 100) showTask = false;
+                    if (payment === "medium" && !(taskPayment >= 100 && taskPayment <= 1000)) showTask = false;
+                    if (payment === "high" && taskPayment <= 1000) showTask = false;
+                }
+
+                task.style.display = showTask ? "block" : "none";
+            });
+        }
+
+        searchInput.addEventListener("input", filterTasks);
+        statusFilter.addEventListener("change", filterTasks);
+        quantityFilter.addEventListener("change", filterTasks);
+        paymentFilter.addEventListener("change", filterTasks);
     });
 
 </script>

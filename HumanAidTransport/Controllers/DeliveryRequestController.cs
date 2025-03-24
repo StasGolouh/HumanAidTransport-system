@@ -143,7 +143,7 @@ public class DeliveryRequestController : Controller
         TempData["AcceptMessage"] = "Delivery request accepted. Transport order created for Carrier.";
 
 
-        return View("~/Views/Notification/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);
+        return View("~/Views/Lists/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);
     }
 
 
@@ -190,6 +190,6 @@ public class DeliveryRequestController : Controller
         TempData["RejectMessage"] = "Delivery request rejected. Removed from volunteer's list.";
 
         // Повертаємо оновлений список заявок
-        return View("~/Views/Notification/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);
+        return View("~/Views/Lists/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);
     }
 }
