@@ -1,4 +1,5 @@
-﻿using HumanitarianTransport.Data;
+﻿using HumanAidTransport.Models;
+using HumanitarianTransport.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,25 +16,48 @@ namespace HumanAidTransport.Controllers
         public async Task<IActionResult> VolunteerNotifications(int volunteerId)
         {
             var notifications = await _context.Notifications
-                .Where(n => n.VolunteerId == volunteerId)
+                .Where(n => n.VolunteerId == volunteerId && (n.Status =="Completed" || n.Status == "Rejected" || n.Status =="In progress"))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 
             return View("~/Views/Notification/VolunteerNotifications.cshtml", notifications);
         }
 
+        public async Task<IActionResult> CarrierNotifications(int carrierId)
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.CarrierId == carrierId && (n.Status == "Comfirmed" || n.Status == "Canceled" || n.Status =="Rated"))
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+
+            return View("~/Views/Notification/CarrierNotifications.cshtml", notifications);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> MarkAsRead(int notificationId, int volunteerId)
+        public async Task<IActionResult> VolDelete(int notificationId, int volunteerId)
         {
             var notification = await _context.Notifications.FindAsync(notificationId);
             if (notification != null)
             {
-                notification.IsRead = true;
-                _context.Update(notification);
+                _context.Notifications.Remove(notification);
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(VolunteerNotifications), new { volunteerId });
+            return RedirectToAction("VolunteerNotifications", new { volunteerId });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CarrDelete(int notificationId, int carrierId)
+        {
+            var notification = await _context.Notifications.FindAsync(notificationId);
+            if (notification != null)
+            {
+                _context.Notifications.Remove(notification);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("CarrierNotifications", new { carrierId });
         }
 
         [HttpPost]
@@ -85,6 +109,18 @@ namespace HumanAidTransport.Controllers
 
             // Оновлюємо перевізника в базі
             _context.Carriers.Update(carrier);
+
+            var notifications = new Notification
+            {
+                VolunteerId = notification.VolunteerId,
+                CarrierId = carrier.Id,
+                Message = $"Your work was rated {carrierRating.Rating}. ",
+                CreatedAt = DateTime.UtcNow,
+                Status = "Rated"
+
+            };
+            _context.Notifications.Add(notifications);
+
             await _context.SaveChangesAsync();
 
             TempData["TrueMessage"] = "Rating has been successfully submitted!";

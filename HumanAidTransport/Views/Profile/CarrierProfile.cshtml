@@ -31,8 +31,14 @@
                 </button>
                 <p class="task-label">Your tasks</p> 
             </form>
-            <button class="notif-icon"><img src="~/images/notifications.png" alt="notification"></button>
-            <p class="notif-label">Notifications</p> 
+            <form id="notificationForm" method="get" asp-controller="Notification" asp-action="CarrierNotifications">
+                <input type="hidden" name="carrierId" value="@Model.Id" />
+                <button type="submit" class="notif-icon">
+                    <img src="~/images/notifications.png" alt="Notifications">
+                </button>
+                <p class="notif-label">Notifications</p>
+            </form>
+
             <form id="logoutForm" method="post" asp-controller="CarrierProfile" asp-action="LogOut">
                 <button type="submit" class="logout-icon">
                     <img src="~/images/logout.png" alt="Logout">

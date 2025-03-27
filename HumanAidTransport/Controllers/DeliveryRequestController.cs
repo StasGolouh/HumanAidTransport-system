@@ -126,6 +126,17 @@ public class DeliveryRequestController : Controller
             VolunteerId = volunteer.Id
         };
 
+        var notification = new Notification
+        {
+            VolunteerId = volunteer.Id,
+            CarrierId = deliveryRequest.CarrierId,
+            Message = $"Your task' {deliveryRequest.HumanAidName} ' is comfirmed",
+            CreatedAt = DateTime.UtcNow,
+            Status = "Comfirmed"
+
+        };
+        _context.Notifications.Add(notification);
+
         // Додаємо нове замовлення до бази даних
         _context.TransportOrders.Add(transportOrder);
 
@@ -179,6 +190,18 @@ public class DeliveryRequestController : Controller
         {
             volunteer.DeliveryRequests.Remove(deliveryRequest);
         }
+
+        var notification = new Notification
+        {
+            VolunteerId = volunteer.Id,
+            CarrierId = deliveryRequest.CarrierId,
+            Message = $"Your task' {deliveryRequest.HumanAidName}' is canceled",
+            CreatedAt = DateTime.UtcNow,
+            Status = "Canceled"
+
+        };
+
+        _context.Notifications.Add(notification);
 
         await _context.SaveChangesAsync();
 

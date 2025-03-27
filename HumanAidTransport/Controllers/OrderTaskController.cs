@@ -138,7 +138,7 @@ namespace HumanAidTransport.Controllers
                 CarrierId = deliveryRequest.CarrierId,
                 Message = $"Your assigned task (Order '{order.Name}') has been canceled and you make it available for others.",
                 CreatedAt = DateTime.UtcNow,
-                Status = "Canceled"
+                Status = "Rejected"
             };
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();

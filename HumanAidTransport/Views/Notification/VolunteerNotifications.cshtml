@@ -20,25 +20,25 @@
     </div>
 }
 
+<div class="notification-container">
 
-@if (Model != null && Model.Any(n => !n.IsRead))
+    @if (Model != null && Model.Any())
 {
-    <div class="notification-container">
         <ul>
-            @foreach (var notification in Model.Where(n => !n.IsRead))
+            @foreach (var notification in Model)
             {
                 var statusClass = notification.Status == "Completed" ? "completed" :
-                notification.Status == "Canceled" ? "canceled" : "default-status";
+                notification.Status == "Rejected" ? "rejected" : notification.Status == "In progress" ? "in-progress" : "default-status";
                 <li class="notification-item @statusClass">
                     <div class="notification-content">
                         <span>@notification.Message</span>
                         <small class="notification-date">(@notification.CreatedAt.ToString("yyyy-MM-dd HH:mm"))</small>
                     </div>
                     <div class="notification-actions">
-                        <form method="post" asp-action="MarkAsRead" asp-controller="Notification">
+                        <form method="post" asp-action="VolDelete" asp-controller="Notification">
                             <input type="hidden" name="notificationId" value="@notification.Id" />
                             <input type="hidden" name="volunteerId" value="@notification.VolunteerId" />
-                            <button type="submit" class="mark-read-button">Delete</button>
+                            <button type="submit" class="delete-button">Delete</button>
                         </form>
 
                         @if (notification.Status == "Completed")
@@ -55,7 +55,7 @@
                                        oninput="document.getElementById('rating-value').textContent = this.value" />
                                 <span id="rating-value">3</span>
 
-                                <button type="submit" onclick="return confirm('Rate Carrier?');">
+                                <button type="submit">
                                     Save Rating
                                 </button>
                             </form>
@@ -65,12 +65,13 @@
                 </li>
             }
         </ul>
-    </div>
 }
 else
 {
     <p class="no-notifications">You have no new notifications.</p>
 }
+
+</div>
 
 <style>
     .notification-title {
@@ -110,8 +111,12 @@ else
         color: #16a34a;
     }
 
-    .canceled {
+    .rejected {
         color: #dc2626;
+    }
+
+    .in-progress {
+        color: orange;
     }
 
     .default-status {
@@ -123,7 +128,7 @@ else
         color: #9ca3af;
     }
 
-    .mark-read-button {
+    .delete-button {
         background-color: #dc2626;
         color: white;
         padding: 0.5rem 1rem;
@@ -155,7 +160,6 @@ else
         cursor: pointer;
     }
 
-    /* New styles for message types */
     .alert.alert-danger {
         background-color: #dc2626;
         color: white;
@@ -171,7 +175,6 @@ else
         font-style: italic;
     }
 
-    /* Highlight the notification as 'rated' */
     .rated {
         background-color: #f3f4f6;
     }

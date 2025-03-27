@@ -29,11 +29,11 @@
 
                     <div class="task-actions">
                         <form method="post" asp-action="AcceptRequest" asp-controller="DeliveryRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId" style="display: inline;">
-                            <button type="submit" class="btn accept-btn">✔ Accept</button>
+                            <button type="submit" class="btn accept-btn">✔ Comfirm</button>
                         </form>
 
                         <form method="post" asp-action="RejectRequest" asp-controller="DeliveryRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId" style="display: inline;">
-                            <button type="submit" class="btn reject-btn">✖ Reject</button>
+                            <button type="submit" class="btn reject-btn">✖ Cancel</button>
                         </form>
                     </div>
                 </li>

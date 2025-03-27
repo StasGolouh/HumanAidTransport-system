@@ -9,13 +9,14 @@ namespace HumanAidTransport.Models
         public int Id { get; set; }
 
         [ForeignKey("VolunteerId")]
-        public int VolunteerId { get; set; } 
+        public int? VolunteerId { get; set; } 
         public string Message { get; set; } 
-        public bool IsRead { get; set; } = false; 
+        public bool IsRead { get; set; } = false; // Видалити
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
         public Volunteer Volunteer { get; set; }
         public string Status { get; set; }
 
-        public int CarrierId { get; set; }
+        [ForeignKey("CarrierId")]
+        public int? CarrierId { get; set; }
     }
 }

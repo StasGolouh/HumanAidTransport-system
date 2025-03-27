@@ -1,1 +1,165 @@
-﻿
+﻿@model List<HumanAidTransport.Models.Notification>
+
+@{
+    ViewData["Title"] = "Carrier notifications";
+}
+
+<h2 class="text-center notification-title">Your notifications</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (TempData["TrueMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["TrueMessage"]
+    </div>
+}
+
+<div class="notification-container">
+@if (Model != null && Model.Any())
+{
+        <ul>
+            @foreach (var notification in Model)
+            {
+                var statusClass = notification.Status == "Comfirmed" ? "comfirmed" :
+                notification.Status == "Canceled" ? "canceled" :
+                notification.Status == "Rated" ? "rated" : "default-status";
+                <li class="notification-item @statusClass">
+                    <div class="notification-content">
+                        <span>@notification.Message</span>
+                        <small class="notification-date">(@notification.CreatedAt.ToString("yyyy-MM-dd HH:mm"))</small>
+                    </div>
+                    <div class="notification-actions">
+                        <form method="post" asp-action="CarrDelete" asp-controller="Notification">
+                            <input type="hidden" name="notificationId" value="@notification.Id" />
+                            <input type="hidden" name="carrierId" value="@notification.CarrierId" />
+                            <button type="submit" class="mark-read-button">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            }
+        </ul>
+}
+else
+{
+    <p class="no-notifications">You have no new notifications.</p>
+}
+</div>
+
+<style>
+    .notification-title {
+        color: #047857;
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .notification-container {
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+        padding: 1rem;
+    }
+
+    .notification-item {
+        padding: 0.5rem;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notification-content {
+        flex: 1;
+    }
+
+    .notification-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .comfirmed {
+        color: #16a34a;
+    }
+
+    .canceled {
+        color: #dc2626;
+    }
+
+    .rated{
+        color:orange;
+    }
+
+    .default-status {
+        color: #6b7280;
+    }
+
+    .notification-date {
+        display: block;
+        color: #9ca3af;
+    }
+
+    .mark-read-button {
+        background-color: #dc2626;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        border: none;
+        cursor: pointer;
+    }
+
+    .rating-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .rating-slider {
+        width: 100px;
+    }
+
+    .rating-value {
+        font-weight: bold;
+    }
+
+    .save-rating-button {
+        background-color: #4f46e5;
+        color: white;
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.25rem;
+        border: none;
+        cursor: pointer;
+    }
+
+    .alert.alert-danger {
+        background-color: #dc2626;
+        color: white;
+    }
+
+    .alert.alert-success {
+        background-color: #16a34a;
+        color: white;
+    }
+
+    .already-rated {
+        color: #9ca3af;
+        font-style: italic;
+    }
+
+    .rated {
+        background-color: #f3f4f6;
+    }
+
+    .no-notifications {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #6b7280;
+    }
+</style>
