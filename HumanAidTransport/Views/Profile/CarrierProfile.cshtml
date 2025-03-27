@@ -28,13 +28,22 @@
                 <input type="hidden" name="carrierId" value="@Model.Id" />
                 <button type="submit" class="tasks-icon">
                     <img src="~/images/tasks.png" alt="Tasks">
+                    @if (ViewBag.NewTasksCount > 0)
+                    {
+                        <span class="task-count">@ViewBag.NewTasksCount</span>
+                    }
                 </button>
-                <p class="task-label">Your tasks</p> 
+                <p class="task-label">Your tasks</p>
             </form>
+
             <form id="notificationForm" method="get" asp-controller="Notification" asp-action="CarrierNotifications">
                 <input type="hidden" name="carrierId" value="@Model.Id" />
                 <button type="submit" class="notif-icon">
                     <img src="~/images/notifications.png" alt="Notifications">
+                    @if (ViewBag.NewNotificationsCount > 0)
+                    {
+                        <span class="notif-count">@ViewBag.NewNotificationsCount</span>
+                    }
                 </button>
                 <p class="notif-label">Notifications</p>
             </form>
@@ -422,6 +431,25 @@
         border-radius: 5px;
         cursor: pointer;
         background: #fff;
+    }
+
+    .notif-count, .task-count {
+        position: relative;
+        background-color: #e74c3c;
+        color: #fff;
+        border-radius: 50%;
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .notif-count{
+        top: -25px;
+        right: 7px;
+    }
+
+    .task-count{
+      top: -30px;
+      right: 18px;
     }
 </style>
 

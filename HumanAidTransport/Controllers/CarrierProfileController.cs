@@ -39,6 +39,29 @@ namespace HumanAidTransport.Controllers
                     // Додаємо доступні завдання
                     carrierWithTasks.AvailableTasks.AddRange(availableTasks);
 
+                    // Отримуємо всі DeliveryRequestId для даного CarrierId
+                    var requestIds = await _context.DeliveryRequests
+                        .Where(r => r.CarrierId == Carrier.Id)
+                        .Select(r => r.DeliveryRequestId)
+                        .ToListAsync();
+
+                    // Отримуємо всі замовлення для цих запитів
+                    var orders = await _context.TransportOrders
+                        .Where(o => requestIds.Contains(o.DeliveryRequestId))
+                        .ToListAsync();
+
+                    // Підрахунок нових завдань
+                    int newOrderCount = orders.Count(t => t.Status == "New");
+
+                    // Підрахунок нових сповіщень
+                    int newNotificationsCount = await _context.Notifications
+                        .Where(n => n.CarrierId == Carrier.Id && (n.Status == "Comfirmed" || n.Status == "Canceled" || n.Status == "Rated"))
+                        .CountAsync();
+
+                    // Передаємо кількість нових завдань та сповіщень у View
+                    ViewBag.NewTasksCount = newOrderCount;
+                    ViewBag.NewNotificationsCount = newNotificationsCount;
+
                     return View("~/Views/Profile/CarrierProfile.cshtml", carrierWithTasks);
                 }
             }

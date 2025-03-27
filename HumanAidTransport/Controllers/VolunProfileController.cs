@@ -32,6 +32,23 @@ namespace HumanAidTransport.Controllers
                     var acceptedTasks = volunteerFromDb.Tasks.ToList();
                     volunteerFromDb.Tasks = acceptedTasks;
 
+                    //Лічильник запитів
+                    var deliveryRequest = await _context.DeliveryRequests
+                        .Where(r => r.VolunteerId == volunteerFromDb.Id)
+                        .ToListAsync(); 
+
+                    int newRequestCount = deliveryRequest.Count();
+                    ViewBag.NewRequestCount = newRequestCount;
+
+
+                    //Лічильник сповіщень
+                    int newNotificationsCount = await _context.Notifications
+                      .Where(n => n.VolunteerId == Volunteer.Id && (n.Status == "Completed" || n.Status == "Rejected" || n.Status == "In progress"))
+                      .CountAsync();
+
+                    ViewBag.NewNotificationsCount = newNotificationsCount;
+
+
                     return View("~/Views/Profile/VolunteerProfile.cshtml", volunteerFromDb);
                 }
             }

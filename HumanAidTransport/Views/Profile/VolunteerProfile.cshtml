@@ -43,6 +43,10 @@
                 <input type="hidden" name="volunteerId" value="@Model.Id" />
                 <button type="submit" class="request-icon">
                     <img src="~/images/requests.png" alt="Requests">
+                    @if (ViewBag.NewRequestCount > 0)
+                    {
+                        <span class="req-count">@ViewBag.NewRequestCount </span>
+                    }
                 </button>
                 <p class="request-label">Your requests</p>
             </form>
@@ -50,6 +54,10 @@
                 <input type="hidden" name="volunteerId" value="@Model.Id" />
                 <button type="submit" class="notif-icon">
                     <img src="~/images/notifications.png" alt="Notifications">
+                    @if (ViewBag.NewNotificationsCount > 0)
+                    {
+                        <span class="notif-count">@ViewBag.NewNotificationsCount</span>
+                    }
                 </button>
                 <p class="notif-label">Notifications</p>
             </form>
@@ -650,6 +658,27 @@
     .task-list {
         list-style: none;
         padding: 0;
+    }
+
+    .notif-count, .req-count {
+        position: relative;
+        top: -20px;
+        background-color: #e74c3c;
+        color: #fff;
+        border-radius: 50%;
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .notif-count {
+        top: -20px;
+        right: 12px;
+    }
+
+    .req-count {
+        top: -25px;
+        left: -5px;
     }
 </style>
 
