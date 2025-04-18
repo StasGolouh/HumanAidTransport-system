@@ -123,7 +123,8 @@ public class DeliveryRequestController : Controller
             Payment = humanitarianAid.Payment,
             DeliveryAddressFrom = humanitarianAid.DeliveryAddressFrom,
             DeliveryAddressTo = humanitarianAid.DeliveryAddressTo,
-            VolunteerId = volunteer.Id
+            VolunteerId = volunteer.Id,
+            CarrierId = deliveryRequest.CarrierId
         };
 
         var notification = new Notification

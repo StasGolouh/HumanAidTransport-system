@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HumanAidTransport.Migrations
 {
     /// <inheritdoc />
-    public partial class HumanAidDb : Migration
+    public partial class HumanAidDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -107,12 +107,11 @@ namespace HumanAidTransport.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    VolunteerId = table.Column<int>(type: "int", nullable: false),
+                    VolunteerId = table.Column<int>(type: "int", nullable: true),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CarrierId = table.Column<int>(type: "int", nullable: false)
+                    CarrierId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -121,8 +120,7 @@ namespace HumanAidTransport.Migrations
                         name: "FK_Notifications_Volunteers_VolunteerId",
                         column: x => x.VolunteerId,
                         principalTable: "Volunteers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

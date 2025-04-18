@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HumanAidTransport.Models
 {
@@ -26,6 +27,8 @@ namespace HumanAidTransport.Models
 
         [Required]
         public string DeliveryAddressTo { get; set; }
+
+        [ForeignKey("VolunteerId")]
 
         // Зв'язок з волонтером
         public int VolunteerId { get; set; }

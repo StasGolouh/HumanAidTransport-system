@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HumanAidTransport.Migrations
 {
     [DbContext(typeof(HumanitarianDbContext))]
-    [Migration("20250317113311_HumanAidDb")]
-    partial class HumanAidDb
+    [Migration("20250418202223_HumanAidDB")]
+    partial class HumanAidDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -211,14 +211,11 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CarrierId")
+                    b.Property<int?>("CarrierId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -228,7 +225,7 @@ namespace HumanAidTransport.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("VolunteerId")
+                    b.Property<int?>("VolunteerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -363,9 +360,7 @@ namespace HumanAidTransport.Migrations
                 {
                     b.HasOne("Volunteer", "Volunteer")
                         .WithMany()
-                        .HasForeignKey("VolunteerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("VolunteerId");
 
                     b.Navigation("Volunteer");
                 });

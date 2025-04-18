@@ -10,8 +10,7 @@ namespace HumanAidTransport.Models
 
         [ForeignKey("VolunteerId")]
         public int? VolunteerId { get; set; } 
-        public string Message { get; set; } 
-        public bool IsRead { get; set; } = false; // Видалити
+        public string Message { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
         public Volunteer Volunteer { get; set; }
         public string Status { get; set; }

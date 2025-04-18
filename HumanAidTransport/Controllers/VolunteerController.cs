@@ -21,16 +21,26 @@ namespace HumanAidTransport.Controllers
         [HttpPost]
         public IActionResult VolunteerRegistration(Volunteer volunteer)
         {
+            // Перевірка імені — літери, цифри, пробіли, мін. 2 символи
+            if (!System.Text.RegularExpressions.Regex.IsMatch(volunteer.Name ?? "", @"^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9\s]{2,}$"))
+            {
+                ModelState.AddModelError("Name", "Name can contain letters, numbers, and spaces only (min 2 characters).");
+            }
+
+            // Перевірка пароля — мін. 8 символів, без пробілів
+            if (string.IsNullOrWhiteSpace(volunteer.Password) || volunteer.Password.Length < 8 || volunteer.Password.Contains(" "))
+            {
+                ModelState.AddModelError("Password", "Password must be at least 8 characters long and contain no spaces.");
+            }
+
             if (ModelState.IsValid)
             {
-                // Перевіряємо, чи вже існує волонтер з таким ім'ям
                 bool volunteerExists = _context.Volunteers.Any(v => v.Name == volunteer.Name);
 
                 if (!volunteerExists)
                 {
                     try
                     {
-                        // Додаємо волонтера в базу
                         _context.Volunteers.Add(volunteer);
                         _context.SaveChanges();
 
@@ -39,17 +49,15 @@ namespace HumanAidTransport.Controllers
                     }
                     catch (Exception ex)
                     {
-                        // Логування помилки
                         ModelState.AddModelError("", "Error saving volunteer: " + ex.Message);
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "A customer with this name already exists.");
+                    ModelState.AddModelError("", "A volunteer with this name already exists.");
                 }
             }
 
-            // Повертаємо з помилками на форму
             return View("~/Views/Registration/VolunteerRegistration.cshtml");
         }
 
@@ -70,6 +78,20 @@ namespace HumanAidTransport.Controllers
                 return View("~/Views/Login/VolunteerLogin.cshtml");
             }
 
+            // Валідація імені
+            if (!System.Text.RegularExpressions.Regex.IsMatch(name ?? "", @"^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9\s]{2,}$"))
+            {
+                ModelState.AddModelError("name", "Name can contain letters, numbers, and spaces only (min 2 characters).");
+                return View("~/Views/Login/VolunteerLogin.cshtml");
+            }
+
+            // Валідація пароля
+            if (password.Length < 8 || password.Contains(" "))
+            {
+                ModelState.AddModelError("password", "Password must be at least 8 characters and contain no spaces.");
+                return View("~/Views/Login/VolunteerLogin.cshtml");
+            }
+
             var volunteer = _context.Volunteers.FirstOrDefault(c => c.Name == name && c.Password == password);
 
             if (volunteer != null)
@@ -80,11 +102,9 @@ namespace HumanAidTransport.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Incorrect username or password for the carrier.");
+                ModelState.AddModelError(string.Empty, "Incorrect username or password for the volunteer.");
                 return View("~/Views/Login/VolunteerLogin.cshtml");
             }
         }
-
-
     }
 }

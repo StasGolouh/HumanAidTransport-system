@@ -31,7 +31,9 @@
             public string? DeliveryAddressTo { get; set; }
 
             [Required]
-            public int VolunteerId { get; set; } 
+            public int VolunteerId { get; set; }
 
+            [ForeignKey("CarrierId")]
+            public int CarrierId { get; set; }
         }
     }
