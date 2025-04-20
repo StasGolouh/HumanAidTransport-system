@@ -16,15 +16,9 @@ namespace HumanAidTransport.Controllers
 
         public async Task<IActionResult> CarrierOrderList(int carrierId)
         {
-            // Отримуємо всі DeliveryRequestId для даного CarrierId
-            var requestIds = await _context.DeliveryRequests
-                .Where(r => r.CarrierId == carrierId)
-                .Select(r => r.DeliveryRequestId)
-                .ToListAsync();
-
-            // Отримуємо всі замовлення для цих запитів
+   
             var orders = await _context.TransportOrders
-                .Where(o => requestIds.Contains(o.DeliveryRequestId))
+                .Where(o => o.CarrierId == carrierId)
                 .Include(o => o.HumanitarianAid)
                 .ToListAsync();
 
@@ -54,7 +48,7 @@ namespace HumanAidTransport.Controllers
             var notification = new Notification
             {
                 VolunteerId = order.VolunteerId,
-                CarrierId = deliveryRequest.CarrierId,
+                CarrierId = order.CarrierId,
                 Message = $"Your assigned task (order '{order.Name}') is in progress",
                 CreatedAt = DateTime.UtcNow,
                 Status = "In progress"
@@ -70,7 +64,7 @@ namespace HumanAidTransport.Controllers
                 .Include(o => o.HumanitarianAid)
                 .ToListAsync();
 
-            return RedirectToAction("CarrierOrderList", new { carrierId = deliveryRequest.CarrierId });
+            return RedirectToAction("CarrierOrderList", new { carrierId = order.CarrierId });
         }
 
         [HttpPost]
@@ -95,7 +89,7 @@ namespace HumanAidTransport.Controllers
             var notification = new Notification
             {
                 VolunteerId = order.VolunteerId,
-                CarrierId = deliveryRequest.CarrierId,
+                CarrierId = order.CarrierId,
                 Message = $"Your assigned task (Order '{order.Name}') has been successfully completed",
                 CreatedAt = DateTime.UtcNow,
                 Status = "Completed"
@@ -111,7 +105,7 @@ namespace HumanAidTransport.Controllers
                 .Include(o => o.HumanitarianAid)
                 .ToListAsync();
 
-            return RedirectToAction("CarrierOrderList", new { carrierId = deliveryRequest.CarrierId });
+            return RedirectToAction("CarrierOrderList", new { carrierId = order.CarrierId });
         }
 
         [HttpPost]
@@ -135,7 +129,7 @@ namespace HumanAidTransport.Controllers
             var notification = new Notification
             {
                 VolunteerId = order.VolunteerId,
-                CarrierId = deliveryRequest.CarrierId,
+                CarrierId = order.CarrierId,
                 Message = $"Your assigned task (Order '{order.Name}') has been canceled and you make it available for others.",
                 CreatedAt = DateTime.UtcNow,
                 Status = "Rejected"
@@ -150,7 +144,7 @@ namespace HumanAidTransport.Controllers
                 .Include(o => o.HumanitarianAid)
                 .ToListAsync();
 
-            return RedirectToAction("CarrierOrderList", new { carrierId = deliveryRequest.CarrierId });
+            return RedirectToAction("CarrierOrderList", new { carrierId = order.CarrierId });
         }
 
         [HttpPost]
@@ -158,8 +152,6 @@ namespace HumanAidTransport.Controllers
         {
             var order = await _context.TransportOrders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
-
-            var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
 
             _context.TransportOrders.Remove(order);
             await _context.SaveChangesAsync(); 
@@ -171,7 +163,7 @@ namespace HumanAidTransport.Controllers
                 .Include(o => o.HumanitarianAid) 
                 .ToListAsync();
 
-            return RedirectToAction("CarrierOrderList", new { carrierId = deliveryRequest.CarrierId });
+            return RedirectToAction("CarrierOrderList", new { carrierId = order.CarrierId });
         }
     }
 }

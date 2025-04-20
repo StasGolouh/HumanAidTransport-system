@@ -20,6 +20,7 @@ public class DeliveryRequestController : Controller
             var carrier = await _context.Carriers
                 .Include(c => c.Ratings) 
                 .FirstOrDefaultAsync(c => c.Id == carrierId);
+
             var humanitarianAid = await _context.HumanitarianAids.FirstOrDefaultAsync(h => h.HumanAidId == humanAidId);
 
             if (carrier == null)
