@@ -4,364 +4,105 @@
     ViewData["Title"] = "Carrier Order List";
 }
 
-@if (TempData["CompleteMessage"] != null)
-{
-    <div class="alert success-alert" id="success-alert">@TempData["CompleteMessage"]</div>
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
 
-@if (TempData["CancelMessage"] != null)
-{
-    <div class="alert error-alert" id="error-alert">@TempData["CancelMessage"]</div>
-}
+    <link rel="stylesheet" href="~/css/lists/carriertasklist.css" asp-append-version="true" />
 
-@if (TempData["ProgressMessage"] != null)
-{
-    <div class="alert progress-alert" id="progress-alert">@TempData["ProgressMessage"]</div>
-}
+    <script src="~/js/lists/carriertasklist.js" asp-append-version="true" defer></script>
+</head>
+<body>
 
-<h2 class="title">Carrier Order List</h2>
+    @if (TempData["CompleteMessage"] != null)
+    {
+        <div class="alert success-alert" id="success-alert">@TempData["CompleteMessage"]</div>
+    }
 
-<div class="task-filters">
-    <input type="text" id="searchTask" class="filter-input" placeholder="Search by task name...">
+    @if (TempData["CancelMessage"] != null)
+    {
+        <div class="alert error-alert" id="error-alert">@TempData["CancelMessage"]</div>
+    }
 
-    <select id="statusFilter" class="filter-dropdown">
-        <option value="">All Statuses</option>
-        <option value="New">New</option>
-        <option value="In progress">In progress</option>
-        <option value="Completed">Completed</option>
-        <option value="Rejected">Rejected</option>
-    </select>
-</div>
+    @if (TempData["ProgressMessage"] != null)
+    {
+        <div class="alert progress-alert" id="progress-alert">@TempData["ProgressMessage"]</div>
+    }
 
-@if (Model != null && Model.Any())
-{
-    <div class="orders-container">
-        @foreach (var order in Model)
-        {
-            <div class="order-card @(order.Status == "Completed" ? "completed" :
+    <h2 class="title">Carrier Order List</h2>
+
+    <div class="task-filters">
+        <input type="text" id="searchTask" class="filter-input" placeholder="Search by task name...">
+
+        <select id="statusFilter" class="filter-dropdown">
+            <option value="">All Statuses</option>
+            <option value="New">New</option>
+            <option value="In progress">In progress</option>
+            <option value="Completed">Completed</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="orders-container">
+            @foreach (var order in Model)
+            {
+                <div class="order-card @(order.Status == "Completed" ? "completed" :
                         order.Status == "Rejected" ? "rejected" :
                         order.Status == "New" ? "new" :
                         order.Status == "In progress" ? "in-progress" : "")">
 
-
-                <div class="order-header">
-                    <h3>🚚 @order.Name</h3>
-                    <span class="status @(order.Status == "Completed" ? "completed" :
+                    <div class="order-header">
+                        <h3>🚚 @order.Name</h3>
+                        <span class="status @(order.Status == "Completed" ? "completed" :
                         order.Status == "Rejected" ? "rejected" :
                         order.Status == "New" ? "new" :
                         order.Status == "In progress" ? "in-progress" : "")">@order.Status</span>
+                    </div>
+
+                    <div class="order-details">
+                        <p><strong>From:</strong> @order.DeliveryAddressFrom</p>
+                        <p><strong>To:</strong> @order.DeliveryAddressTo</p>
+                        <p><strong>Payment:</strong> 💰 $@order.Payment</p>
+                    </div>
+
+                    <div class="order-actions">
+                        @if (order.Status == "New")
+                        {
+                            <form method="post" asp-controller="OrderTask" asp-action="MarkAsInProgress" asp-route-orderId="@order.OrderId">
+                                <button type="submit" class="btn in-progress-btn">🔄 Start Task</button>
+                            </form>
+                            <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
+                                <button type="submit" class="btn cancel-btn">❌ Reject</button>
+                            </form>
+                        }
+                        @if (order.Status == "In progress")
+                        {
+                            <form method="post" asp-controller="OrderTask" asp-action="MarkAsCompleted" asp-route-orderId="@order.OrderId">
+                                <button type="submit" class="btn complete-btn">✅ Complete</button>
+                            </form>
+                            <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
+                                <button type="submit" class="btn cancel-btn">❌ Reject</button>
+                            </form>
+                        }
+                        @if (order.Status == "Completed" || order.Status == "Rejected")
+                        {
+                            <form method="post" asp-action="DeleteTask" asp-route-orderId="@order.OrderId" asp-controller="OrderTask">
+                                <button type="submit" class="btn delete-btn">🗑️ Delete</button>
+                            </form>
+                        }
+                    </div>
                 </div>
-
-                <div class="order-details">
-                    <p><strong>From:</strong> @order.DeliveryAddressFrom</p>
-                    <p><strong>To:</strong> @order.DeliveryAddressTo</p>
-                    <p><strong>Payment:</strong> 💰 $@order.Payment</p>
-                </div>
-
-                <div class="order-actions">
-                    @if (order.Status == "New")
-                    {
-                        <form method="post" asp-controller="OrderTask" asp-action="MarkAsInProgress" asp-route-orderId="@order.OrderId">
-                            <button type="submit" class="btn in-progress-btn">🔄 Start Task</button>
-                        </form>
-                        <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
-                            <button type="submit" class="btn cancel-btn">❌ Reject</button>
-                        </form>
-                    }
-                    @if (order.Status == "In progress")
-                    {
-                        <form method="post" asp-controller="OrderTask" asp-action="MarkAsCompleted" asp-route-orderId="@order.OrderId">
-                            <button type="submit" class="btn complete-btn">✅ Complete</button>
-                        </form>
-                        <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
-                            <button type="submit" class="btn cancel-btn">❌ Reject</button>
-                        </form>
-                    }
-                    @if (order.Status == "Completed" || order.Status == "Rejected")
-                    {
-                        <form method="post" asp-action="DeleteTask" asp-route-orderId="@order.OrderId" asp-controller="OrderTask">
-                            <button type="submit" class="btn delete-btn">🗑️ Delete</button>
-                        </form>
-                    }
-                </div>
-            </div>
-        }
-    </div>
-}
-else
-{
-    <p class="no-requests">No transport orders available for this carrier.</p>
-}
-
-<style>
-
-    .title {
-        font-size: 32px; 
-        font-weight: bold; 
-        color: #333; 
-        text-align: center;
-        margin-bottom: 30px; 
-        text-transform: uppercase; 
-        letter-spacing: 2px; 
+            }
+        </div>
     }
-
-    .no-requests {
-        font-size: 20px; 
-        color: #999; 
-        text-align: center;
-        margin-top: 20px; 
-        font-style: italic; 
+    else
+    {
+        <p class="no-requests">No transport orders available for this carrier.</p>
     }
-    .task-filters {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 20px;
-        justify-content: center;
-    }
-
-    .filter-input, .filter-dropdown {
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        font-size: 16px;
-        width: 250px;
-        box-sizing: border-box;
-    }
-
-    .filter-input {
-        width: 350px;
-    }
-
-    /* Стилі для карток замовлень */
-    .orders-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 35px;
-        justify-content: center;
-    }
-    /* Головний контейнер */
-    .orders-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 35px; /* Відстань між картками */
-        justify-content: center;
-    }
-
-    /* Карта замовлення */
-    .order-card {
-        border-radius: 15px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        padding: 30px;
-        width: 1100px;
-        transition: 0.3s ease-in-out;
-        color: #333; /* Основний колір тексту */
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-        .order-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Зміна фону картки в залежності від статусу */
-        .order-card.new {
-            background: white;
-            border-left: 10px solid #3498db;
-        }
-
-        .order-card.in-progress {
-            background: #fff3cd; /* Світло-жовтий фон для картки */
-            border-left: 10px solid #f39c12; /* Яскраво-жовта лінія для статусу "In progress" */
-        }
-
-
-        .order-card.completed {
-            background: #d4edda;
-            border-left: 10px solid #28a745;
-        }
-
-        .order-card.rejected {
-            background: #f8d7da;
-            border-left: 10px solid #dc3545;
-        }
-
-    /* Заголовок картки */
-    .order-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-        .order-header h3 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-    /* Деталі замовлення */
-    .order-details {
-        width: 100%;
-    }
-
-        .order-details p {
-            margin: 8px 0;
-            font-size: 18px;
-            color: #333;
-        }
-
-    /* Статусний бейдж */
-    .status {
-        padding: 10px 15px;
-        border-radius: 5px;
-        font-size: 18px;
-        font-weight: bold;
-        min-width: 120px;
-        text-align: center;
-    }
-
-        .status.new {
-            background: #d5e9f7;
-            color: #3498db;
-        }
-
-        .status.in-progress {
-            background: #f39c12; /* Яскраво-жовтий фон */
-            color: white; /* Білий текст */
-        }
-
-        .status.completed {
-            background: #c3e6cb;
-            color: #155724;
-        }
-
-        .status.rejected {
-            background: #f5c6cb;
-            color: #721c24;
-        }
-
-    /* Дії користувача */
-    .order-actions {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-        margin-top: 20px;
-        width: 100%;
-    }
-
-    .btn {
-        padding: 12px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        font-size: 18px;
-        flex-grow: 1;
-        text-align: center;
-        font-weight: bold;
-    }
-
-    .in-progress-btn {
-        background: #f39c12;
-        color: white;
-    }
-
-        .in-progress-btn:hover {
-            background: #e67e22;
-        }
-
-    .complete-btn {
-        background: #28a745;
-        color: white;
-    }
-
-        .complete-btn:hover {
-            background: #218838;
-        }
-
-    .cancel-btn {
-        background: #dc3545;
-        color: white;
-    }
-
-        .cancel-btn:hover {
-            background: #c82333;
-        }
-
-    .delete-btn {
-        background: orange;
-        color: white;
-    }
-
-        .delete-btn:hover {
-            background: yellow;
-        }
-
-    /* Анімація алертів */
-    .alert {
-        padding: 12px;
-        border-radius: 6px;
-        margin-bottom: 15px;
-        text-align: center;
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    .success-alert {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    .error-alert {
-        background: #f8d7da;
-        color: #721c24;
-    }
-
-    .progress-alert {
-        background: #fff3cd;
-        color: #856404;
-    }
-</style>
-
-<script>
-    setTimeout(function() {
-        document.querySelectorAll('.alert').forEach(alert => {
-            alert.style.display = 'none';
-        });
-    }, 3000);
-
-
-            document.addEventListener("DOMContentLoaded", function() {
-        const searchInput = document.getElementById("searchTask");
-        const statusFilter = document.getElementById("statusFilter");
-
-        // Функція для фільтрації задач
-        function filterTasks() {
-            const searchText = searchInput.value.toLowerCase(); // Текст для пошуку
-            const status = statusFilter.value; // Вибраний статус
-
-            // Перебираємо всі картки замовлень
-            document.querySelectorAll(".order-card").forEach(orderCard => {
-                const orderName = orderCard.querySelector("h3").innerText.toLowerCase(); // Назва замовлення
-                const orderStatus = orderCard.querySelector(".status").innerText; // Статус замовлення
-
-                let showTask = true;
-
-                // Перевірка за текстом пошуку
-                if (searchText && !orderName.includes(searchText)) showTask = false;
-
-                // Перевірка за статусом
-                if (status && orderStatus !== status) showTask = false;
-
-                // Визначення, чи показати картку замовлення
-                orderCard.style.display = showTask ? "block" : "none";
-            });
-        }
-
-        // Додаємо слухачі подій до елементів фільтра
-        searchInput.addEventListener("input", filterTasks);
-        statusFilter.addEventListener("change", filterTasks);
-    });
-</script>
+</body>
+</html>

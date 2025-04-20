@@ -1,6 +1,6 @@
 ﻿using HumanitarianTransport.Data;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Text.RegularExpressions;
 
 namespace HumanAidTransport.Controllers
 {
@@ -13,64 +13,20 @@ namespace HumanAidTransport.Controllers
             _context = context;
         }
 
+        // =============== GET: Registration View ================
         public IActionResult CarrierRegistration()
         {
             return View("~/Views/Registration/CarrierRegistration.cshtml");
         }
 
+        // =============== POST: Carrier Registration ===============
         [HttpPost]
         public IActionResult CarrierRegistration(Carrier carrier)
         {
             if (ModelState.IsValid)
             {
-                // Перевірка імені — тільки літери, мінімум 2 символи
-                if (!System.Text.RegularExpressions.Regex.IsMatch(carrier.Name ?? "", @"^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9\s]{2,}$"))
-                {
-                    ModelState.AddModelError("Name", "Name can contain letters, numbers, and spaces only.");
-                }
-
-                // Пароль — мінімум 8 символів, без пробілів
-                if (string.IsNullOrWhiteSpace(carrier.Password) || carrier.Password.Length < 8 || carrier.Password.Contains(" "))
-                {
-                    ModelState.AddModelError("Password", "Password must be at least 8 characters long and contain no spaces.");
-                }
-
-                // Номер телефону — простий приклад: починається з +380, далі 9 цифр
-                if (!System.Text.RegularExpressions.Regex.IsMatch(carrier.Contacts ?? "", @"^\+380\d{9}$"))
-                {
-                    ModelState.AddModelError("Contacts", "Phone number must be in the format +380XXXXXXXXX.");
-                }
-
-                // Номер авто — рівно 8 символів, без пробілів
-                if (string.IsNullOrWhiteSpace(carrier.VehicleNumber) || carrier.VehicleNumber.Length != 8 || carrier.VehicleNumber.Contains(" "))
-                {
-                    ModelState.AddModelError("VehicleNumber", "Vehicle number must be exactly 8 characters long with no spaces.");
-                }
-
-                // Dimensions — формат 10x10x10 (лише цифри та 'x')
-                if (!System.Text.RegularExpressions.Regex.IsMatch(carrier.Dimensions ?? "", @"^\d+x\d+x\d+$"))
-                {
-                    ModelState.AddModelError("Dimensions", "Dimensions must be in the format 10x10x10 without letters, minus signs, or spaces.");
-                }
-
-                // Перевірка унікальності
-                bool carrierExists = _context.Carriers.Any(c => c.Name == carrier.Name);
-                if (carrierExists)
-                {
-                    ModelState.AddModelError("Name", "A carrier with this name already exists.");
-                }
-
-                bool vehicleNumberExists = _context.Carriers.Any(c => c.VehicleNumber == carrier.VehicleNumber);
-                if (vehicleNumberExists)
-                {
-                    ModelState.AddModelError("VehicleNumber", "A carrier with this vehicle number already exists.");
-                }
-
-                bool phoneNumberExists = _context.Carriers.Any(c => c.Contacts == carrier.Contacts);
-                if (phoneNumberExists)
-                {
-                    ModelState.AddModelError("Contacts", "A carrier with this phone number already exists.");
-                }
+                ValidateCarrierInput(carrier);
+                CheckForDuplicates(carrier);
 
                 if (ModelState.IsValid)
                 {
@@ -92,36 +48,31 @@ namespace HumanAidTransport.Controllers
             return View("~/Views/Registration/CarrierRegistration.cshtml");
         }
 
-
-        //=============================Login====================================
-
+        // =============== GET: Login View ===============
         public IActionResult CarrierLogin()
         {
             return View("~/Views/Login/CarrierLogin.cshtml");
         }
 
+        // =============== POST: Carrier Login ===============
         [HttpPost]
         public IActionResult CarrierLogin(string name, string password)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
             {
                 ModelState.AddModelError(string.Empty, "Please fill in all fields.");
-                return View("~/Views/Login/CarrierLogin.cshtml");
+            }
+            else
+            {
+                if (!IsValidName(name))
+                    ModelState.AddModelError("name", "Name can contain letters, numbers, and spaces only (min 2 characters).");
+
+                if (!IsValidPassword(password))
+                    ModelState.AddModelError("password", "Password must be at least 8 characters and contain no spaces.");
             }
 
-            // Перевірка імені — літери, цифри, пробіли, мінімум 2 символи
-            if (!System.Text.RegularExpressions.Regex.IsMatch(name ?? "", @"^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9\s]{2,}$"))
-            {
-                ModelState.AddModelError("name", "Name can contain letters, numbers, and spaces only (min 2 characters).");
+            if (!ModelState.IsValid)
                 return View("~/Views/Login/CarrierLogin.cshtml");
-            }
-
-            // Перевірка пароля — мінімум 8 символів, без пробілів
-            if (password.Length < 8 || password.Contains(" "))
-            {
-                ModelState.AddModelError("password", "Password must be at least 8 characters and contain no spaces.");
-                return View("~/Views/Login/CarrierLogin.cshtml");
-            }
 
             var carrier = _context.Carriers.FirstOrDefault(c => c.Name == name && c.Password == password);
 
@@ -137,5 +88,62 @@ namespace HumanAidTransport.Controllers
                 return View("~/Views/Login/CarrierLogin.cshtml");
             }
         }
+
+        // =============== Validation Helpers ===============
+
+        private void ValidateCarrierInput(Carrier carrier)
+        {
+            if (!IsValidName(carrier.Name))
+                ModelState.AddModelError("Name", "Name can contain letters, numbers, and spaces only.");
+
+            if (!IsValidPassword(carrier.Password))
+                ModelState.AddModelError("Password", "Password must be at least 8 characters long and contain no spaces.");
+
+            if (!IsValidPhone(carrier.Contacts))
+                ModelState.AddModelError("Contacts", "Phone number must be in the format +380XXXXXXXXX.");
+
+            if (!IsValidVehicleNumber(carrier.VehicleNumber))
+                ModelState.AddModelError("VehicleNumber", "Vehicle number must be exactly 8 characters long with no spaces.");
+
+            if (!IsValidDimensions(carrier.Dimensions))
+                ModelState.AddModelError("Dimensions", "Dimensions must be in the format 10x10x10 without letters, minus signs, or spaces.");
+        }
+
+        private void CheckForDuplicates(Carrier carrier)
+        {
+            var existing = _context.Carriers.FirstOrDefault(c =>
+                c.Name == carrier.Name ||
+                c.VehicleNumber == carrier.VehicleNumber ||
+                c.Contacts == carrier.Contacts);
+
+            if (existing != null)
+            {
+                if (existing.Name == carrier.Name)
+                    ModelState.AddModelError("Name", "A carrier with this name already exists.");
+
+                if (existing.VehicleNumber == carrier.VehicleNumber)
+                    ModelState.AddModelError("VehicleNumber", "A carrier with this vehicle number already exists.");
+
+                if (existing.Contacts == carrier.Contacts)
+                    ModelState.AddModelError("Contacts", "A carrier with this phone number already exists.");
+            }
+        }
+
+        // =============== Regex Helpers ===============
+
+        private bool IsValidName(string name) =>
+            Regex.IsMatch(name ?? "", @"^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9\s]{2,}$");
+
+        private bool IsValidPassword(string password) =>
+            !string.IsNullOrWhiteSpace(password) && password.Length >= 8 && !password.Contains(" ");
+
+        private bool IsValidPhone(string phone) =>
+            Regex.IsMatch(phone ?? "", @"^\+380\d{9}$");
+
+        private bool IsValidVehicleNumber(string number) =>
+            !string.IsNullOrWhiteSpace(number) && number.Length == 8 && !number.Contains(" ");
+
+        private bool IsValidDimensions(string dim) =>
+            Regex.IsMatch(dim ?? "", @"^\d+x\d+x\d+$");
     }
 }

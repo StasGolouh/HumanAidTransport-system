@@ -1,7 +1,5 @@
-﻿using System.Security.Claims;
-using HumanAidTransport.Models;
+﻿using HumanAidTransport.Models;
 using HumanitarianTransport.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
