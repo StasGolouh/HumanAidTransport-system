@@ -24,23 +24,23 @@ public class DeliveryRequestController : Controller
             var humanitarianAid = await _context.HumanitarianAids.FirstOrDefaultAsync(h => h.HumanAidId == humanAidId);
 
             if (carrier == null)
-                return NotFound(new { message = "Carrier not found." });
+                return NotFound(new { message = "Перевізник не знайдено." });
 
             if (humanitarianAid == null)
-                return NotFound(new { message = "Humanitarian Aid not found." });
+                return NotFound(new { message = "Гуманітарна допомога не знайдена." });
 
             // Переконуємося, що є волонтер, який відповідає за цю допомогу
             var volunteer = await _context.Volunteers.FirstOrDefaultAsync(v => v.Id == humanitarianAid.VolunteerId);
 
             if (volunteer == null)
-                return NotFound(new { message = "Volunteer not found." });
+                return NotFound(new { message = "Волонтера не знайдено." });
 
             var existingRequest = await _context.DeliveryRequests
                 .FirstOrDefaultAsync(dr => dr.CarrierId == carrierId && dr.HumanAidId == humanAidId);
 
             if (existingRequest != null)
             {
-                TempData["ErrorMessage"] = "You have already responded to this task.";
+                TempData["ErrorMessage"] = "Ви вже відповіли на це завдання.";
                 return RedirectToAction("CarrierProfile", "CarrierProfile");
             }
 
@@ -62,7 +62,7 @@ public class DeliveryRequestController : Controller
                 Dimensions = carrier.Dimensions
             };
 
-            humanitarianAid.Status = "Pending";
+            humanitarianAid.Status = "В очікуванні";
 
             _context.DeliveryRequests.Add(deliveryRequest);
             await _context.SaveChangesAsync();
@@ -70,12 +70,12 @@ public class DeliveryRequestController : Controller
             _context.Carriers.Update(carrier);  
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Thank you for your feedback! Your application has been successfully created.";
+            TempData["SuccessMessage"] = "Дякуємо за відгук! Вашу заявку успішно створено.";
 
             return RedirectToAction("CarrierProfile", "CarrierProfile");
         }
 
-        return BadRequest(new { message = "Invalid data." });
+        return BadRequest(new { message = "Недійсні дані." });
     }
 
     // Метод для того, щоб волонтер прийняв заявку
@@ -87,7 +87,7 @@ public class DeliveryRequestController : Controller
 
         if (deliveryRequest == null)
         {
-            return NotFound(new { message = "Delivery request not found." });
+            return NotFound(new { message = "Запит на доставку не знайдено." });
         }
 
         // Отримуємо волонтера разом із його заявками і завданнями
@@ -98,7 +98,7 @@ public class DeliveryRequestController : Controller
 
         if (volunteer == null)
         {
-            return NotFound(new { message = "Volunteer not found." });
+            return NotFound(new { message = "Волонтера не знайдено." });
         }
 
         // Отримуємо гуманітарну допомогу, яка була вказана в заявці
@@ -107,7 +107,7 @@ public class DeliveryRequestController : Controller
 
         if (humanitarianAid == null)
         {
-            return NotFound(new { message = "Humanitarian Aid not found." });
+            return NotFound(new { message = "Гуманітарна допомога не знайдена." });
         }
 
         // Видаляємо заявку з волонтера
@@ -119,7 +119,7 @@ public class DeliveryRequestController : Controller
             DeliveryRequestId = deliveryRequest.DeliveryRequestId,
             HumanAidId = humanitarianAid.HumanAidId,
             Name = deliveryRequest.HumanAidName,
-            Status = "New",
+            Status = "Новий",
             ExpectedDeliveryTime = humanitarianAid.ExpectedDeliveryTime,
             Payment = humanitarianAid.Payment,
             DeliveryAddressFrom = humanitarianAid.DeliveryAddressFrom,
@@ -132,9 +132,9 @@ public class DeliveryRequestController : Controller
         {
             VolunteerId = volunteer.Id,
             CarrierId = deliveryRequest.CarrierId,
-            Message = $"Your task' {deliveryRequest.HumanAidName} ' is comfirmed",
+            Message = $"Ваше завдання' {deliveryRequest.HumanAidName} ' підтверженне.",
             CreatedAt = DateTime.UtcNow,
-            Status = "Comfirmed"
+            Status = "Підтверджено"
 
         };
         _context.Notifications.Add(notification);
@@ -143,7 +143,7 @@ public class DeliveryRequestController : Controller
         _context.TransportOrders.Add(transportOrder);
 
         // Оновлюємо статус гуманітарної допомоги
-        humanitarianAid.Status = "Confirmed";
+        humanitarianAid.Status = "Підтверджено";
 
         // Зберігаємо зміни в базі даних
         await _context.SaveChangesAsync();
@@ -153,7 +153,7 @@ public class DeliveryRequestController : Controller
             .Include(v => v.Tasks)  // Завантажуємо лише завдання волонтера
             .FirstOrDefaultAsync(v => v.Id == volunteerId);
 
-        TempData["AcceptMessage"] = "Delivery request accepted. Transport order created for Carrier.";
+        TempData["AcceptMessage"] = "Запит на доставку прийнято. Транспортне замовлення створено для Перевізника.";
 
 
         return View("~/Views/Lists/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);
@@ -168,7 +168,7 @@ public class DeliveryRequestController : Controller
 
         if (deliveryRequest == null)
         {
-            return NotFound(new { message = "Delivery request not found." });
+            return NotFound(new { message = "Запит на доставку не знайдено." });
         }
 
         var volunteer = await _context.Volunteers
@@ -176,7 +176,7 @@ public class DeliveryRequestController : Controller
 
         if (volunteer == null)
         {
-            return NotFound(new { message = "Volunteer not found." });
+            return NotFound(new { message = "Волонтера не знайдено." });
         }
 
         var humanitarianAid = await _context.HumanitarianAids
@@ -184,7 +184,7 @@ public class DeliveryRequestController : Controller
 
         if (humanitarianAid == null)
         {
-            return NotFound(new { message = "Humanitarian Aid not found." });
+            return NotFound(new { message = "Гуманітарна допомога не знайдена." });
         }
 
         // Видаляємо заявку у волонтера
@@ -197,9 +197,9 @@ public class DeliveryRequestController : Controller
         {
             VolunteerId = volunteer.Id,
             CarrierId = deliveryRequest.CarrierId,
-            Message = $"Your task' {deliveryRequest.HumanAidName}' is canceled",
+            Message = $"Ваше завдання' {deliveryRequest.HumanAidName}' скасоване.",
             CreatedAt = DateTime.UtcNow,
-            Status = "Canceled"
+            Status = "Скасовано"
 
         };
 
@@ -212,7 +212,7 @@ public class DeliveryRequestController : Controller
             .Include(v => v.DeliveryRequests) // Завантажуємо заявки волонтера
             .FirstOrDefaultAsync(v => v.Id == volunteerId);
 
-        TempData["RejectMessage"] = "Delivery request rejected. Removed from volunteer's list.";
+        TempData["RejectMessage"] = "Запит на доставку відхилено. Знято зі списку волонтерів.";
 
         // Повертаємо оновлений список заявок
         return View("~/Views/Lists/VolunteerRequestList.cshtml", updatedVolunteer.DeliveryRequests);

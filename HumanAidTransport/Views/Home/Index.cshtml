@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Домашня сторінка";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -14,25 +14,25 @@
 <body>
 
 <div class="text-center">
-    <h1 class="maintext">Welcome on AlwaysReady</h1>
+        <h1 class="maintext">Ласкаво просимо на AlwaysReady</h1>
 
     <img src="~/images/Aid.png" alt="Aid" class="mainimg" />
 
 
     <form id="roleForm" method="get" class="btn-container">
-        <label for="role" style="font-size: 18px; color: #333;">Select your role:</label>
+            <label for="role" style="font-size: 18px; color: #333;">Виберіть свою роль:</label>
         <select id="role" name="role" style="padding: 10px; font-size: 16px; margin-bottom: 20px;">
-            <option value="Volunteer">Volunteer</option>
-            <option value="Carrier">Carrier</option>
+                <option value="Volunteer">Волонтер</option>
+                <option value="Carrier">Перевізник</option>
         </select>
     </form>
 
     <form id="registerForm" method="get" class="btn-container">
-        <button type="submit" class="btn-registration" id="registerButton">Registration</button>
+            <button type="submit" class="btn-registration" id="registerButton">Реєстрація</button>
     </form>
 
     <form id="loginForm" method="get" class="btn-container">
-        <button type="submit" class="btn-login" id="loginButton">Login</button>
+            <button type="submit" class="btn-login" id="loginButton">Логін</button>
     </form>
 </div>
 </body>

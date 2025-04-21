@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<TransportOrder>
 
 @{
-    ViewData["Title"] = "Carrier Order List";
+    ViewData["Title"] = "Список замовлень перевізника";
 }
 
 <!DOCTYPE html>
@@ -32,17 +32,21 @@
         <div class="alert progress-alert" id="progress-alert">@TempData["ProgressMessage"]</div>
     }
 
-    <h2 class="title">Carrier Order List</h2>
+    <h2 class="title">
+        Список замовлень перевізника
+    </h2>
 
     <div class="task-filters">
-        <input type="text" id="searchTask" class="filter-input" placeholder="Search by task name...">
+        <input type="text" id="searchTask" class="filter-input" placeholder="Пошук за назвою завдання...">
 
         <select id="statusFilter" class="filter-dropdown">
-            <option value="">All Statuses</option>
-            <option value="New">New</option>
-            <option value="In progress">In progress</option>
-            <option value="Completed">Completed</option>
-            <option value="Rejected">Rejected</option>
+            <option value="">
+                Всі статуси
+            </option>
+            <option value="Новий">Новий</option>
+            <option value="В процесі">В процесі</option>
+            <option value="Виконано">Виконано</option>
+            <option value="Відхилено">Відхилено</option>
         </select>
     </div>
 
@@ -51,48 +55,48 @@
         <div class="orders-container">
             @foreach (var order in Model)
             {
-                <div class="order-card @(order.Status == "Completed" ? "completed" :
-                        order.Status == "Rejected" ? "rejected" :
-                        order.Status == "New" ? "new" :
-                        order.Status == "In progress" ? "in-progress" : "")">
+                <div class="order-card @(order.Status == "Виконано" ? "completed" :
+                        order.Status == "Відхилено" ? "rejected" :
+                        order.Status == "Новий" ? "new" :
+                        order.Status == "В процесі" ? "in-progress" : "")">
 
                     <div class="order-header">
                         <h3>🚚 @order.Name</h3>
-                        <span class="status @(order.Status == "Completed" ? "completed" :
-                        order.Status == "Rejected" ? "rejected" :
-                        order.Status == "New" ? "new" :
-                        order.Status == "In progress" ? "in-progress" : "")">@order.Status</span>
+                        <span class="status @(order.Status == "Виконано" ? "completed" :
+                        order.Status == "Відхилено" ? "rejected" :
+                        order.Status == "Новий" ? "new" :
+                        order.Status == "В процесі" ? "in-progress" : "")">@order.Status</span>
                     </div>
 
                     <div class="order-details">
-                        <p><strong>From:</strong> @order.DeliveryAddressFrom</p>
-                        <p><strong>To:</strong> @order.DeliveryAddressTo</p>
-                        <p><strong>Payment:</strong> 💰 $@order.Payment</p>
+                        <p><strong>Звідки:</strong> @order.DeliveryAddressFrom</p>
+                        <p><strong>До:</strong> @order.DeliveryAddressTo</p>
+                        <p><strong>Ціна:</strong> 💰 $@order.Payment</p>
                     </div>
 
                     <div class="order-actions">
-                        @if (order.Status == "New")
+                        @if (order.Status == "Новий")
                         {
                             <form method="post" asp-controller="OrderTask" asp-action="MarkAsInProgress" asp-route-orderId="@order.OrderId">
-                                <button type="submit" class="btn in-progress-btn">🔄 Start Task</button>
+                                <button type="submit" class="btn in-progress-btn">🔄 Розпочати завдання</button>
                             </form>
                             <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
-                                <button type="submit" class="btn cancel-btn">❌ Reject</button>
+                                <button type="submit" class="btn cancel-btn">❌ Відхилити</button>
                             </form>
                         }
-                        @if (order.Status == "In progress")
+                        @if (order.Status == "В процесі")
                         {
                             <form method="post" asp-controller="OrderTask" asp-action="MarkAsCompleted" asp-route-orderId="@order.OrderId">
-                                <button type="submit" class="btn complete-btn">✅ Complete</button>
+                                <button type="submit" class="btn complete-btn">✅ Виконати</button>
                             </form>
                             <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
-                                <button type="submit" class="btn cancel-btn">❌ Reject</button>
+                                <button type="submit" class="btn cancel-btn">❌ Відхилити</button>
                             </form>
                         }
-                        @if (order.Status == "Completed" || order.Status == "Rejected")
+                        @if (order.Status == "Виконано" || order.Status == "Відхилено")
                         {
                             <form method="post" asp-action="DeleteTask" asp-route-orderId="@order.OrderId" asp-controller="OrderTask">
-                                <button type="submit" class="btn delete-btn">🗑️ Delete</button>
+                                <button type="submit" class="btn delete-btn">🗑️ Видалити</button>
                             </form>
                         }
                     </div>
@@ -102,7 +106,7 @@
     }
     else
     {
-        <p class="no-requests">No transport orders available for this carrier.</p>
+        <p class="no-requests">Для цього перевізника немає транспортних замовлень.</p>
     }
 </body>
 </html>

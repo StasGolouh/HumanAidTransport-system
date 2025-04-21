@@ -13,31 +13,31 @@
 <body>
 
 <div class="container">
-    <h1>Volunteer Registration</h1>
+    <h1>Реєстрація волонтера</h1>
 
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger">
-            @Html.ValidationSummary(true, "Please fix the following errors:", new { @class = "text-danger" })
+                @Html.ValidationSummary(true, "Виправте наступні помилки:", new { @class = "text-danger" })
         </div>
     }
 
     <form method="post">
         <div class="form-group">
-            <label asp-for="Name">Volunteer's name</label>
+            <label asp-for="Name">Ім'я Волонтера</label>
             <input type="text" asp-for="Name" class="form-control" required />
 
             @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label asp-for="Password">Password</label>
+            <label asp-for="Password">Пароль</label>
             <input type="text" asp-for="Password" class="form-control" required />
     
             @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         </div>
 
-        <button type="submit" class="btn">Sign up</button>
+        <button type="submit" class="btn">Зареєструватися</button>
     </form>
 </div>
 </body>

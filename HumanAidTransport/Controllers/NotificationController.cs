@@ -16,7 +16,7 @@ namespace HumanAidTransport.Controllers
         public async Task<IActionResult> VolunteerNotifications(int volunteerId)
         {
             var notifications = await _context.Notifications
-                .Where(n => n.VolunteerId == volunteerId && (n.Status =="Completed" || n.Status == "Rejected" || n.Status =="In progress"))
+                .Where(n => n.VolunteerId == volunteerId && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status =="В процесі"))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 
@@ -26,7 +26,7 @@ namespace HumanAidTransport.Controllers
         public async Task<IActionResult> CarrierNotifications(int carrierId)
         {
             var notifications = await _context.Notifications
-                .Where(n => n.CarrierId == carrierId && (n.Status == "Comfirmed" || n.Status == "Canceled" || n.Status =="Rated"))
+                .Where(n => n.CarrierId == carrierId && (n.Status == "Підтверджено" || n.Status == "Скасовано" || n.Status == "Оцінено"))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 
@@ -69,7 +69,7 @@ namespace HumanAidTransport.Controllers
 
             if (notification == null)
             {
-                return NotFound("Notification not found.");
+                return NotFound("Сповіщення не знайдено.");
             }
 
             var carrier = await _context.Carriers
@@ -77,7 +77,7 @@ namespace HumanAidTransport.Controllers
 
             if (carrier == null)
             {
-                return NotFound("Carrier not found.");
+                return NotFound("Перевізник не знайдено.");
             }
 
             // Перевірка, чи вже є оцінка для цього перевізника та цього notification
@@ -86,7 +86,7 @@ namespace HumanAidTransport.Controllers
 
             if (existingRating != null)
             {
-                TempData["ErrorMessage"] = "You have already rated this carrier for this task.";
+                TempData["ErrorMessage"] = "Ви вже оцінили цього перевізника для цього завдання.";
                 return RedirectToAction("VolunteerNotifications", new { volunteerId = notification.VolunteerId });
             }
 
@@ -114,16 +114,16 @@ namespace HumanAidTransport.Controllers
             {
                 VolunteerId = notification.VolunteerId,
                 CarrierId = carrier.Id,
-                Message = $"Your work was rated {carrierRating.Rating}. ",
+                Message = $"Вашу роботу оцінили {carrierRating.Rating}. ",
                 CreatedAt = DateTime.UtcNow,
-                Status = "Rated"
+                Status = "Оцінено"
 
             };
             _context.Notifications.Add(notifications);
 
             await _context.SaveChangesAsync();
 
-            TempData["TrueMessage"] = "Rating has been successfully submitted!";
+            TempData["TrueMessage"] = "Рейтинг успішно подано!";
             return RedirectToAction("VolunteerNotifications", new { volunteerId = notification.VolunteerId });
         }
     }

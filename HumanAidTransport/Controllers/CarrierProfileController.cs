@@ -20,10 +20,10 @@ namespace HumanAidTransport.Controllers
         {
             if (Carrier != null)
             {
-                // Завантажуємо доступні завдання зі статусами "New" або "Pending"
+                // Завантажуємо доступні завдання зі статусами "Новий" або "В очікуванні"
                 var availableTasks = await _context.Volunteers
                     .SelectMany(v => v.Tasks)
-                    .Where(t => t.Status == "New" || t.Status == "Pending")
+                    .Where(t => t.Status == "Новий" || t.Status == "В очікуванні")
                     .ToListAsync();
 
                 // Завантажуємо перевізника та його завдання
@@ -45,11 +45,11 @@ namespace HumanAidTransport.Controllers
                         .ToListAsync();
 
                     // Підрахунок нових завдань
-                    int newOrderCount = orders.Count(t => t.Status == "New");
+                    int newOrderCount = orders.Count(t => t.Status == "Новий");
 
                     // Підрахунок нових сповіщень
                     int newNotificationsCount = await _context.Notifications
-                        .Where(n => n.CarrierId == Carrier.Id && (n.Status == "Comfirmed" || n.Status == "Canceled" || n.Status == "Rated"))
+                        .Where(n => n.CarrierId == Carrier.Id && (n.Status == "Підтверджено" || n.Status == "Скасовано" || n.Status == "Оцінено"))
                         .CountAsync();
 
                     // Передаємо кількість нових завдань та сповіщень у View

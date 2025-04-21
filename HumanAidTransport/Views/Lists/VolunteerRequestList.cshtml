@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<DeliveryRequest> // Колекція заявок на доставку
 
 @{
-    ViewData["Title"] = "Volunteer Request List";
+    ViewData["Title"] = "Список запитів волонтерів";
 }
 
 <!DOCTYPE html>
@@ -37,16 +37,16 @@
             {
                 <li class="task-item">
                     <div class="task-content">
-                        <span><strong>№ @request.DeliveryRequestId</strong> | Carrier: @request.Carrier?.Name | Contacts: @request.CarrierContacts | Rating: @request.CarrierRating | Vehicle: @request.VehicleName (@request.VehicleModel) | Number: @request.VehicleNumber | Capacity: @request.Capacity kg | Dimensions: @request.Dimensions | Humanitarian Aid: <strong> @request.HumanAidName </span>
+                        <span><strong>№ @request.DeliveryRequestId</strong> | Перевізник: @request.Carrier?.Name | Контакти: @request.CarrierContacts | Рейтинг: @request.CarrierRating | Автомобіль: @request.VehicleName (@request.VehicleModel) | Номер авто: @request.VehicleNumber | Місткість: @request.Capacity kg | Габарити: @request.Dimensions | Гуманітарна допомога: <strong> @request.HumanAidName </strong> </span>
                     </div>
 
                     <div class="task-actions">
                         <form method="post" asp-action="AcceptRequest" asp-controller="DeliveryRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId" style="display: inline;">
-                            <button type="submit" class="btn accept-btn">✔ Comfirm</button>
+                                <button type="submit" class="btn accept-btn">✔ Підтвердити</button>
                         </form>
 
                         <form method="post" asp-action="RejectRequest" asp-controller="DeliveryRequest" asp-route-deliveryRequestId="@request.DeliveryRequestId" asp-route-volunteerId="@request.VolunteerId" style="display: inline;">
-                            <button type="submit" class="btn reject-btn">✖ Cancel</button>
+                            <button type="submit" class="btn reject-btn">✖ Скасувати</button>
                         </form>
                     </div>
                 </li>
@@ -56,7 +56,7 @@
 }
 else
 {
-    <p class="no-requests">No delivery requests available for this volunteer.</p>
+    <p class="no-requests">Для цього волонтера немає запитів на доставку.</p>
 }
 </body>
 </html>

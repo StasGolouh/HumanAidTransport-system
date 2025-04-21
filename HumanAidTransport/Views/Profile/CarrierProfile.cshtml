@@ -17,12 +17,12 @@
         <div class="profile-pic-container">
             <img src="@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic" id="profilePic">
             <input type="file" id="uploadPic" hidden>
-            <label for="uploadPic" class="upload-btn">Change photo</label>
+                <label for="uploadPic" class="upload-btn">Змінити фото</label>
         </div>
         <h2 class="clientname">@Model.Name</h2>
-        <p class="role">Carrier</p>
+        <p class="role">Перевізник</p>
         <h5>
-            Rating:
+            Рейтинг:
             @for (int i = 1; i <= 5; i++)
             {
                 if (i <= Model.AverageRating)
@@ -45,7 +45,9 @@
                         <span class="task-count">@ViewBag.NewTasksCount</span>
                     }
                 </button>
-                <p class="task-label">Your tasks</p>
+                    <p class="task-label">
+                        Ваші завдання
+                    </p>
             </form>
 
             <form id="notificationForm" method="get" asp-controller="Notification" asp-action="CarrierNotifications">
@@ -57,14 +59,14 @@
                         <span class="notif-count">@ViewBag.NewNotificationsCount</span>
                     }
                 </button>
-                <p class="notif-label">Notifications</p>
+                <p class="notif-label">Сповіщення</p>
             </form>
 
             <form id="logoutForm" method="post" asp-controller="CarrierProfile" asp-action="LogOut">
                 <button type="submit" class="logout-icon">
                     <img src="~/images/logout.png" alt="Logout">
                 </button>
-                <p class="logout-label">Log out </p>
+                <p class="logout-label">Вийти </p>
             </form>
         </div>
     </div>
@@ -89,51 +91,53 @@
                 }, 3000);
             </script>
 
-            <h3 class="paragtask">Available Tasks</h3>
+                <h3 class="paragtask">
+                    Доступні завдання
+                </h3>
             <div class="task-filters">
-                <input type="text" id="searchTask" class="filter-input" placeholder="Search by task name...">
+                <input type="text" id="searchTask" class="filter-input" placeholder="Пошук за назвою завдання...">
 
                 <select id="statusFilter" class="filter-dropdown">
-                    <option value="">All Statuses</option>
-                    <option value="New">New</option>
-                    <option value="Pending">Pending</option>
+                    <option value="">Всі статуси</option>
+                    <option value="Новий">Новий</option>
+                    <option value="В очікуванні">В очікуванні</option>
                 </select>
 
                 <select id="quantityFilter" class="filter-dropdown">
-                    <option value="">All Quantities</option>
+                    <option value="">Всі кількості</option>
                     <option value="small">1-10</option>
                     <option value="medium">11-50</option>
                     <option value="large">50+</option>
                 </select>
 
                 <select id="paymentFilter" class="filter-dropdown">
-                    <option value="">All Payments</option>
-                    <option value="low">Less than $100</option>
+                    <option value="">Всі платежі</option>
+                    <option value="low">Менше 100 доларів</option>
                     <option value="medium">$100 - $1000</option>
-                    <option value="high">More than $1000</option>
+                    <option value="high">Більше 1000 доларів</option>
                 </select>
             </div>
             <div class="task-scroll-container">
                 <ul class="task-list">
                     @foreach (var task in Model.AvailableTasks)
                     {
-                        <li class="task-item @((task.Status == "New") ? "task-new" : (task.Status == "Pending" ? "task-pending" : ""))">
+                        <li class="task-item @((task.Status == "Новий") ? "task-new" : (task.Status == "В очікуванні" ? "task-pending" : ""))">
                             <strong>@task.Name</strong><br>
-                            Description: @task.Description <br>
-                            Quantity: @task.Quantity <br>
-                            From: @task.DeliveryAddressFrom <br>
-                            To: @task.DeliveryAddressTo <br>
-                            Payment: @task.Payment$ <br>
-                            Expected Delivery: @task.ExpectedDeliveryTime <br>
-                            Status:
-                            <span class="status-label @((task.Status == "New") ? "status-new" : (task.Status == "Pending" ? "status-pending" : ""))">@task.Status</span>
+                            Опис: @task.Description <br>
+                            Кількість: @task.Quantity <br>
+                            Звідки: @task.DeliveryAddressFrom <br>
+                            До: @task.DeliveryAddressTo <br>
+                            Ціна: @task.Payment$ <br>
+                            Дата очікуваної доставки: @task.ExpectedDeliveryTime <br>
+                            Статус:
+                                <span class="status-label @((task.Status == "Новий") ? "status-new" : (task.Status == "В очікуванні" ? "status-pending" : ""))">@task.Status</span>
 
                                 <div class="task-actions">
                                     <form method="post" asp-action="CreateRequest" asp-controller="DeliveryRequest" style="display: inline;">
                                         <input type="hidden" name="carrierId" value="@Model.Id" />
                                         <input type="hidden" name="humanAidId" value="@task.HumanAidId" />
                                         <input type="hidden" name="volunteerId" value="@task.VolunteerId" />
-                                        <button type="submit" class="btn-respond" id="respondBtn_@task.HumanAidId">Respond</button>
+                                        <button type="submit" class="btn-respond" id="respondBtn_@task.HumanAidId">Відгукнутися</button>
                                     </form>
                                 </div>
                         </li>

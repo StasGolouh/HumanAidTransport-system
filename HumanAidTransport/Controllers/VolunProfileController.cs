@@ -41,7 +41,7 @@ namespace HumanAidTransport.Controllers
 
                     //Лічильник сповіщень
                     int newNotificationsCount = await _context.Notifications
-                      .Where(n => n.VolunteerId == Volunteer.Id && (n.Status == "Completed" || n.Status == "Rejected" || n.Status == "In progress"))
+                      .Where(n => n.VolunteerId == Volunteer.Id && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status == "В процесі"))
                       .CountAsync();
 
                     ViewBag.NewNotificationsCount = newNotificationsCount;
@@ -59,37 +59,37 @@ namespace HumanAidTransport.Controllers
         {
             if (Volunteer == null)
             {
-                TempData["Error"] = "You are not authorized!";
+                TempData["Error"] = "Ви не авторизовані";
                 return RedirectToAction("VolunteerLogin", "Volunteer");
             }
 
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = "Please check the entered data!";
+                TempData["Error"] = "Будь ласка, перевірте введені дані";
                 return RedirectToAction("VolunteerProfile");
             }
 
             if (newTask.Quantity <= 0)
             {
-                TempData["Error"] = "Quantity must be greater than 0!";
+                TempData["Error"] = "Кількість має бути більше 0";
                 return RedirectToAction("VolunteerProfile");
             }
 
             if (newTask.Payment < 0)
             {
-                TempData["Error"] = "Payment cannot be negative!";
+                TempData["Error"] = "Оплата не може бути негативною";
                 return RedirectToAction("VolunteerProfile");
             }
 
             if (string.IsNullOrWhiteSpace(newTask.DeliveryAddressFrom) || string.IsNullOrWhiteSpace(newTask.DeliveryAddressTo))
             {
-                TempData["Error"] = "Delivery addresses cannot be empty!";
+                TempData["Error"] = "Адреси доставки не можуть бути пустими";
                 return RedirectToAction("VolunteerProfile");
             }
 
             if (newTask.ExpectedDeliveryTime  <= DateTime.Now)
             {
-                TempData["Error"] = "The delivery date must be in the future!";
+                TempData["Error"] = "Дата доставки має бути в майбутньому";
                 return RedirectToAction("VolunteerProfile");
             }
 
@@ -99,17 +99,17 @@ namespace HumanAidTransport.Controllers
 
             if (volunteerFromDb == null)
             {
-                TempData["Error"] = "Volunteer not found!";
+                TempData["Error"] = "Волонтера не знайдено";
                 return RedirectToAction("VolunteerProfile");
             }
 
             newTask.VolunteerId = volunteerFromDb.Id;
-            newTask.Status = "New";
+            newTask.Status = "Новий";
             volunteerFromDb.Tasks.Add(newTask);
             _context.HumanitarianAids.Add(newTask);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessVol"] = "The task has been successfully added!";
+            TempData["SuccessVol"] = "Завдання успішно додано";
             return RedirectToAction("VolunteerProfile");
         }
 
@@ -136,12 +136,12 @@ namespace HumanAidTransport.Controllers
                         _context.DeliveryRequests.RemoveRange(deliveryRequests);
 
                         // Оновлюємо статус завдання
-                        taskToCancel.Status = "Canceled";
+                        taskToCancel.Status = "Скасовано";
 
                         // Зберігаємо зміни в базі даних
                         await _context.SaveChangesAsync();
 
-                        TempData["CanceledMess"] = $"Task {taskToCancel.Name} has been successfully canceled.";
+                        TempData["CanceledMess"] = $"Завдання {taskToCancel.Name} було успішно скасовано.";
                         return RedirectToAction("VolunteerProfile");
                     }
                 }
@@ -166,12 +166,12 @@ namespace HumanAidTransport.Controllers
                     if (taskToRestore != null)
                     {
                         // Відновлюємо статус завдання
-                        taskToRestore.Status = "New";
+                        taskToRestore.Status = "Новий";
 
                         // Зберігаємо зміни в базі даних
                         await _context.SaveChangesAsync();
 
-                        TempData["SuccessVol"] = $"Task { taskToRestore.Name } has been successfully restored.";
+                        TempData["SuccessVol"] = $"Завдання { taskToRestore.Name } було успішно відновлено.";
                         return RedirectToAction("VolunteerProfile");
                     }
                 }
@@ -207,7 +207,7 @@ namespace HumanAidTransport.Controllers
                         // Зберігаємо зміни в базі даних
                         await _context.SaveChangesAsync();
 
-                        TempData["DeleteMess"] = $"Task {taskToCancel.Name} has been successfully deleted.";
+                        TempData["DeleteMess"] = $"Завдання {taskToCancel.Name} було успішно видалено.";
                         return RedirectToAction("VolunteerProfile");
                     }
                 }

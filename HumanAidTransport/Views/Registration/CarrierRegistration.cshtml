@@ -12,65 +12,65 @@
 <body>
 
 <div class="container">
-    <h1>Carrier Registration</h1>
+    <h1>Реєстрація перевізника</h1>
 
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger">
-            @Html.ValidationSummary(true, "Please fix the following errors:", new { @class = "text-danger" })
+           @Html.ValidationSummary(true, "Виправте наступні помилки:", new { @class = "text-danger" })
         </div>
     }
 
     <form method="post">
         <div class="form-group">
-            <label asp-for="Name">Carrier's name</label>
+            <label asp-for="Name">Ім'я Перевізника</label>
             <input type="text" asp-for="Name" class="form-control" required />
             @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label asp-for="Password">Password</label>
+            <label asp-for="Password">Пароль</label>
             <input type="text" asp-for="Password" class="form-control" required />
             @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label asp-for="Contacts">Contacts</label>
+            <label asp-for="Contacts">Контакти</label>
             <input type="text" asp-for="Contacts" class="form-control" required />
             @Html.ValidationMessageFor(m => m.Contacts, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label asp-for="VehicleName">Car's name</label>
+            <label asp-for="VehicleName">Назва авто</label>
             <input type="text" asp-for="VehicleName" class="form-control" required />
             @Html.ValidationMessageFor(m => m.VehicleName, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label asp-for="VehicleModel">Car's model</label>
+            <label asp-for="VehicleModel">Модель авто</label>
             <input type="text" asp-for="VehicleModel" class="form-control" required />
             @Html.ValidationMessageFor(m => m.VehicleModel, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label asp-for="VehicleNumber">Car's number</label>
+            <label asp-for="VehicleNumber">Номер авто</label>
             <input type="text" asp-for="VehicleNumber" class="form-control" required />
             @Html.ValidationMessageFor(m => m.VehicleNumber, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label asp-for="Capacity">Carrying capacity (kg)</label>
+            <label asp-for="Capacity">Вантажопідйомність (кг)</label>
             <input type="number" asp-for="Capacity" class="form-control" min="0" max="10000" required />
             @Html.ValidationMessageFor(m => m.Capacity, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label asp-for="Dimensions">Dimensions (L x W x H)</label>
+            <label asp-for="Dimensions">Розміри (Д x Ш x В)</label>
             <input type="text" asp-for="Dimensions" class="form-control" required />
             @Html.ValidationMessageFor(m => m.Dimensions, "", new { @class = "text-danger" })
         </div>
 
-        <button type="submit" class="btn">Sign up</button>
+        <button type="submit" class="btn">Зареєструватися</button>
     </form>
 </div>
 </body>

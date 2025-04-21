@@ -35,12 +35,12 @@ namespace HumanAidTransport.Controllers
                         _context.Carriers.Add(carrier);
                         _context.SaveChanges();
 
-                        TempData["RegistMessage"] = "Registration was successful, please log in.";
+                        TempData["RegistMessage"] = "Реєстрація пройшла успішно, будь ласка, залогінтеся.";
                         return RedirectToAction("CarrierProfile", "CarrierProfile");
                     }
                     catch (Exception ex)
                     {
-                        ModelState.AddModelError("", "Error saving carrier: " + ex.Message);
+                        ModelState.AddModelError("", "Помилка збереження перевізника: " + ex.Message);
                     }
                 }
             }
@@ -60,15 +60,15 @@ namespace HumanAidTransport.Controllers
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
             {
-                ModelState.AddModelError(string.Empty, "Please fill in all fields.");
+                ModelState.AddModelError(string.Empty, "Будь ласка, заповніть усі поля.");
             }
             else
             {
                 if (!IsValidName(name))
-                    ModelState.AddModelError("name", "Name can contain letters, numbers, and spaces only (min 2 characters).");
+                    ModelState.AddModelError("name", "Ім'я може містити лише літери, цифри та пробіли (мінімум 2 символи).");
 
                 if (!IsValidPassword(password))
-                    ModelState.AddModelError("password", "Password must be at least 8 characters and contain no spaces.");
+                    ModelState.AddModelError("password", "Пароль має бути не менше 8 символів і не містити пробілів.");
             }
 
             if (!ModelState.IsValid)
@@ -84,7 +84,7 @@ namespace HumanAidTransport.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Incorrect username or password for the carrier.");
+                ModelState.AddModelError(string.Empty, "Неправильний логін або пароль перевізника.");
                 return View("~/Views/Login/CarrierLogin.cshtml");
             }
         }
@@ -94,38 +94,46 @@ namespace HumanAidTransport.Controllers
         private void ValidateCarrierInput(Carrier carrier)
         {
             if (!IsValidName(carrier.Name))
-                ModelState.AddModelError("Name", "Name can contain letters, numbers, and spaces only.");
+                ModelState.AddModelError("Name", "Ім'я може містити лише літери, цифри та пробіли.");
 
             if (!IsValidPassword(carrier.Password))
-                ModelState.AddModelError("Password", "Password must be at least 8 characters long and contain no spaces.");
+                ModelState.AddModelError("Password", "Пароль має бути не менше 8 символів і не містити пробілів.");
 
             if (!IsValidPhone(carrier.Contacts))
-                ModelState.AddModelError("Contacts", "Phone number must be in the format +380XXXXXXXXX.");
+                ModelState.AddModelError("Contacts", "Номер телефону має бути у форматі +380XXXXXXXXX.");
 
             if (!IsValidVehicleNumber(carrier.VehicleNumber))
-                ModelState.AddModelError("VehicleNumber", "Vehicle number must be exactly 8 characters long with no spaces.");
+                ModelState.AddModelError("VehicleNumber", "Номер транспортного засобу має містити рівно 8 символів без пробілів.");
 
             if (!IsValidDimensions(carrier.Dimensions))
-                ModelState.AddModelError("Dimensions", "Dimensions must be in the format 10x10x10 without letters, minus signs, or spaces.");
+                ModelState.AddModelError("Dimensions", "Розміри мають бути у форматі 10x10x10 без літер, знаків мінус і пробілів.");
         }
 
         private void CheckForDuplicates(Carrier carrier)
         {
-            var existing = _context.Carriers.FirstOrDefault(c =>
+            // Перевірка на дублікати серед перевізників
+            var existingCarr = _context.Carriers.FirstOrDefault(c =>
                 c.Name == carrier.Name ||
                 c.VehicleNumber == carrier.VehicleNumber ||
                 c.Contacts == carrier.Contacts);
 
-            if (existing != null)
+            if (existingCarr != null)
             {
-                if (existing.Name == carrier.Name)
-                    ModelState.AddModelError("Name", "A carrier with this name already exists.");
+                if (existingCarr.Name == carrier.Name)
+                    ModelState.AddModelError("Name", "Перевізник із такою назвою вже існує.");
 
-                if (existing.VehicleNumber == carrier.VehicleNumber)
-                    ModelState.AddModelError("VehicleNumber", "A carrier with this vehicle number already exists.");
+                if (existingCarr.VehicleNumber == carrier.VehicleNumber)
+                    ModelState.AddModelError("VehicleNumber", "Перевізник із таким номером автомобіля вже існує.");
 
-                if (existing.Contacts == carrier.Contacts)
-                    ModelState.AddModelError("Contacts", "A carrier with this phone number already exists.");
+                if (existingCarr.Contacts == carrier.Contacts)
+                    ModelState.AddModelError("Contacts", "Оператор із таким номером телефону вже існує.");
+            }
+
+            // 🔍 Додаткова перевірка — чи таке ім’я вже є серед волонтерів
+            var volunteerWithSameName = _context.Volunteers.FirstOrDefault(v => v.Name == carrier.Name);
+            if (volunteerWithSameName != null)
+            {
+                ModelState.AddModelError("Name", "Ім’я вже використовується волонтером. Оберіть інше");
             }
         }
 

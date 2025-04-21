@@ -33,31 +33,31 @@ namespace HumanAidTransport.Controllers
 
             if (order == null)
             {
-                return NotFound(new { message = "Order not found." });
+                return NotFound(new { message = "Замовлення не знайдено." });
             }
 
             var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
 
-            order.Status = "In progress";
+            order.Status = "В процесі";
             await _context.SaveChangesAsync();
 
             var humanAid = _context.HumanitarianAids.FirstOrDefault(humanAid => humanAid.HumanAidId == deliveryRequest.HumanAidId);
 
-            humanAid.Status = "In progress";
+            humanAid.Status = "В процесі";
 
             var notification = new Notification
             {
                 VolunteerId = order.VolunteerId,
                 CarrierId = order.CarrierId,
-                Message = $"Your assigned task (order '{order.Name}') is in progress",
+                Message = $"Ваше призначене завдання (Замовлення '{order.Name}') у процесі",
                 CreatedAt = DateTime.UtcNow,
-                Status = "In progress"
+                Status = "В процесі"
 
             };
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
 
-            TempData["ProgressMessage"] = "Task was marked in progress.";
+            TempData["ProgressMessage"] = "Завдання позначено як у процесі.";
 
             var updatedCarrierOrders = await _context.TransportOrders
                 .Where(o => o.HumanAidId == order.HumanAidId)
@@ -74,31 +74,31 @@ namespace HumanAidTransport.Controllers
 
             if (order == null)
             {
-                return NotFound(new { message = "Order not found." });
+                return NotFound(new { message = "Замовлення не знайдено." });
             }
             
             var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
 
-            order.Status = "Completed";
+            order.Status = "Виконано";
             await _context.SaveChangesAsync();
 
             var humanAid = _context.HumanitarianAids.FirstOrDefault(humanAid => humanAid.HumanAidId == deliveryRequest.HumanAidId);
 
-            humanAid.Status = "Completed";
+            humanAid.Status = "Виконано";
 
             var notification = new Notification
             {
                 VolunteerId = order.VolunteerId,
                 CarrierId = order.CarrierId,
-                Message = $"Your assigned task (Order '{order.Name}') has been successfully completed",
+                Message = $"Ваше призначене завдання (Замовлення '{order.Name}') було успішно виконано",
                 CreatedAt = DateTime.UtcNow,
-                Status = "Completed"
+                Status = "Виконано"
 
             };
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
 
-            TempData["CompleteMessage"] = "Task completed successfully.";
+            TempData["CompleteMessage"] = "Завдання виконано успішно.";
 
             var updatedCarrierOrders = await _context.TransportOrders
                 .Where(o => o.HumanAidId == order.HumanAidId)
@@ -114,30 +114,30 @@ namespace HumanAidTransport.Controllers
             var order = await _context.TransportOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null)
             {
-                return NotFound(new { message = "Order not found." });
+                return NotFound(new { message = "Замовлення не знайдено." });
             }
 
             var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
 
-            order.Status = "Rejected";
+            order.Status = "Відхилено";
             await _context.SaveChangesAsync();
 
             var humanAid = _context.HumanitarianAids.FirstOrDefault(humanAid => humanAid.HumanAidId == deliveryRequest.HumanAidId);
 
-            humanAid.Status = "Rejected";
+            humanAid.Status = "Відхилено";
 
             var notification = new Notification
             {
                 VolunteerId = order.VolunteerId,
                 CarrierId = order.CarrierId,
-                Message = $"Your assigned task (Order '{order.Name}') has been canceled and you make it available for others.",
+                Message = $"Ваше призначене завдання (Замовлення '{order.Name}') було скасовано, і ви можете зробити його доступним для інших.",
                 CreatedAt = DateTime.UtcNow,
-                Status = "Rejected"
+                Status = "Відхилено"
             };
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
 
-            TempData["CancelMessage"] = "Task canceled successfully.";
+            TempData["CancelMessage"] = "Завдання успішно відхилено.";
 
             var updatedCarrierOrders = await _context.TransportOrders
                 .Where(o => o.HumanAidId == order.HumanAidId)
@@ -156,7 +156,7 @@ namespace HumanAidTransport.Controllers
             _context.TransportOrders.Remove(order);
             await _context.SaveChangesAsync(); 
 
-            TempData["DeleteMessage"] = "Task deleted successfully.";
+            TempData["DeleteMessage"] = "Завдання успішно видалено.";
 
             var updatedCarrierOrders = await _context.TransportOrders
                 .Where(o => o.HumanAidId == order.HumanAidId) 

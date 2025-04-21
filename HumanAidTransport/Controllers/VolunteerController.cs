@@ -24,13 +24,20 @@ namespace HumanAidTransport.Controllers
             // Перевірка імені — літери, цифри, пробіли, мін. 2 символи
             if (!System.Text.RegularExpressions.Regex.IsMatch(volunteer.Name ?? "", @"^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9\s]{2,}$"))
             {
-                ModelState.AddModelError("Name", "Name can contain letters, numbers, and spaces only (min 2 characters).");
+                ModelState.AddModelError("Name", "Ім'я може містити лише літери, цифри та пробіли (мінімум 2 символи).");
             }
 
             // Перевірка пароля — мін. 8 символів, без пробілів
             if (string.IsNullOrWhiteSpace(volunteer.Password) || volunteer.Password.Length < 8 || volunteer.Password.Contains(" "))
             {
-                ModelState.AddModelError("Password", "Password must be at least 8 characters long and contain no spaces.");
+                ModelState.AddModelError("Password", "Пароль має бути не менше 8 символів і не містити пробілів.");
+            }
+
+            // 🔍 Додаткова перевірка: чи ім’я волонтера не збігається з іменем перевізника
+            bool nameUsedByCarrier = _context.Carriers.Any(c => c.Name == volunteer.Name);
+            if (nameUsedByCarrier)
+            {
+                ModelState.AddModelError("Name", "Це ім’я вже використовується перевізником. Оберіть інше.");
             }
 
             if (ModelState.IsValid)
@@ -44,22 +51,23 @@ namespace HumanAidTransport.Controllers
                         _context.Volunteers.Add(volunteer);
                         _context.SaveChanges();
 
-                        TempData["RegistMessage"] = "Registration was successful, please log in.";
+                        TempData["RegistMessage"] = "Реєстрація пройшла успішно, будь ласка, увійдіть.";
                         return RedirectToAction("VolunteerProfile", "VolunProfile");
                     }
                     catch (Exception ex)
                     {
-                        ModelState.AddModelError("", "Error saving volunteer: " + ex.Message);
+                        ModelState.AddModelError("", "Помилка збереження волонтера: " + ex.Message);
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "A volunteer with this name already exists.");
+                    ModelState.AddModelError("", "Волонтер з таким іменем вже існує.");
                 }
             }
 
             return View("~/Views/Registration/VolunteerRegistration.cshtml");
         }
+
 
 
         //=============================Login====================================
@@ -74,21 +82,21 @@ namespace HumanAidTransport.Controllers
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
             {
-                ModelState.AddModelError(string.Empty, "Please fill in all fields.");
+                ModelState.AddModelError(string.Empty, "Будь ласка, заповніть усі поля.");
                 return View("~/Views/Login/VolunteerLogin.cshtml");
             }
 
             // Валідація імені
             if (!System.Text.RegularExpressions.Regex.IsMatch(name ?? "", @"^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9\s]{2,}$"))
             {
-                ModelState.AddModelError("name", "Name can contain letters, numbers, and spaces only (min 2 characters).");
+                ModelState.AddModelError("name", "Ім'я може містити лише літери, цифри та пробіли (мінімум 2 символи).");
                 return View("~/Views/Login/VolunteerLogin.cshtml");
             }
 
             // Валідація пароля
             if (password.Length < 8 || password.Contains(" "))
             {
-                ModelState.AddModelError("password", "Password must be at least 8 characters and contain no spaces.");
+                ModelState.AddModelError("password", "Пароль має бути не менше 8 символів і не містити пробілів.");
                 return View("~/Views/Login/VolunteerLogin.cshtml");
             }
 
@@ -102,7 +110,7 @@ namespace HumanAidTransport.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Incorrect username or password for the volunteer.");
+                ModelState.AddModelError(string.Empty, "Неправильний логін або пароль для волонтера.");
                 return View("~/Views/Login/VolunteerLogin.cshtml");
             }
         }

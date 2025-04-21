@@ -1,7 +1,7 @@
 ﻿@model List<HumanAidTransport.Models.Notification>
 
 @{
-    ViewData["Title"] = "Volunteer notifications";
+    ViewData["Title"] = "Сповіщення волонтерів";
 }
 
 <!DOCTYPE html>
@@ -16,7 +16,7 @@
 </head>
 <body>
 
-<h2 class="text-center notification-title">Your notifications</h2>
+    <h2 class="text-center notification-title">Ваші сповіщення</h2>
 
 @if (TempData["ErrorMessage"] != null)
 {
@@ -39,8 +39,8 @@
         <ul>
             @foreach (var notification in Model)
             {
-                var statusClass = notification.Status == "Completed" ? "completed" :
-                notification.Status == "Rejected" ? "rejected" : notification.Status == "In progress" ? "in-progress" : "default-status";
+                var statusClass = notification.Status == "Виконано" ? "completed" :
+                    notification.Status == "Відхилено" ? "rejected" : notification.Status == "В процесі" ? "in-progress" : "default-status";
                 <li class="notification-item @statusClass">
                     <div class="notification-content">
                         <span>@notification.Message</span>
@@ -50,28 +50,32 @@
                         <form method="post" asp-action="VolDelete" asp-controller="Notification">
                             <input type="hidden" name="notificationId" value="@notification.Id" />
                             <input type="hidden" name="volunteerId" value="@notification.VolunteerId" />
-                            <button type="submit" class="delete-button">Delete</button>
+                            <button type="submit" class="delete-button">Видалити</button>
                         </form>
 
-                        @if (notification.Status == "Completed")
+                            @if (notification.Status == "Виконано")
                         {
                             <form method="post" asp-action="RateCarrier" asp-controller="Notification">
                                 <input type="hidden" name="notificationId" value="@notification.Id" />
 
+                                @{
+                                    var ratingInputId = $"rating_{notification.Id}";
+                                    var ratingValueId = $"rating_value_{notification.Id}";
+                                }
+
                                 <input type="range"
-                                       id="rating"
-                                       name="rating"
-                                       min="1"
-                                       max="5"
-                                       value="3"
-                                       oninput="document.getElementById('rating-value').textContent = this.value" />
-                                <span id="rating-value">3</span>
+                                        id="@ratingInputId"
+                                        name="rating"
+                                        min="1"
+                                        max="5"
+                                        value="3"
+                                        oninput="document.getElementById('@ratingValueId').textContent = this.value" />
+                                <span id="@ratingValueId">3</span>
 
                                 <button type="submit">
-                                    Save Rating
+                                    Зберегти рейтинг
                                 </button>
                             </form>
-
                         }
                     </div>
                 </li>
@@ -80,7 +84,7 @@
 }
 else
 {
-    <p class="no-notifications">You have no new notifications.</p>
+  <p class="no-notifications">У вас немає нових сповіщень.</p>
 }
 
 </div>

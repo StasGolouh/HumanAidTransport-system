@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".task-item").forEach(task => {
             const taskName = task.querySelector("strong").innerText.toLowerCase();
             const taskStatus = task.querySelector(".status-label").innerText;
-            const taskQuantity = parseInt(task.innerText.match(/Quantity:\s*(\d+)/)?.[1] || "0");
-            const taskPayment = parseInt(task.innerText.match(/Payment:\s*(\d+)/)?.[1] || "0");
+            const taskQuantity = parseInt(task.innerText.match(/Кількість:\s*(\d+)/)?.[1] || "0");
+            const taskPayment = parseInt(task.innerText.match(/Ціна:\s*(\d+)/)?.[1] || "0");
 
             let showTask = true;
 

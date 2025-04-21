@@ -33,7 +33,7 @@ namespace HumanAidTransport.Controllers
 
             if (string.IsNullOrEmpty(name))
             {
-                TempData["Message"] = "You need to login or sign up for Volunteer or Carrier.";
+                TempData["Message"] = "Вам потрібно увійти або зареєструватися як Волонтер чи Перевізник.";
                 return RedirectToAction("Index", "Home");
             }
 

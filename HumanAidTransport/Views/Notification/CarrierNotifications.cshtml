@@ -1,7 +1,7 @@
 ﻿@model List<HumanAidTransport.Models.Notification>
 
 @{
-    ViewData["Title"] = "Carrier notifications";
+    ViewData["Title"] = "Сповіщення Перевізника";
 }
 
 <!DOCTYPE html>
@@ -16,7 +16,7 @@
 </head>
 <body>
 
-<h2 class="text-center notification-title">Your notifications</h2>
+    <h2 class="text-center notification-title">Ваші сповіщення</h2>
 
 @if (TempData["ErrorMessage"] != null)
 {
@@ -38,9 +38,9 @@
         <ul>
             @foreach (var notification in Model)
             {
-                var statusClass = notification.Status == "Comfirmed" ? "comfirmed" :
-                notification.Status == "Canceled" ? "canceled" :
-                notification.Status == "Rated" ? "rated" : "default-status";
+                var statusClass = notification.Status == "Підтверджено" ? "comfirmed" :
+                    notification.Status == "Скасовано" ? "canceled" :
+                    notification.Status == "Оцінено" ? "rated" : "default-status";
                 <li class="notification-item @statusClass">
                     <div class="notification-content">
                         <span>@notification.Message</span>
@@ -50,7 +50,7 @@
                         <form method="post" asp-action="CarrDelete" asp-controller="Notification">
                             <input type="hidden" name="notificationId" value="@notification.Id" />
                             <input type="hidden" name="carrierId" value="@notification.CarrierId" />
-                            <button type="submit" class="mark-read-button">Delete</button>
+                            <button type="submit" class="mark-read-button">Видалити</button>
                         </form>
                     </div>
                 </li>
@@ -59,7 +59,7 @@
 }
 else
 {
-    <p class="no-notifications">You have no new notifications.</p>
+  <p class="no-notifications">У вас немає нових сповіщень.</p>
 }
 </div>
 </body>
