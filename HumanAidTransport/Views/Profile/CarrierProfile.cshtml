@@ -112,9 +112,9 @@
 
                 <select id="paymentFilter" class="filter-dropdown">
                     <option value="">Всі платежі</option>
-                    <option value="low">Менше 100 доларів</option>
-                    <option value="medium">$100 - $1000</option>
-                    <option value="high">Більше 1000 доларів</option>
+                    <option value="low">Менше 10000 грн</option>
+                    <option value="medium">10000 грн - 100000 грн</option>
+                    <option value="high">Більше 100000 грн</option>
                 </select>
             </div>
             <div class="task-scroll-container">
@@ -127,7 +127,7 @@
                             Кількість: @task.Quantity <br>
                             Звідки: @task.DeliveryAddressFrom <br>
                             До: @task.DeliveryAddressTo <br>
-                            Ціна: @task.Payment$ <br>
+                            Ціна: @task.Payment грн <br>
                             Дата очікуваної доставки: @task.ExpectedDeliveryTime <br>
                             Статус:
                                 <span class="status-label @((task.Status == "Новий") ? "status-new" : (task.Status == "В очікуванні" ? "status-pending" : ""))">@task.Status</span>

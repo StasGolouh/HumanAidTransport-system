@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (payment) {
-                if (payment === "low" && taskPayment >= 100) showTask = false;
-                if (payment === "medium" && !(taskPayment >= 100 && taskPayment <= 1000)) showTask = false;
-                if (payment === "high" && taskPayment <= 1000) showTask = false;
+                if (payment === "low" && taskPayment >= 10000) showTask = false;
+                if (payment === "medium" && !(taskPayment >= 10000 && taskPayment <= 100000)) showTask = false;
+                if (payment === "high" && taskPayment <= 100000) showTask = false;
             }
 
             task.style.display = showTask ? "block" : "none";

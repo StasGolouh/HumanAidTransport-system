@@ -118,7 +118,7 @@
                             Кількість: @task.Quantity <br>
                             Звідки: @task.DeliveryAddressFrom <br>
                             До: @task.DeliveryAddressTo <br>
-                            Ціна: @task.Payment$ <br>
+                            Ціна: @task.Payment грн <br>
                             Дата очікуваної доставки: @task.ExpectedDeliveryTime <br>
 
                             Статус:
@@ -174,7 +174,7 @@
                 <input type="text" name="DeliveryAddressFrom" required>
                 <label>Доставка до:</label>
                 <input type="text" name="DeliveryAddressTo" required>
-                <label>Ціна($):</label>
+                <label>Ціна(грн):</label>
                 <input type="number" name="Payment" min="0">
                 <label>Очікуваний час доставки:</label>
                 <input type="datetime-local" name="ExpectedDeliveryTime">
