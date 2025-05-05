@@ -1,7 +1,24 @@
 ﻿body {
     font-family: 'Arial', sans-serif;
-    background-color: rgb(204, 255, 234);
+    position: relative;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
 }
+
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('../images/background.jpg');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.75; 
+        z-index: -1;
+    }
 
     body::-webkit-scrollbar {
         display: none;
@@ -59,7 +76,7 @@ button {
 .maintext {
     font-family: 'Poppins', sans-serif;
     font-size: 32px;
-    color: #2C3E50;
+    color: #0d3b66;
     font-weight: bold;
     text-transform: uppercase;
     margin-bottom: 20px;
@@ -68,3 +85,5 @@ button {
     display: inline-block;
     padding-bottom: 5px;
 }
+
+
