@@ -35,7 +35,7 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="Contacts">Контакти</label>
+            <label asp-for="Contacts">Номер телефону</label>
             <input type="text" asp-for="Contacts" class="form-control" required />
             @Html.ValidationMessageFor(m => m.Contacts, "", new { @class = "text-danger" })
         </div>

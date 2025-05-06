@@ -167,49 +167,81 @@
 }
 
 .modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    text-align: center;
+    background: #fff;
+    padding: 30px 35px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px; /* Було 400px */
+    height: auto;
+    min-height: 100px; /* Додано +100px по висоті */
+    text-align: left;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+    .modal-content h2 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 8px;
+    }
+
 .close {
-    float: right;
+    position: absolute;
+    top: 10px;
+    right: 15px;
     font-size: 24px;
+    font-weight: bold;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+#taskForm .form-group {
+    margin-bottom: 12px;
+}
+
+    #taskForm .form-group label {
+        font-size: 13px;
+        margin-bottom: 4px;
+        display: block;
+        font-weight: 600;
+        color: #34495e;
+    }
+
+    #taskForm .form-group input,
+    #taskForm .form-group select,
+    #taskForm .form-group textarea {
+        width: 100%;
+        padding: 8px 10px;
+        font-size: 13px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fdfdfd;
+    }
+
+    #taskForm .form-group textarea {
+        min-height: 60px;
+        resize: vertical;
+    }
+
+#taskForm .btn-primary {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    background: #3498db;
+    border: none;
+    border-radius: 5px;
+    color: white;
     cursor: pointer;
 }
 
-.form-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
+    #taskForm .btn-primary:hover {
+        background: #2980b9;
     }
 
-    .form-group input,
-    .form-group textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 14px;
-        transition: border 0.3s;
-    }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: #3498db;
-        }
-
-    .form-group textarea {
-        resize: vertical;
-    }
 
 .clientname {
     font-family: 'Poppins', sans-serif;
@@ -505,5 +537,49 @@
 .req-count {
     top: -25px;
     left: -5px;
+}
+
+#taskSort {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+    #taskSort:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+
+.priority-label {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+/* Стиль для "Терміново" */
+.priority-high {
+    background-color: #f8d7da;
+    color: #dc3545;
+    border-left: 4px solid #dc3545;
+}
+
+/* Стиль для "Пріоритетно" */
+.priority-medium {
+    background-color: #fff3cd;
+    color: #ffc107;
+    border-left: 4px solid #ffc107;
+}
+
+/* Стиль для "Не терміново" */
+.priority-low {
+    background-color: #d4edda;
+    color: #28a745;
+    border-left: 4px solid #28a745;
 }
 

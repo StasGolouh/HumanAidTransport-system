@@ -160,6 +160,9 @@ namespace HumanAidTransport.Migrations
                     b.Property<int?>("CarrierId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CriticalityLevel")
+                        .HasColumnType("int");
+
                     b.Property<string>("DeliveryAddressFrom")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -187,6 +190,9 @@ namespace HumanAidTransport.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<int>("VolunteerId")
                         .HasColumnType("int");
@@ -239,6 +245,9 @@ namespace HumanAidTransport.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+
+                    b.Property<int>("CarrierId")
+                        .HasColumnType("int");
 
                     b.Property<string>("DeliveryAddressFrom")
                         .IsRequired()

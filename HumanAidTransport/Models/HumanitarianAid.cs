@@ -1,6 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+public enum AidType
+{
+    Food,
+    Medicine,
+    Clothes,
+    Shelter,
+    Military,
+    Other
+}
+
+public enum Criticality
+{
+    Low,
+    Medium,
+    High
+}
+
+
 namespace HumanAidTransport.Models
 {
     public class HumanitarianAid
@@ -27,6 +45,13 @@ namespace HumanAidTransport.Models
 
         [Required]
         public string DeliveryAddressTo { get; set; }
+
+        [Required]
+        public AidType Type { get; set; }
+
+        [Required]
+        public Criticality CriticalityLevel { get; set; }
+
 
         [ForeignKey("VolunteerId")]
 

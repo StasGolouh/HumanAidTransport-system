@@ -26,18 +26,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const statusFilter = document.getElementById("statusFilter");
     const quantityFilter = document.getElementById("quantityFilter");
     const paymentFilter = document.getElementById("paymentFilter");
+    const typeFilter = document.getElementById("typeFilter");
 
     function filterTasks() {
         const searchText = searchInput.value.toLowerCase();
         const status = statusFilter.value;
         const quantity = quantityFilter.value;
         const payment = paymentFilter.value;
+        const selectedType = typeFilter.value.trim();
 
         document.querySelectorAll(".task-item").forEach(task => {
             const taskName = task.querySelector("strong").innerText.toLowerCase();
             const taskStatus = task.querySelector(".status-label").innerText;
             const taskQuantity = parseInt(task.innerText.match(/Кількість:\s*(\d+)/)?.[1] || "0");
             const taskPayment = parseInt(task.innerText.match(/Ціна:\s*(\d+)/)?.[1] || "0");
+            const typeMatch = task.innerHTML.match(/Тип:\s*<strong>\s*(.*?)\s*<\/strong>/);
+            const taskType = typeMatch ? typeMatch[1].trim() : "";
 
             let showTask = true;
 
@@ -56,6 +60,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (payment === "high" && taskPayment <= 100000) showTask = false;
             }
 
+            if (selectedType && taskType !== selectedType) showTask = false;
+
             task.style.display = showTask ? "block" : "none";
         });
     }
@@ -64,4 +70,27 @@ document.addEventListener("DOMContentLoaded", function () {
     statusFilter.addEventListener("change", filterTasks);
     quantityFilter.addEventListener("change", filterTasks);
     paymentFilter.addEventListener("change", filterTasks);
+    typeFilter.addEventListener("change", filterTasks);
 });
+
+function sortTasksByPriority() {
+    const sortOrder = document.getElementById("taskSort").value;
+    const taskList = document.querySelector(".task-list"); 
+    const tasks = Array.from(taskList.children);
+
+    const priorityMap = {
+        "Терміново": 3,
+        "Пріоритетно": 2,
+        "Не терміново": 1
+    };
+
+    tasks.sort((a, b) => {
+        const priorityA = priorityMap[a.querySelector('.priority-label')?.innerText.trim()] || 0;
+        const priorityB = priorityMap[b.querySelector('.priority-label')?.innerText.trim()] || 0;
+
+        return sortOrder === "asc" ? priorityA - priorityB : priorityB - priorityA;
+    });
+
+    tasks.forEach(task => taskList.appendChild(task));
+}
+

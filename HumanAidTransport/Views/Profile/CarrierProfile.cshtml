@@ -116,6 +116,22 @@
                     <option value="medium">10000 грн - 100000 грн</option>
                     <option value="high">Більше 100000 грн</option>
                 </select>
+
+                <select id="taskSort" onchange="sortTasksByPriority()">
+                    <option value="">Сортувати за пріорітетом</option>
+                    <option value="desc">Терміново → Не терміново</option>
+                    <option value="asc">Не терміново → Терміново</option>
+                </select>
+
+                <select id="typeFilter" class="filter-dropdown">
+                    <option value="">Всі типи</option>
+                    <option value="Їжа">Їжа</option>
+                    <option value="Ліки">Ліки</option>
+                    <option value="Одяг">Одяг</option>
+                    <option value="Укриття">Укриття</option>
+                    <option value="Воєнна допомога">Воєнна допомога</option>
+                    <option value="Інше">Інше</option>
+                </select>
             </div>
             <div class="task-scroll-container">
                 <ul class="task-list">
@@ -123,6 +139,29 @@
                     {
                         <li class="task-item @((task.Status == "Новий") ? "task-new" : (task.Status == "В очікуванні" ? "task-pending" : ""))">
                             <strong>@task.Name</strong><br>
+                                Тип: <strong>
+                                    @(
+                                        task.Type == AidType.Food ? "Їжа" :
+                                        task.Type == AidType.Medicine ? "Ліки" :
+                                        task.Type == AidType.Clothes ? "Одяг" :
+                                        task.Type == AidType.Shelter ? "Укриття" :
+                                        task.Type == AidType.Military ? "Воєнна допомога" :
+                                        task.Type == AidType.Other ? "Інше" :
+                                        task.Type // якщо не співпало
+                                        )
+                                </strong><br>
+
+                                Пріоритет:
+                                <span class="priority-label @(task.CriticalityLevel == Criticality.High ? "priority-high" :
+                             task.CriticalityLevel == Criticality.Medium ? "priority-medium" :
+                             task.CriticalityLevel == Criticality.Low ? "priority-low" : "")">
+                                    @(
+                                        task.CriticalityLevel == Criticality.High ? "Терміново" :
+                                        task.CriticalityLevel == Criticality.Medium ? "Пріоритетно" :
+                                        task.CriticalityLevel == Criticality.Low ? "Не терміново" :
+                                        task.CriticalityLevel
+                                        )
+                                </span><br>
                             Опис: @task.Description <br>
                             Кількість: @task.Quantity <br>
                             Звідки: @task.DeliveryAddressFrom <br>

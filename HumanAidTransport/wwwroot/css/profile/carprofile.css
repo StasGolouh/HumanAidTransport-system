@@ -315,3 +315,47 @@
     top: -30px;
     right: 18px;
 }
+
+#taskSort {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+    #taskSort:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+
+.priority-label {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+/* Стиль для "Терміново" */
+.priority-high {
+    background-color: #f8d7da;
+    color: #dc3545;
+    border-left: 4px solid #dc3545;
+}
+
+/* Стиль для "Пріоритетно" */
+.priority-medium {
+    background-color: #fff3cd;
+    color: #ffc107;
+    border-left: 4px solid #ffc107;
+}
+
+/* Стиль для "Не терміново" */
+.priority-low {
+    background-color: #d4edda;
+    color: #28a745;
+    border-left: 4px solid #28a745;
+}

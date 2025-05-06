@@ -99,30 +99,61 @@
                     <option value="В процесі">В процесі</option>
                     <option value="Відхилено">Відхилено</option>
                 </select>
+
+                <select id="taskSort" onchange="sortTasksByPriority()">
+                        <option value="">Сортувати за пріорітетом</option>
+                    <option value="desc">Терміново → Не терміново</option>
+                    <option value="asc">Не терміново → Терміново</option>
+                </select>
             </div>
 
-            <div class="task-scroll-container">
-                <ul class="task-list" id="taskList">
-                    @foreach (var task in Model.Tasks)
-                    {
-                        <li class="task-item
-                    @((task.Status == "Новий") ? "task-new" :
+                <div class="task-scroll-container">
+                    <ul class="task-list" id="taskList">
+                        @foreach (var task in Model.Tasks)
+                        {
+                            <li class="task-item
+                @((task.Status == "Новий") ? "task-new" :
                     (task.Status == "Підтверджено" ? "task-confirmed" :
                     (task.Status == "Скасовано" ? "task-canceled" :
                     (task.Status == "В очікуванні" ? "task-pending" :
                     (task.Status == "Виконано" ? "task-completed" :
-                    (task.Status == "В процесі" ? "task-progress":
+                    (task.Status == "В процесі" ? "task-progress" :
                     (task.Status == "Відхилено" ? "task-rejected" : "")))))))" data-name="@task.Name" data-status="@task.Status">
-                            <strong>@task.Name</strong><br>
-                            Опис: @task.Description <br>
-                            Кількість: @task.Quantity <br>
-                            Звідки: @task.DeliveryAddressFrom <br>
-                            До: @task.DeliveryAddressTo <br>
-                            Ціна: @task.Payment грн <br>
-                            Дата очікуваної доставки: @task.ExpectedDeliveryTime <br>
+                                <strong>@task.Name</strong><br>
+                                Тип: <strong>
+                                    @(
+                                        task.Type == AidType.Food ? "Їжа" :
+                                        task.Type == AidType.Medicine ? "Ліки" :
+                                        task.Type == AidType.Clothes ? "Одяг" :
+                                        task.Type == AidType.Shelter ? "Укриття" :
+                                        task.Type == AidType.Military ? "Воєнна допомога" :
+                                        task.Type == AidType.Other ? "Інше" :
+                                        task.Type // якщо не співпало
+                                        )
+                                </strong><br>
 
-                            Статус:
-                            <span class="status-label
+                                Пріоритет:
+                                <span class="priority-label @(task.CriticalityLevel == Criticality.High ? "priority-high" :
+                             task.CriticalityLevel == Criticality.Medium ? "priority-medium" :
+                             task.CriticalityLevel == Criticality.Low ? "priority-low" : "")">
+                                    @(
+                                        task.CriticalityLevel == Criticality.High ? "Терміново" :
+                                        task.CriticalityLevel == Criticality.Medium ? "Пріоритетно" :
+                                        task.CriticalityLevel == Criticality.Low ? "Не терміново" :
+                                        task.CriticalityLevel
+                                        )
+                                </span><br>
+
+                                Опис: @task.Description <br>
+                                Кількість: @task.Quantity <br>
+                                Звідки: @task.DeliveryAddressFrom <br>
+                                До: @task.DeliveryAddressTo <br>
+                                Ціна: @task.Payment грн <br>
+                                Дата очікуваної доставки: @task.ExpectedDeliveryTime <br>
+
+                            
+                                Статус:
+                                <span class="status-label
                     @((task.Status == "Новий") ? "status-new" :
                     (task.Status == "Підтверджено") ? "status-confirmed" :
                     (task.Status == "Скасовано" ? "status-canceled" :
@@ -130,29 +161,30 @@
                     (task.Status == "Виконано" ? "status-completed" :
                     (task.Status == "В процесі" ? "status-progress":
                     (task.Status == "Відхилено" ? "status-rejected" : "")))))">
-                                @task.Status
-                            </span>
+                                    @task.Status
+                                </span>
 
+                                <!-- Кнопки для скасування, відновлення та видалення завдання -->
                                 @if (task.Status == "Скасовано" || task.Status == "Відхилено")
-                            {
-                                <form method="post" asp-action="RestoreTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
-                                     <button type="submit" class="btn-restore">Відновити завдання</button>
-                                </form>
-                            }
+                                {
+                                    <form method="post" asp-action="RestoreTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
+                                        <button type="submit" class="btn-restore">Відновити завдання</button>
+                                    </form>
+                                }
 
                                 @if (task.Status != "Виконано" && task.Status != "Відхилено" && task.Status != "Скасовано")
-                            {
-                                <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
-                                     <button type="submit" class="btn-danger">Скасувати завдання</button>
-                                </form>
-                            }
-                            <form method="post" asp-action="DeleteTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
+                                {
+                                    <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
+                                        <button type="submit" class="btn-danger">Скасувати завдання</button>
+                                    </form>
+                                }
+                                <form method="post" asp-action="DeleteTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
                                     <button type="submit" class="btn-delete" title="Видалити завдання">🗑️</button>
-                            </form>
-                        </li>
-                    }
-                </ul>
-            </div>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                </div>
                <button class="btn-primary" onclick="openModal()">Додати завдання</button>
         </div>
     </div>
@@ -166,6 +198,17 @@
             <div class="form-group">
                 <label>Назва:</label>
                 <input type="text" name="Name" required>
+                <label>Тип допомоги:</label>
+                <select name="Type" required>
+                    <option value="">Оберіть тип</option>
+                    <option value="Food">Їжа</option>
+                    <option value="Medicine">Ліки</option>
+                    <option value="Clothes">Одяг</option>
+                    <option value="Shelter">Укриття</option>
+                    <option value="Military">Воєнна допомога</option>
+                    <option value="Other">Інше</option>
+                </select>
+
                 <label>Опис:</label>
                 <textarea name="Description" rows="3"></textarea>
                 <label>Кількість:</label>

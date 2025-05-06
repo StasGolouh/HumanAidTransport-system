@@ -16,6 +16,52 @@ namespace HumanAidTransport.Controllers
             _context = context;
         }
 
+        // Алгоритм розподілу гуманітарних вантажів, враховуєчи терміновість, критичність(дата) та тип 
+        private Criticality CalculatePriorityScore(HumanitarianAid task)
+        {
+            // Множник типу допомоги
+            int aidPriority = task.Type switch
+            {
+                AidType.Military => 3,
+                AidType.Shelter => 3,
+                AidType.Medicine => 2,
+                AidType.Food => 1,
+                AidType.Clothes => 1,
+                AidType.Other => 1,
+                _ => 1
+            };
+
+            // Години до доставки
+            double hoursUntilDelivery = task.ExpectedDeliveryTime.HasValue
+                ? (task.ExpectedDeliveryTime.Value - DateTime.Now).TotalHours
+                : 24;
+
+            // Базовий рівень критичності на основі типу допомоги
+            Criticality baseCriticality;
+            if (aidPriority == 3)
+                baseCriticality = Criticality.High;
+            else if (aidPriority == 2)
+                baseCriticality = Criticality.Medium;
+            else
+                baseCriticality = Criticality.Low;
+
+            // Підвищення рівня критичності на основі терміновості
+            if (hoursUntilDelivery <= 24)
+            {
+                if (baseCriticality == Criticality.Low)
+                    return Criticality.Medium;
+                else
+                    return Criticality.High;
+            }
+            else if (hoursUntilDelivery <= 48 && baseCriticality == Criticality.Low)
+            {
+                // Для низького пріоритету, якщо менше 48 годин, підвищуємо до Medium
+                return Criticality.Medium;
+            }
+
+            return baseCriticality;
+        }
+
         public async Task<IActionResult> VolunteerProfile()
         {
             if (Volunteer != null)
@@ -105,6 +151,9 @@ namespace HumanAidTransport.Controllers
 
             newTask.VolunteerId = volunteerFromDb.Id;
             newTask.Status = "Новий";
+
+            // Перерахунок пріоритету для нового завдання
+            newTask.CriticalityLevel = CalculatePriorityScore(newTask);
             volunteerFromDb.Tasks.Add(newTask);
             _context.HumanitarianAids.Add(newTask);
             await _context.SaveChangesAsync();
