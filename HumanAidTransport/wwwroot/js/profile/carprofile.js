@@ -79,9 +79,9 @@ function sortTasksByPriority() {
     const tasks = Array.from(taskList.children);
 
     const priorityMap = {
-        "Терміново": 3,
-        "Пріоритетно": 2,
-        "Не терміново": 1
+        "Високий": 3,
+        "Середній": 2,
+        "Низький": 1
     };
 
     tasks.sort((a, b) => {

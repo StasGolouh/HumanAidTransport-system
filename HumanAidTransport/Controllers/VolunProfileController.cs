@@ -38,6 +38,7 @@ namespace HumanAidTransport.Controllers
 
             // Базовий рівень критичності на основі типу допомоги
             Criticality baseCriticality;
+
             if (aidPriority == 3)
                 baseCriticality = Criticality.High;
             else if (aidPriority == 2)

@@ -102,8 +102,8 @@
 
                 <select id="taskSort" onchange="sortTasksByPriority()">
                         <option value="">Сортувати за пріорітетом</option>
-                    <option value="desc">Терміново → Не терміново</option>
-                    <option value="asc">Не терміново → Терміново</option>
+                        <option value="desc">Високий → Низький</option>
+                        <option value="asc">Низький → Високий</option>
                 </select>
             </div>
 
@@ -137,9 +137,9 @@
                              task.CriticalityLevel == Criticality.Medium ? "priority-medium" :
                              task.CriticalityLevel == Criticality.Low ? "priority-low" : "")">
                                     @(
-                                        task.CriticalityLevel == Criticality.High ? "Терміново" :
-                                        task.CriticalityLevel == Criticality.Medium ? "Пріоритетно" :
-                                        task.CriticalityLevel == Criticality.Low ? "Не терміново" :
+                                        task.CriticalityLevel == Criticality.High ? "Високий" :
+                                        task.CriticalityLevel == Criticality.Medium ? "Середній" :
+                                        task.CriticalityLevel == Criticality.Low ? "Низький" :
                                         task.CriticalityLevel
                                         )
                                 </span><br>
