@@ -47,17 +47,12 @@ namespace HumanAidTransport.Controllers
                 baseCriticality = Criticality.Low;
 
             // Підвищення рівня критичності на основі терміновості
-            if (hoursUntilDelivery <= 24)
+            if (hoursUntilDelivery <= 48)
             {
                 if (baseCriticality == Criticality.Low)
                     return Criticality.Medium;
                 else
                     return Criticality.High;
-            }
-            else if (hoursUntilDelivery <= 48 && baseCriticality == Criticality.Low)
-            {
-                // Для низького пріоритету, якщо менше 48 годин, підвищуємо до Medium
-                return Criticality.Medium;
             }
 
             return baseCriticality;
