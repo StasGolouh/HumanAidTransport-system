@@ -152,14 +152,14 @@
                                 </strong><br>
 
                                 Пріоритет:
-                                <span class="priority-label @(task.CriticalityLevel == Criticality.High ? "priority-high" :
-                             task.CriticalityLevel == Criticality.Medium ? "priority-medium" :
-                             task.CriticalityLevel == Criticality.Low ? "priority-low" : "")">
+                                <span class="priority-label @(task.PriorityLevel == Priority.High ? "priority-high" :
+                             task.PriorityLevel == Priority.Medium ? "priority-medium" :
+                             task.PriorityLevel == Priority.Low ? "priority-low" : "")">
                                     @(
-                                        task.CriticalityLevel == Criticality.High ? "Високий" :
-                                        task.CriticalityLevel == Criticality.Medium ? "Середній" :
-                                        task.CriticalityLevel == Criticality.Low ? "Низький" :
-                                        task.CriticalityLevel
+                                        task.PriorityLevel == Priority.High ? "Високий" :
+                                        task.PriorityLevel == Priority.Medium ? "Середній" :
+                                        task.PriorityLevel == Priority.Low ? "Низький" :
+                                        task.PriorityLevel
                                         )
                                 </span><br>
                             Опис: @task.Description <br>

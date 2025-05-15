@@ -17,7 +17,7 @@ namespace HumanAidTransport.Controllers
         }
 
         // Алгоритм розподілу гуманітарних вантажів, враховуєчи терміновість, критичність(дата) та тип 
-        private Criticality CalculatePriorityScore(HumanitarianAid task)
+        private Priority CalculatePriorityScore(HumanitarianAid task)
         {
             // Множник типу допомоги
             int aidPriority = task.Type switch
@@ -37,22 +37,22 @@ namespace HumanAidTransport.Controllers
                 : 24;
 
             // Базовий рівень критичності на основі типу допомоги
-            Criticality baseCriticality;
+            Priority baseCriticality;
 
             if (aidPriority == 3)
-                baseCriticality = Criticality.High;
+                baseCriticality = Priority.High;
             else if (aidPriority == 2)
-                baseCriticality = Criticality.Medium;
+                baseCriticality = Priority.Medium;
             else
-                baseCriticality = Criticality.Low;
+                baseCriticality = Priority.Low;
 
             // Підвищення рівня критичності на основі терміновості
             if (hoursUntilDelivery <= 48)
             {
-                if (baseCriticality == Criticality.Low)
-                    return Criticality.Medium;
+                if (baseCriticality == Priority.Low)
+                    return Priority.Medium;
                 else
-                    return Criticality.High;
+                    return Priority.High;
             }
 
             return baseCriticality;
@@ -149,7 +149,7 @@ namespace HumanAidTransport.Controllers
             newTask.Status = "Новий";
 
             // Перерахунок пріоритету для нового завдання
-            newTask.CriticalityLevel = CalculatePriorityScore(newTask);
+            newTask.PriorityLevel = CalculatePriorityScore(newTask);
             volunteerFromDb.Tasks.Add(newTask);
             _context.HumanitarianAids.Add(newTask);
             await _context.SaveChangesAsync();

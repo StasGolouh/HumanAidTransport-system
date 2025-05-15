@@ -11,7 +11,7 @@ public enum AidType
     Other
 }
 
-public enum Criticality
+public enum Priority
 {
     Low,
     Medium,
@@ -50,7 +50,7 @@ namespace HumanAidTransport.Models
         public AidType Type { get; set; }
 
         [Required]
-        public Criticality CriticalityLevel { get; set; }
+        public Priority PriorityLevel { get; set; }
 
 
         [ForeignKey("VolunteerId")]

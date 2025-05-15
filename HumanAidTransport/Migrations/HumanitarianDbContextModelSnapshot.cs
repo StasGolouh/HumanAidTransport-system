@@ -160,9 +160,6 @@ namespace HumanAidTransport.Migrations
                     b.Property<int?>("CarrierId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CriticalityLevel")
-                        .HasColumnType("int");
-
                     b.Property<string>("DeliveryAddressFrom")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -183,6 +180,9 @@ namespace HumanAidTransport.Migrations
 
                     b.Property<double>("Payment")
                         .HasColumnType("float");
+
+                    b.Property<int>("PriorityLevel")
+                        .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
