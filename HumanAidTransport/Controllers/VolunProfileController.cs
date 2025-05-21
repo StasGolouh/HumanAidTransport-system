@@ -23,9 +23,9 @@ namespace HumanAidTransport.Controllers
             int aidWeight = task.Type switch
             {
                 AidType.Military => 3,
-                AidType.Shelter => 3,
-                AidType.Medicine => 2,
-                AidType.Food => 1,
+                AidType.Shelter => 2,
+                AidType.Medicine => 3,
+                AidType.Food => 2,
                 AidType.Clothes => 1,
                 AidType.Other => 1,
                 _ => 1
