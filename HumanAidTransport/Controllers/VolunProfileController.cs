@@ -20,7 +20,7 @@ namespace HumanAidTransport.Controllers
         private Priority CalculatePriorityScore(HumanitarianAid task)
         {
             // Множник типу допомоги
-            int aidPriority = task.Type switch
+            int aidWeight = task.Type switch
             {
                 AidType.Military => 3,
                 AidType.Shelter => 3,
@@ -37,25 +37,25 @@ namespace HumanAidTransport.Controllers
                 : 24;
 
             // Базовий рівень критичності на основі типу допомоги
-            Priority baseCriticality;
+            Priority mainPriority;
 
-            if (aidPriority == 3)
-                baseCriticality = Priority.High;
-            else if (aidPriority == 2)
-                baseCriticality = Priority.Medium;
+            if (aidWeight == 3)
+                mainPriority = Priority.High;
+            else if (aidWeight == 2)
+                mainPriority = Priority.Medium;
             else
-                baseCriticality = Priority.Low;
+                mainPriority = Priority.Low;
 
             // Підвищення рівня критичності на основі терміновості
             if (hoursUntilDelivery <= 48)
             {
-                if (baseCriticality == Priority.Low)
+                if (mainPriority == Priority.Low)
                     return Priority.Medium;
                 else
                     return Priority.High;
             }
 
-            return baseCriticality;
+            return mainPriority;
         }
 
         public async Task<IActionResult> VolunteerProfile()
