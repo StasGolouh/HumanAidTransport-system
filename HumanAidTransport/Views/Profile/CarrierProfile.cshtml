@@ -125,7 +125,7 @@
 
                 <select id="typeFilter" class="filter-dropdown">
                     <option value="">Всі типи</option>
-                    <option value="Їжа">Їжа</option>
+                        <option value="Продукти харчування">Продукти харчування</option>
                     <option value="Ліки">Ліки</option>
                     <option value="Одяг">Одяг</option>
                     <option value="Укриття">Укриття</option>
@@ -141,7 +141,7 @@
                             <strong>@task.Name</strong><br>
                                 Тип: <strong>
                                     @(
-                                        task.Type == AidType.Food ? "Їжа" :
+                                        task.Type == AidType.Food ? "Продукти харчування" :
                                         task.Type == AidType.Medicine ? "Ліки" :
                                         task.Type == AidType.Clothes ? "Одяг" :
                                         task.Type == AidType.Shelter ? "Укриття" :

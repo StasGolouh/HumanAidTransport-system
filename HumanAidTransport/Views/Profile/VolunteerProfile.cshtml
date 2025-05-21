@@ -122,7 +122,7 @@
                                 <strong>@task.Name</strong><br>
                                 Тип: <strong>
                                     @(
-                                        task.Type == AidType.Food ? "Їжа" :
+                                        task.Type == AidType.Food ? "Продукти харчування" :
                                         task.Type == AidType.Medicine ? "Ліки" :
                                         task.Type == AidType.Clothes ? "Одяг" :
                                         task.Type == AidType.Shelter ? "Укриття" :
@@ -201,7 +201,7 @@
                 <label>Тип допомоги:</label>
                 <select name="Type" required>
                     <option value="">Оберіть тип</option>
-                    <option value="Food">Їжа</option>
+                    <option value="Food">Продукти харчування</option>
                     <option value="Medicine">Ліки</option>
                     <option value="Clothes">Одяг</option>
                     <option value="Shelter">Укриття</option>
