@@ -105,3 +105,44 @@ input {
     color: red;
     font-size: 14px;
 }
+
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 22px;
+        padding-bottom: 4px;
+        margin-bottom: 10px;
+    }
+
+    label {
+        font-size: 14px;
+    }
+
+    input {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .btn {
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .text-danger {
+        font-size: 13px;
+    }
+
+    body {
+        background-color: #e6fff5; 
+    }
+
+    .navbar-brand {
+        margin-top: 7px;
+    }
+}

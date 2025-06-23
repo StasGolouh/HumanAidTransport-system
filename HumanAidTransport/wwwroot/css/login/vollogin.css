@@ -100,3 +100,45 @@ input, select {
     margin-bottom: 15px;
     border: 1px solid #c3e6cb;
 }
+
+@media (max-width: 768px) {
+    .container {
+        max-width: 90%;
+        padding: 20px;
+        margin: 20px auto;
+    }
+
+    h2 {
+        font-size: 22px;
+        padding-bottom: 3px;
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-size: 14px;
+    }
+
+    input {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .btn {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .text-danger {
+        font-size: 12px;
+    }
+
+    .alert-success {
+        font-size: 14px;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    .navbar-brand {
+        margin-top: 7px;
+    }
+}

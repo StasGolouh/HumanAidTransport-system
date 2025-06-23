@@ -339,23 +339,196 @@
     display: inline-block;
 }
 
-/* Стиль для "Терміново" */
 .priority-high {
     background-color: #f8d7da;
     color: #dc3545;
     border-left: 4px solid #dc3545;
 }
 
-/* Стиль для "Пріоритетно" */
 .priority-medium {
     background-color: #fff3cd;
     color: #ffc107;
     border-left: 4px solid #ffc107;
 }
 
-/* Стиль для "Не терміново" */
 .priority-low {
     background-color: #d4edda;
     color: #28a745;
     border-left: 4px solid #28a745;
 }
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .navbar-brand{
+        margin-top: 7px;
+    }
+
+    .profile-container {
+        flex-direction: column;
+        box-shadow: none;
+    }
+
+    .profile-sidebar {
+        width: 100%;
+        padding: 15px;
+        display: flex;
+        flex-direction: column; 
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .profile-pic-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%; 
+    }
+
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 8px;
+    }
+
+    .upload-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+        align-self: center;
+    }
+
+    .sidebar-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .tasks-icon img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .task-label {
+        font-size: 12px;
+        margin-top: 5px;
+        font-style: italic;
+        font-weight: bold;
+        color: #7f8c8d;
+        text-align: center;
+    }
+
+    .notif-icon img {
+        width: 40px;
+        height: 40px;
+        margin-top: 10px;
+    }
+
+    .notif-label {
+        font-size: 12px;
+        margin-top: 5px;
+        font-style: italic;
+        font-weight: bold;
+        color: #7f8c8d;
+        text-align: center;
+    }
+
+    .logout-icon img {
+        width: 40px;
+        height: 40px;
+        margin-top: 10px;
+    }
+
+    .logout-label {
+        font-size: 12px;
+        margin-top: 15px;
+        font-style: italic;
+        font-weight: bold;
+        color: #7f8c8d;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .profile-content {
+        padding: 15px;
+    }
+
+    .clientname {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .paragtask {
+        font-size: 16px;
+        text-align: left;
+    }
+
+    .task-section {
+        margin-bottom: 15px;
+    }
+
+    .task-scroll-container {
+        max-height: 300px;
+    }
+
+    .task-item {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .task-filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-input,
+    .filter-dropdown,
+    #taskSort {
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .btn-respond {
+        padding: 6px 12px;
+        font-size: 13px;
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .alert {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .notif-count,
+    .task-count {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+
+    .rating-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .priority-label {
+        font-size: 12px;
+        padding: 3px 6px;
+    }
+}
+

@@ -86,4 +86,48 @@ button {
     padding-bottom: 5px;
 }
 
+@media (max-width: 768px) {
+    .btn-container {
+        width: 100%;
+        margin: 8px 0;
+    }
 
+
+    button {
+        max-width: 100%; 
+        font-size: 14px;
+        padding: 10px 16px;
+    }
+    .mainimg {
+        width: 80%;
+        height: auto;
+        margin: 20px auto;
+        display: block;
+    }
+
+    .maintext {
+        font-size: 22px;
+        text-align: center;
+        margin-bottom: 15px;
+        padding-bottom: 4px;
+    }
+
+    .navbar-toggler {
+        width: 50px;
+
+    }
+
+    .navbar-brand {
+        margin-top: 7px;
+    }
+
+    .text-center {
+        font-size: 16px;
+        padding: 0 10px;
+        text-align: center;
+    }
+
+    body {
+        background-color: #f0fff5;
+    }
+}
