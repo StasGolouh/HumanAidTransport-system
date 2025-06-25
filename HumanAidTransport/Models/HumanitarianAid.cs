@@ -60,5 +60,8 @@ namespace HumanAidTransport.Models
 
         public string Status { get; set; } = "New";
 
+        [Required]
+        public int PinCode { get; set; }
+
     }
 }

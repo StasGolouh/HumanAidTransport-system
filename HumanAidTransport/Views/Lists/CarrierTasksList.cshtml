@@ -86,9 +86,7 @@
                         }
                         @if (order.Status == "В процесі")
                         {
-                            <form method="post" asp-controller="OrderTask" asp-action="MarkAsCompleted" asp-route-orderId="@order.OrderId">
-                                <button type="submit" class="btn complete-btn">✅ Виконати</button>
-                            </form>
+                            <button class="btn complete-btn" onclick="openPinModal(@order.OrderId)">✅ Виконати</button>
                             <form method="post" asp-controller="OrderTask" asp-action="CancelTask" asp-route-orderId="@order.OrderId">
                                 <button type="submit" class="btn cancel-btn">❌ Відхилити</button>
                             </form>
@@ -108,5 +106,17 @@
     {
         <p class="no-requests">Для цього перевізника немає транспортних замовлень.</p>
     }
+    <div id="pinModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="closePinModal()">&times;</span>
+            <h2>Підтвердження виконання</h2>
+            <form method="post" asp-controller="OrderTask" asp-action="MarkAsCompleted">
+                <input type="hidden" name="orderId" id="modalOrderId" />
+                <label for="enteredCode">Введіть PIN-код, який отримали від отримувача гуманітарної допомоги:</label>
+                <input type="number" name="enteredCode" required />
+                <button type="submit" class="btn confirm-btn">Підтвердити виконання</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

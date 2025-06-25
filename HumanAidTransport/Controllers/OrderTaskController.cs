@@ -68,7 +68,7 @@ namespace HumanAidTransport.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MarkAsCompleted(int orderId)
+        public async Task<IActionResult> MarkAsCompleted(int orderId, int enteredCode)
         {
             var order = await _context.TransportOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
 
@@ -76,14 +76,19 @@ namespace HumanAidTransport.Controllers
             {
                 return NotFound(new { message = "Замовлення не знайдено." });
             }
-            
-            var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
 
+            var deliveryRequest = await _context.DeliveryRequests.FirstOrDefaultAsync(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
+            var humanAid = await _context.HumanitarianAids.FirstOrDefaultAsync(h => h.HumanAidId == deliveryRequest.HumanAidId);
+
+            // ❗ Перевірка PIN-коду має бути першою
+            if (humanAid == null || enteredCode != humanAid.PinCode)
+            {
+                TempData["CancelMessage"] = "❌ Невірний PIN-код. Спробуйте ще раз.";
+                return RedirectToAction("CarrierOrderList", new { carrierId = order.CarrierId });
+            }
+
+            // ✅ PIN правильний, тепер оновлюємо статуси
             order.Status = "Виконано";
-            await _context.SaveChangesAsync();
-
-            var humanAid = _context.HumanitarianAids.FirstOrDefault(humanAid => humanAid.HumanAidId == deliveryRequest.HumanAidId);
-
             humanAid.Status = "Виконано";
 
             var notification = new Notification
@@ -93,17 +98,12 @@ namespace HumanAidTransport.Controllers
                 Message = $"Ваше призначене завдання (Замовлення '{order.Name}') було успішно виконано",
                 CreatedAt = DateTime.UtcNow,
                 Status = "Виконано"
-
             };
+
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
 
-            TempData["CompleteMessage"] = "Завдання виконано успішно.";
-
-            var updatedCarrierOrders = await _context.TransportOrders
-                .Where(o => o.HumanAidId == order.HumanAidId)
-                .Include(o => o.HumanitarianAid)
-                .ToListAsync();
+            TempData["CompleteMessage"] = "✅ Завдання виконано успішно.";
 
             return RedirectToAction("CarrierOrderList", new { carrierId = order.CarrierId });
         }

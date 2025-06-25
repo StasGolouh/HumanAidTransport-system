@@ -35,3 +35,20 @@ document.addEventListener("DOMContentLoaded", function () {
     searchInput.addEventListener("input", filterTasks);
     statusFilter.addEventListener("change", filterTasks);
 });
+
+function openPinModal(orderId) {
+    document.getElementById('modalOrderId').value = orderId;
+    document.getElementById('pinModal').style.display = 'block';
+}
+
+function closePinModal() {
+    document.getElementById('pinModal').style.display = 'none';
+}
+
+// За бажанням: закриття по кліку поза модальним
+window.onclick = function (event) {
+    const modal = document.getElementById('pinModal');
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+}

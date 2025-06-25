@@ -117,6 +117,9 @@ namespace HumanAidTransport.Controllers
                 return RedirectToAction("VolunteerProfile");
             }
 
+            var random = new Random();
+            newTask.PinCode = random.Next(100000, 999999);
+
             if (newTask.Payment < 0)
             {
                 TempData["Error"] = "Оплата не може бути негативною";
