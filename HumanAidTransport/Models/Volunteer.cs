@@ -15,6 +15,15 @@ public class Volunteer
     [Required]
     public string ProfilePhotoURL { get; set; } = "/images/profile_photos/photodef.jpg";
 
+    [Required]
+    public string CardNumber { get; set; }
+
+    [Required]
+    public string CVV { get; set; }
+
+    [Required]
+    public int Balance { get; set; }
+
     public List<HumanitarianAid> Tasks { get; set; } = new List<HumanitarianAid>();
 
     public List<DeliveryRequest> DeliveryRequests { get; set; } = new List<DeliveryRequest>();

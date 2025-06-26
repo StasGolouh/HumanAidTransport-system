@@ -70,6 +70,24 @@
             @Html.ValidationMessageFor(m => m.Dimensions, "", new { @class = "text-danger" })
         </div>
 
+            <div class="form-group">
+                <label asp-for="CardNumber">Номер картки</label>
+                <input type="text" asp-for="CardNumber" class="form-control" maxlength="16" minlength="16" pattern="\d{16}" required />
+                @Html.ValidationMessageFor(m => m.CardNumber, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CVV">CVV</label>
+                <input type="text" asp-for="CVV" class="form-control" maxlength="3" minlength="3" pattern="\d{3}" required />
+                @Html.ValidationMessageFor(m => m.CVV, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Balance">Баланс (грн)</label>
+                <input type="number" asp-for="Balance" class="form-control" min="0" step="0.01" required />
+                @Html.ValidationMessageFor(m => m.Balance, "", new { @class = "text-danger" })
+            </div>
+
         <button type="submit" class="btn">Зареєструватися</button>
     </form>
 </div>

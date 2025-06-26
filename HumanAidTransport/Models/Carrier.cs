@@ -31,7 +31,16 @@ public class Carrier
     public int Capacity { get; set; } 
 
     [Required]
-    public string? Dimensions { get; set; } 
+    public string? Dimensions { get; set; }
+
+    [Required]
+    public string CardNumber { get; set; }
+
+    [Required]
+    public string CVV { get; set; }
+
+    [Required]
+    public int Balance { get; set; }
 
     public List<HumanitarianAid> AvailableTasks { get; set; } = new List<HumanitarianAid>();
 

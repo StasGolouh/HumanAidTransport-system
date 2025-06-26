@@ -107,6 +107,15 @@ namespace HumanAidTransport.Controllers
 
             if (!IsValidDimensions(carrier.Dimensions))
                 ModelState.AddModelError("Dimensions", "Розміри мають бути у форматі 10x10x10 без літер, знаків мінус і пробілів.");
+
+            if (!Regex.IsMatch(carrier.CardNumber ?? "", @"^\d{16}$"))
+                ModelState.AddModelError("CardNumber", "Номер картки має містити рівно 16 цифр.");
+
+            if (!Regex.IsMatch(carrier.CVV ?? "", @"^\d{3}$"))
+                ModelState.AddModelError("CVV", "CVV має містити рівно 3 цифри.");
+
+            if (carrier.Balance < 0)
+                ModelState.AddModelError("Balance", "Баланс не може бути від'ємним.");
         }
 
         private void CheckForDuplicates(Carrier carrier)
@@ -153,5 +162,7 @@ namespace HumanAidTransport.Controllers
 
         private bool IsValidDimensions(string dim) =>
             Regex.IsMatch(dim ?? "", @"^\d+x\d+x\d+$");
+
+
     }
 }

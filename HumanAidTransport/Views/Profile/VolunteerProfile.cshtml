@@ -50,6 +50,8 @@
         </div>
         <h2 class="clientname">@Model.Name</h2>
         <p class="role">Волонтер</p>
+        <p class="balance">Баланс: <span>@Model.Balance грн</span></p>
+
         <div class="sidebar-buttons">
             <form id="requestForm" method="get" asp-controller="VolunProfile" asp-action="VolunteerRequestList">
                 <input type="hidden" name="volunteerId" value="@Model.Id" />

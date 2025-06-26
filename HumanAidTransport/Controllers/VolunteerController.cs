@@ -21,24 +21,32 @@ namespace HumanAidTransport.Controllers
         [HttpPost]
         public IActionResult VolunteerRegistration(Volunteer volunteer)
         {
-            // Перевірка імені — літери, цифри, пробіли, мін. 2 символи
             if (!System.Text.RegularExpressions.Regex.IsMatch(volunteer.Name ?? "", @"^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9\s]{2,}$"))
             {
                 ModelState.AddModelError("Name", "Ім'я може містити лише літери, цифри та пробіли (мінімум 2 символи).");
             }
 
-            // Перевірка пароля — мін. 8 символів, без пробілів
             if (string.IsNullOrWhiteSpace(volunteer.Password) || volunteer.Password.Length < 8 || volunteer.Password.Contains(" "))
             {
                 ModelState.AddModelError("Password", "Пароль має бути не менше 8 символів і не містити пробілів.");
             }
 
-            // 🔍 Додаткова перевірка: чи ім’я волонтера не збігається з іменем перевізника
+            // 🔍 Додаткова перевірка на ім’я
             bool nameUsedByCarrier = _context.Carriers.Any(c => c.Name == volunteer.Name);
             if (nameUsedByCarrier)
             {
                 ModelState.AddModelError("Name", "Це ім’я вже використовується перевізником. Оберіть інше.");
             }
+
+            // 🔍 Перевірка платіжних даних
+            if (!System.Text.RegularExpressions.Regex.IsMatch(volunteer.CardNumber ?? "", @"^\d{16}$"))
+                ModelState.AddModelError("CardNumber", "Номер картки має складатися з 16 цифр.");
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(volunteer.CVV ?? "", @"^\d{3}$"))
+                ModelState.AddModelError("CVV", "CVV має складатися з 3 цифр.");
+
+            if (volunteer.Balance < 0)
+                ModelState.AddModelError("Balance", "Баланс не може бути від’ємним.");
 
             if (ModelState.IsValid)
             {
