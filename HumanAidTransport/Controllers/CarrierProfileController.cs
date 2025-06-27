@@ -63,6 +63,43 @@ namespace HumanAidTransport.Controllers
             return RedirectToAction("CarrierLogin", "Carrier");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CarrierAddBalance(int amountToAdd, string selectedCard)
+        {
+            if (Carrier == null)
+            {
+                TempData["ErrorMessage"] = "Ви не авторизовані";
+                return RedirectToAction("CarrierLogin", "Carrier");
+            }
+
+            if (amountToAdd <= 0)
+            {
+                TempData["ErrorMessage"] = "Сума для додавання має бути більшою за 0";
+                return RedirectToAction("CarrierProfile");
+            }
+
+            var carrierFromDb = await _context.Carriers.FirstOrDefaultAsync(c => c.Id == Carrier.Id);
+
+            if (carrierFromDb == null)
+            {
+                TempData["ErrorMessage"] = "Перевізника не знайдено";
+                return RedirectToAction("CarrierProfile");
+            }
+
+            // Перевірка, що вибрана картка належить перевізнику
+            if (selectedCard != carrierFromDb.CardNumber)
+            {
+                TempData["ErrorMessage"] = "Оберіть коректну картку";
+                return RedirectToAction("CarrierProfile");
+            }
+
+            carrierFromDb.Balance += amountToAdd;
+            _context.Carriers.Update(carrierFromDb);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Баланс успішно поповнено на {amountToAdd} грн.";
+            return RedirectToAction("CarrierProfile");
+        }
 
         [HttpPost]
         public async Task<IActionResult> UploadPhoto(IFormFile profilePhoto)

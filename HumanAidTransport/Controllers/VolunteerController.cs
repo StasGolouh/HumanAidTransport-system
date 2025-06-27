@@ -31,22 +31,28 @@ namespace HumanAidTransport.Controllers
                 ModelState.AddModelError("Password", "Пароль має бути не менше 8 символів і не містити пробілів.");
             }
 
-            // 🔍 Додаткова перевірка на ім’я
+            // Додаткова перевірка на ім’я
             bool nameUsedByCarrier = _context.Carriers.Any(c => c.Name == volunteer.Name);
             if (nameUsedByCarrier)
             {
                 ModelState.AddModelError("Name", "Це ім’я вже використовується перевізником. Оберіть інше.");
             }
 
-            // 🔍 Перевірка платіжних даних
+            // Перевірка платіжних даних
             if (!System.Text.RegularExpressions.Regex.IsMatch(volunteer.CardNumber ?? "", @"^\d{16}$"))
                 ModelState.AddModelError("CardNumber", "Номер картки має складатися з 16 цифр.");
 
             if (!System.Text.RegularExpressions.Regex.IsMatch(volunteer.CVV ?? "", @"^\d{3}$"))
                 ModelState.AddModelError("CVV", "CVV має складатися з 3 цифр.");
 
-            if (volunteer.Balance < 0)
-                ModelState.AddModelError("Balance", "Баланс не може бути від’ємним.");
+
+            bool cardUsed = _context.Volunteers.Any(v => v.CardNumber == volunteer.CardNumber) ||
+                _context.Carriers.Any(c => c.CardNumber == volunteer.CardNumber);
+
+            if (cardUsed)
+            {
+                ModelState.AddModelError("CardNumber", "Цей номер картки вже використовується.");
+            }
 
             if (ModelState.IsValid)
             {

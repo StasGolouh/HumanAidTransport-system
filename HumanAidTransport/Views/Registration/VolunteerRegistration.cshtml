@@ -49,12 +49,6 @@
             @Html.ValidationMessageFor(m => m.CVV, "", new { @class = "text-danger" })
         </div>
 
-        <div class="form-group">
-            <label asp-for="Balance">Баланс (грн)</label>
-            <input asp-for="Balance" class="form-control" min="0" type="number" required />
-            @Html.ValidationMessageFor(m => m.Balance, "", new { @class = "text-danger" })
-        </div>
-
         <button type="submit" class="btn">Зареєструватися</button>
     </form>
 </div>

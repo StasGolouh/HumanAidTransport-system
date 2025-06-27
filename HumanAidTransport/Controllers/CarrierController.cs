@@ -114,8 +114,6 @@ namespace HumanAidTransport.Controllers
             if (!Regex.IsMatch(carrier.CVV ?? "", @"^\d{3}$"))
                 ModelState.AddModelError("CVV", "CVV має містити рівно 3 цифри.");
 
-            if (carrier.Balance < 0)
-                ModelState.AddModelError("Balance", "Баланс не може бути від'ємним.");
         }
 
         private void CheckForDuplicates(Carrier carrier)
@@ -138,11 +136,17 @@ namespace HumanAidTransport.Controllers
                     ModelState.AddModelError("Contacts", "Оператор із таким номером телефону вже існує.");
             }
 
-            // 🔍 Додаткова перевірка — чи таке ім’я вже є серед волонтерів
+            // Додаткова перевірка — чи таке ім’я вже є серед волонтерів
             var volunteerWithSameName = _context.Volunteers.FirstOrDefault(v => v.Name == carrier.Name);
             if (volunteerWithSameName != null)
             {
                 ModelState.AddModelError("Name", "Ім’я вже використовується волонтером. Оберіть інше");
+            }
+
+            var existingCardNumber = _context.Carriers.FirstOrDefault(c => c.CardNumber == carrier.CardNumber);
+            if (existingCardNumber != null)
+            {
+                ModelState.AddModelError("CardNumber", "Цей номер картки вже використовується іншим користувачем.");
             }
         }
 

@@ -81,3 +81,14 @@ function sortTasksByPriority() {
 
     tasks.forEach(task => taskList.appendChild(task));
 }
+
+
+function openAddBalanceModal() {
+    const modal = document.getElementById('addBalanceModal');
+    modal.style.display = 'flex'; // показує модалку
+}
+
+function closeAddBalanceModal() {
+    const modal = document.getElementById('addBalanceModal');
+    modal.style.display = 'none'; // ховає модалку
+}

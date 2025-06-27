@@ -9,6 +9,10 @@
 
     <link rel="stylesheet" href="~/css/profile/volprofile.css" asp-append-version="true" />
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
     <script src="~/js/profile/volprofile.js" asp-append-version="true" defer></script>
 </head>
 <body>
@@ -50,7 +54,55 @@
         </div>
         <h2 class="clientname">@Model.Name</h2>
         <p class="role">Волонтер</p>
-        <p class="balance">Баланс: <span>@Model.Balance грн</span></p>
+
+            <div class="balance-row">
+                <div class="balance">
+                    Баланс: <span>@Model.Balance грн</span>
+                    <button type="button" class="topup-button" onclick="openAddBalanceModal()">+</button>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal-overlay" id="addBalanceModal">
+                <div class="modal-window">
+                    <form action="/VolunProfile/VolAddBalance" method="post">
+                        <div class="modal-header">
+                            <h5>Додати баланс</h5>
+                            <button type="button" class="close-btn" onclick="closeAddBalanceModal()">×</button>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Поточний баланс: <strong>@Model.Balance</strong> грн</p>
+
+                            <div class="form-group">
+                                <label for="amountToAdd">Сума для додавання</label>
+                                <input type="number" min="1" id="amountToAdd" name="amountToAdd" required>
+                            </div>
+
+                            <hr />
+
+                            <p>Оберіть картку для оплати:</p>
+
+                            <div class="card-group">
+                                <div class="card-item mastercard">
+                                    <input type="radio" id="card" name="selectedCard" value="@Model.CardNumber" checked required>
+                                    <label for="card">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="Mastercard" class="card-logo" />
+                                        <div class="card-number">**** **** **** @Model.CardNumber.Substring(@Model.CardNumber.Length - 4)</div>
+                                        <div class="card-cvv">CVV: ***</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn-green">Поповнити</button>
+                            <button type="button" class="btn-red" onclick="closeAddBalanceModal()">Відмінити</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
 
         <div class="sidebar-buttons">
             <form id="requestForm" method="get" asp-controller="VolunProfile" asp-action="VolunteerRequestList">

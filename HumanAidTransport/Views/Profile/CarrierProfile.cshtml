@@ -10,8 +10,10 @@
     <link rel="stylesheet" href="~/css/profile/carprofile.css" asp-append-version="true" />
 
     <script src="~/js/profile/carprofile.js" asp-append-version="true" defer></script>
+
 </head>
 <body>
+
 <div class="profile-container">
     <div class="profile-sidebar">
         <div class="profile-pic-container">
@@ -21,7 +23,55 @@
         </div>
         <h2 class="clientname">@Model.Name</h2>
         <p class="role">Перевізник</p>
-        <p class="balance">Баланс: <span>@Model.Balance грн</span></p>
+
+            <div class="balance-row">
+                <div class="balance">
+                    Баланс: <span>@Model.Balance грн</span>
+                    <button type="button" class="topup-button" onclick="openAddBalanceModal()">+</button>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal-overlay" id="addBalanceModal">
+                <div class="modal-window">
+                    <form action="/CarrierProfile/CarrierAddBalance" method="post">
+                        <div class="modal-header">
+                            <h5>Додати баланс</h5>
+                            <button type="button" class="close-btn" onclick="closeAddBalanceModal()">×</button>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Поточний баланс: <strong>@Model.Balance</strong> грн</p>
+
+                            <div class="form-group">
+                                <label for="amountToAdd">Сума для додавання</label>
+                                <input type="number" min="1" id="amountToAdd" name="amountToAdd" required>
+                            </div>
+
+                            <hr />
+
+                            <p>Оберіть картку для оплати:</p>
+
+                            <div class="card-group">
+                                <div class="card-item mastercard">
+                                    <input type="radio" id="card" name="selectedCard" value="@Model.CardNumber" checked required>
+                                    <label for="card">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="Mastercard" class="card-logo" />
+                                        <div class="card-number">**** **** **** @Model.CardNumber.Substring(@Model.CardNumber.Length - 4)</div>
+                                        <div class="card-cvv">CVV: ***</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn-green">Поповнити</button>
+                            <button type="button" class="btn-red" onclick="closeAddBalanceModal()">Відмінити</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         <h5>
             Рейтинг:
             @for (int i = 1; i <= 5; i++)
@@ -148,7 +198,7 @@
                                         task.Type == AidType.Shelter ? "Укриття" :
                                         task.Type == AidType.Military ? "Воєнна допомога" :
                                         task.Type == AidType.Other ? "Інше" :
-                                        task.Type // якщо не співпало
+                                        task.Type 
                                         )
                                 </strong><br>
 

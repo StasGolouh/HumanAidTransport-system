@@ -148,6 +148,12 @@ namespace HumanAidTransport.Controllers
                 return RedirectToAction("VolunteerProfile");
             }
 
+            if (volunteerFromDb.Balance < newTask.Payment)
+            {
+                TempData["Error"] = "Недостатньо коштів, щоб розплатитися за завдання. Поповніть баланс.";
+                return RedirectToAction("VolunteerProfile");
+            }
+
             newTask.VolunteerId = volunteerFromDb.Id;
             newTask.Status = "Новий";
 
@@ -310,6 +316,44 @@ namespace HumanAidTransport.Controllers
 
             // Повертаємо дані до вьюхи
             return View("~/Views/Lists/VolunteerRequestList.cshtml", requests);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VolAddBalance(int amountToAdd, string selectedCard)
+        {
+            if (Volunteer == null)
+            {
+                TempData["Error"] = "Ви не авторизовані";
+                return RedirectToAction("VolunteerLogin", "Volunteer");
+            }
+
+            if (amountToAdd <= 0)
+            {
+                TempData["Error"] = "Сума для додавання має бути більшою за 0";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            var volunteerFromDb = await _context.Volunteers.FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
+
+            if (volunteerFromDb == null)
+            {
+                TempData["Error"] = "Волонтера не знайдено";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            // Тут ти можеш перевірити чи selectedCard дійсно належить волонтеру (для безпеки)
+            if (selectedCard != volunteerFromDb.CardNumber)
+            {
+                TempData["Error"] = "Оберіть коректну картку";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            volunteerFromDb.Balance += amountToAdd;
+            _context.Volunteers.Update(volunteerFromDb);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessVol"] = $"Баланс успішно поповнено на {amountToAdd} грн.";
+            return RedirectToAction("VolunteerProfile");
         }
 
         public IActionResult LogOut()
