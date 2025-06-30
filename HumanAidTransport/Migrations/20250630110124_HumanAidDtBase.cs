@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HumanAidTransport.Migrations
 {
     /// <inheritdoc />
-    public partial class HumanAidDb : Migration
+    public partial class HumanAidDtBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,7 +25,10 @@ namespace HumanAidTransport.Migrations
                     VehicleNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfilePhotoURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
-                    Dimensions = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Dimensions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CardNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CVV = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Balance = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,7 +43,10 @@ namespace HumanAidTransport.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProfilePhotoURL = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ProfilePhotoURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CardNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CVV = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Balance = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -85,6 +91,7 @@ namespace HumanAidTransport.Migrations
                     PriorityLevel = table.Column<int>(type: "int", nullable: false),
                     VolunteerId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PinCode = table.Column<int>(type: "int", nullable: false),
                     CarrierId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

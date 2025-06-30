@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HumanAidTransport.Migrations
 {
     [DbContext(typeof(HumanitarianDbContext))]
-    [Migration("20250515164315_HumanAidDb")]
+    [Migration("20250630112354_HumanAidDb")]
     partial class HumanAidDb
     {
         /// <inheritdoc />
@@ -33,8 +33,19 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
+
+                    b.Property<string>("CVV")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
+
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Contacts")
                         .IsRequired()
@@ -184,6 +195,9 @@ namespace HumanAidTransport.Migrations
                     b.Property<double>("Payment")
                         .HasColumnType("float");
 
+                    b.Property<int>("PinCode")
+                        .HasColumnType("int");
+
                     b.Property<int>("PriorityLevel")
                         .HasColumnType("int");
 
@@ -300,6 +314,17 @@ namespace HumanAidTransport.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
+
+                    b.Property<string>("CVV")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

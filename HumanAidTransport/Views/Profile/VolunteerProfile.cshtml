@@ -9,51 +9,47 @@
 
     <link rel="stylesheet" href="~/css/profile/volprofile.css" asp-append-version="true" />
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
     <script src="~/js/profile/volprofile.js" asp-append-version="true" defer></script>
 </head>
 <body>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger custom-alert">
-        @TempData["Error"]
-    </div>
-}
-
-@if (TempData["SuccessVol"] != null)
-{
-    <div class="alert alert-success custom-alert">
-        @TempData["SuccessVol"]
-    </div>
-}
-
-@if (TempData["DeleteMess"] != null){
-    <div class="alert alert-success custom-alert">
-        @TempData["DeleteMess"]
-    </div>
-}
-
-@if (TempData["CanceledMess"] != null)
-{
-    <div class="alert alert-success custom-alert">
-        @TempData["CanceledMess"]
-    </div>
-}
-
-<div class="profile-container">
-    <div class="profile-sidebar">
-        <div class="profile-pic-container">
-
-            <img src="@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic" id="profilePic">
-            <input type="file" id="uploadPic" hidden>
-            <label for="uploadPic" class="upload-btn">Змінити фото</label>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger custom-alert">
+            @TempData["Error"]
         </div>
-        <h2 class="clientname">@Model.Name</h2>
-        <p class="role">Волонтер</p>
+    }
+
+    @if (TempData["SuccessVol"] != null)
+    {
+        <div class="alert alert-success custom-alert">
+            @TempData["SuccessVol"]
+        </div>
+    }
+
+    @if (TempData["DeleteMess"] != null){
+        <div class="alert alert-success custom-alert">
+            @TempData["DeleteMess"]
+        </div>
+    }
+
+    @if (TempData["CanceledMess"] != null)
+    {
+        <div class="alert alert-success custom-alert">
+            @TempData["CanceledMess"]
+        </div>
+    }
+
+    <div class="profile-container">
+        <div class="profile-sidebar">
+            <div class="profile-pic-container">
+
+                <img src="@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic" id="profilePic">
+                <input type="file" id="uploadPic" hidden>
+                <label for="uploadPic" class="upload-btn">Змінити фото</label>
+            </div>
+            <h2 class="clientname">@Model.Name</h2>
+            <p class="role">Волонтер</p>
 
             <div class="balance-row">
                 <div class="balance">
@@ -104,86 +100,89 @@
             </div>
 
 
-        <div class="sidebar-buttons">
-            <form id="requestForm" method="get" asp-controller="VolunProfile" asp-action="VolunteerRequestList">
-                <input type="hidden" name="volunteerId" value="@Model.Id" />
-                <button type="submit" class="request-icon">
-                    <img src="~/images/requests.png" alt="Requests">
-                    @if (ViewBag.NewRequestCount > 0)
-                    {
-                        <span class="req-count">@ViewBag.NewRequestCount </span>
-                    }
-                </button>
-            <p class="request-label">Ваші запити</p>
-            </form>
-            <form id="notificationForm" method="get" asp-controller="Notification" asp-action="VolunteerNotifications">
-                <input type="hidden" name="volunteerId" value="@Model.Id" />
-                <button type="submit" class="notif-icon">
-                    <img src="~/images/notifications.png" alt="Notifications">
-                    @if (ViewBag.NewNotificationsCount > 0)
-                    {
-                        <span class="notif-count">@ViewBag.NewNotificationsCount</span>
-                    }
-                </button>
-                <p class="notif-label">Сповіщення</p>
-            </form>
-            <form id="logoutForm" method="post" asp-controller="VolunProfile" asp-action="LogOut">
-                <button type="submit" class="logout-icon">
-                    <img src="~/images/logout.png" alt="Logout">
-                </button>
-                <p class="logout-label">Вийти</p>
-            </form>
+            <div class="sidebar-buttons">
+                <form id="requestForm" method="get" asp-controller="VolunProfile" asp-action="VolunteerRequestList">
+                    <input type="hidden" name="volunteerId" value="@Model.Id" />
+                    <button type="submit" class="request-icon">
+                        <img src="~/images/requests.png" alt="Requests">
+                        @if (ViewBag.NewRequestCount > 0)
+                        {
+                            <span class="req-count">@ViewBag.NewRequestCount </span>
+                        }
+                    </button>
+                    <p class="request-label">Ваші запити</p>
+                </form>
+                <form id="notificationForm" method="get" asp-controller="Notification" asp-action="VolunteerNotifications">
+                    <input type="hidden" name="volunteerId" value="@Model.Id" />
+                    <button type="submit" class="notif-icon">
+                        <img src="~/images/notifications.png" alt="Notifications">
+                        @if (ViewBag.NewNotificationsCount > 0)
+                        {
+                            <span class="notif-count">@ViewBag.NewNotificationsCount</span>
+                        }
+                    </button>
+                    <p class="notif-label">Сповіщення</p>
+                </form>
+                <form id="logoutForm" method="post" asp-controller="VolunProfile" asp-action="LogOut">
+                    <button type="submit" class="logout-icon">
+                        <img src="~/images/logout.png" alt="Logout">
+                    </button>
+                    <p class="logout-label">Вийти</p>
+                </form>
 
+            </div>
         </div>
-    </div>
 
-    <div class="profile-content">
-        <div class="task-section">
-            <h3 class="paragtask">Ваші завдання</h3>
+        <div class="profile-content">
+            <div class="task-section">
+                <h3 class="paragtask">Ваші завдання</h3>
 
-            <div class="search-filters">
+                <div class="search-filters">
                     <input type="text" id="taskNameSearch" placeholder="Пошук за назвою завдання..." oninput="filterTasks()">
-                <select id="taskStatusSearch" onchange="filterTasks()">
-                    <option value="">Всі статуси</option>
-                    <option value="Новий">Новий</option>
-                    <option value="Підтверджено">Підтверджено</option>
-                    <option value="Скасовано">Скасовано</option>
-                    <option value="В очікуванні">В очікуванні</option>
-                    <option value="Виконано">Виконано</option>
-                    <option value="В процесі">В процесі</option>
-                    <option value="Відхилено">Відхилено</option>
-                </select>
+                    <select id="taskStatusSearch" onchange="filterTasks()">
+                        <option value="">Всі статуси</option>
+                        <option value="Новий">Новий</option>
+                        <option value="Підтверджено">Підтверджено</option>
+                        <option value="Скасовано">Скасовано</option>
+                        <option value="В очікуванні">В очікуванні</option>
+                        <option value="Виконано">Виконано</option>
+                        <option value="В процесі">В процесі</option>
+                        <option value="Відхилено">Відхилено</option>
+                        <option value="Оплачено">Оплачено</option>
+                    </select>
 
-                <select id="taskSort" onchange="sortTasksByPriority()">
+                    <select id="taskSort" onchange="sortTasksByPriority()">
                         <option value="">Сортувати за пріорітетом</option>
                         <option value="desc">Високий → Низький</option>
                         <option value="asc">Низький → Високий</option>
-                </select>
-            </div>
+                    </select>
+                </div>
 
                 <div class="task-scroll-container">
                     <ul class="task-list" id="taskList">
                         @foreach (var task in Model.Tasks)
                         {
-                            <li class="task-item
-                @((task.Status == "Новий") ? "task-new" :
-                    (task.Status == "Підтверджено" ? "task-confirmed" :
-                    (task.Status == "Скасовано" ? "task-canceled" :
-                    (task.Status == "В очікуванні" ? "task-pending" :
-                    (task.Status == "Виконано" ? "task-completed" :
-                    (task.Status == "В процесі" ? "task-progress" :
-                    (task.Status == "Відхилено" ? "task-rejected" : "")))))))" data-name="@task.Name" data-status="@task.Status">
+                        <li class="task-item
+                            @((task.Status == "Новий") ? "task-new" :
+                              (task.Status == "Підтверджено" ? "task-confirmed" :
+                              (task.Status == "Скасовано" ? "task-canceled" :
+                              (task.Status == "В очікуванні" ? "task-pending" :
+                              (task.Status == "Виконано" ? "task-completed" :
+                              (task.Status == "В процесі" ? "task-progress" :
+                              (task.Status == "Відхилено" ? "task-rejected" :
+                              (task.Status == "Оплачено" ? "task-paid" : ""))))))))" data-name="@task.Name" data-status="@task.Status">
+
                                 <strong>@task.Name</strong><br>
                                 Тип: <strong>
                                     @(
-                                        task.Type == AidType.Food ? "Продукти харчування" :
-                                        task.Type == AidType.Medicine ? "Ліки" :
-                                        task.Type == AidType.Clothes ? "Одяг" :
-                                        task.Type == AidType.Shelter ? "Укриття" :
-                                        task.Type == AidType.Military ? "Воєнна допомога" :
-                                        task.Type == AidType.Other ? "Інше" :
-                                        task.Type // якщо не співпало
-                                        )
+                                            task.Type == AidType.Food ? "Продукти харчування" :
+                                            task.Type == AidType.Medicine ? "Ліки" :
+                                            task.Type == AidType.Clothes ? "Одяг" :
+                                            task.Type == AidType.Shelter ? "Укриття" :
+                                            task.Type == AidType.Military ? "Воєнна допомога" :
+                                            task.Type == AidType.Other ? "Інше" :
+                                            task.Type // якщо не співпало
+                                            )
                                 </strong><br>
 
                                 Пріоритет:
@@ -191,11 +190,11 @@
                              task.PriorityLevel == Priority.Medium ? "priority-medium" :
                              task.PriorityLevel == Priority.Low ? "priority-low" : "")">
                                     @(
-                                        task.PriorityLevel == Priority.High ? "Високий" :
-                                        task.PriorityLevel == Priority.Medium ? "Середній" :
-                                        task.PriorityLevel == Priority.Low ? "Низький" :
-                                        task.PriorityLevel
-                                        )
+                                            task.PriorityLevel == Priority.High ? "Високий" :
+                                            task.PriorityLevel == Priority.Medium ? "Середній" :
+                                            task.PriorityLevel == Priority.Low ? "Низький" :
+                                            task.PriorityLevel
+                                            )
                                 </span><br>
                                 PIN-Код: <b title="Код для завершення завдання перевізником. Передайте код отримувачу гуманітарної допомоги.">@task.PinCode</b> <br>
                                 Опис: @task.Description <br>
@@ -205,36 +204,48 @@
                                 Ціна: @task.Payment грн <br>
                                 Дата очікуваної доставки: @task.ExpectedDeliveryTime <br>
 
-                            
+
                                 Статус:
                                 <span class="status-label
-                    @((task.Status == "Новий") ? "status-new" :
-                    (task.Status == "Підтверджено") ? "status-confirmed" :
-                    (task.Status == "Скасовано" ? "status-canceled" :
-                    (task.Status == "В очікуванні") ? "status-pending" :
-                    (task.Status == "Виконано" ? "status-completed" :
-                    (task.Status == "В процесі" ? "status-progress":
-                    (task.Status == "Відхилено" ? "status-rejected" : "")))))">
+                                    @((task.Status == "Новий") ? "status-new" :
+                                      (task.Status == "Підтверджено") ? "status-confirmed" :
+                                      (task.Status == "Скасовано" ? "status-canceled" :
+                                      (task.Status == "В очікуванні" ? "status-pending" :
+                                      (task.Status == "Виконано" ? "status-completed" :
+                                      (task.Status == "В процесі" ? "status-progress" :
+                                      (task.Status == "Відхилено" ? "status-rejected" :
+                                      (task.Status == "Оплачено" ? "status-paid" : "")))))))">
                                     @task.Status
                                 </span>
 
-                                <!-- Кнопки для скасування, відновлення та видалення завдання -->
-                                @if (task.Status == "Скасовано" || task.Status == "Відхилено")
-                                {
-                                    <form method="post" asp-action="RestoreTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
-                                        <button type="submit" class="btn-restore">Відновити завдання</button>
-                                    </form>
-                                }
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                    <!-- Кнопки для скасування, відновлення та видалення завдання -->
+                                    @if (task.Status == "Скасовано" || task.Status == "Відхилено")
+                                    {
+                                        <form method="post" asp-action="RestoreTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
+                                            <button type="submit" class="btn-restore">Відновити завдання</button>
+                                        </form>
+                                    }
 
-                                @if (task.Status != "Виконано" && task.Status != "Відхилено" && task.Status != "Скасовано")
-                                {
-                                    <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
-                                        <button type="submit" class="btn-danger">Скасувати завдання</button>
+                                    @if (task.Status != "Виконано" && task.Status != "Відхилено" && task.Status != "Скасовано" && task.Status != "Оплачено")
+                                    {
+                                        <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId">
+                                            <button type="submit" class="btn-danger">Скасувати завдання</button>
+                                        </form>
+                                    }
+
+                                    @if (task.Status == "Виконано")
+                                    {
+                                        <form method="post" asp-action="PayForDelivery">
+                                            <input type="hidden" name="taskId" value="@task.HumanAidId" />
+                                            <button type="submit" class="btn-pay">Оплатити доставку</button>
+                                        </form>
+                                    }
+
+                                    <form method="post" asp-action="DeleteTask" asp-route-taskId="@task.HumanAidId">
+                                        <button type="submit" class="btn-delete" title="Видалити завдання">🗑️</button>
                                     </form>
-                                }
-                                <form method="post" asp-action="DeleteTask" asp-route-taskId="@task.HumanAidId" style="display:inline;">
-                                    <button type="submit" class="btn-delete" title="Видалити завдання">🗑️</button>
-                                </form>
+                                </div>
                             </li>
                         }
                     </ul>

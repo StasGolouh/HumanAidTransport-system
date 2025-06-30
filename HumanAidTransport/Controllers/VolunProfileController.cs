@@ -150,7 +150,7 @@ namespace HumanAidTransport.Controllers
 
             if (volunteerFromDb.Balance < newTask.Payment)
             {
-                TempData["Error"] = "Недостатньо коштів, щоб розплатитися за завдання. Поповніть баланс.";
+                TempData["Error"] = "Недостатньо коштів, щоб розплатитися за завдання. Поповніть баланс або зменшіть ціну за доставку.";
                 return RedirectToAction("VolunteerProfile");
             }
 
@@ -355,6 +355,63 @@ namespace HumanAidTransport.Controllers
             TempData["SuccessVol"] = $"Баланс успішно поповнено на {amountToAdd} грн.";
             return RedirectToAction("VolunteerProfile");
         }
+
+        [HttpPost]
+        public IActionResult PayForDelivery(int taskId)
+        {
+            var task = _context.HumanitarianAids.FirstOrDefault(t => t.HumanAidId == taskId);
+
+            if (task == null)
+            {
+                TempData["Error"] = "Завдання не знайдено.";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            var volunteer = _context.Volunteers.FirstOrDefault(v => v.Id == task.VolunteerId);
+            if (volunteer == null)
+            {
+                TempData["Error"] = "Волонтера не знайдено.";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            if (volunteer.Balance < task.Payment)
+            {
+                TempData["Error"] = "Недостатньо коштів для оплати доставки.";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            // Знаходимо delivery request, який стосується цього завдання
+            var deliveryRequest = _context.DeliveryRequests
+                .FirstOrDefault(dr => dr.HumanAidId == task.HumanAidId);
+
+            if (deliveryRequest == null || deliveryRequest.CarrierId == 0)
+            {
+                TempData["Error"] = "Перевізника для цього завдання не знайдено.";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            var carrier = _context.Carriers.FirstOrDefault(c => c.Id == deliveryRequest.CarrierId);
+            if (carrier == null)
+            {
+                TempData["Error"] = "Перевізника не знайдено.";
+                return RedirectToAction("VolunteerProfile");
+            }
+
+            // списання коштів з волонтера
+            volunteer.Balance -= task.Payment.Value;
+
+            // нарахування коштів перевізнику
+            carrier.Balance += task.Payment.Value;
+
+            // оновлення статусу, наприклад
+            task.Status = "Оплачено";
+
+            _context.SaveChanges();
+
+            TempData["SuccessVol"] = "Доставка успішно оплачена!";
+            return RedirectToAction("VolunteerProfile");
+        }
+
 
         public IActionResult LogOut()
         {

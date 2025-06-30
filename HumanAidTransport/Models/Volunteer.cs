@@ -22,7 +22,7 @@ public class Volunteer
     public string CVV { get; set; }
 
     [Required]
-    public int Balance { get; set; }
+    public double Balance { get; set; }
 
     public List<HumanitarianAid> Tasks { get; set; } = new List<HumanitarianAid>();
 

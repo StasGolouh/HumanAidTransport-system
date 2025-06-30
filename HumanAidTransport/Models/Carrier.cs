@@ -40,7 +40,7 @@ public class Carrier
     public string CVV { get; set; }
 
     [Required]
-    public int Balance { get; set; }
+    public double Balance { get; set; }
 
     public List<HumanitarianAid> AvailableTasks { get; set; } = new List<HumanitarianAid>();
 
