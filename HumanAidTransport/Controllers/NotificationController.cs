@@ -26,7 +26,7 @@ namespace HumanAidTransport.Controllers
         public async Task<IActionResult> CarrierNotifications(int carrierId)
         {
             var notifications = await _context.Notifications
-                .Where(n => n.CarrierId == carrierId && (n.Status == "Підтверджено" || n.Status == "Скасовано" || n.Status == "Оцінено"))
+                .Where(n => n.CarrierId == carrierId && (n.Status == "Підтверджено" || n.Status == "Скасовано" || n.Status == "Оцінено" || n.Status == "Оплачено"))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 

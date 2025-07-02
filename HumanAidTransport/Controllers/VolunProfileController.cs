@@ -406,6 +406,17 @@ namespace HumanAidTransport.Controllers
             // оновлення статусу, наприклад
             task.Status = "Оплачено";
 
+            var paymentNotification = new Notification
+            {
+                VolunteerId = volunteer.Id,
+                CarrierId = carrier.Id,
+                Message = $"Вашу роботу було оплачено на суму {task.Payment.Value} грн.",
+                CreatedAt = DateTime.UtcNow,
+                Status = "Оплачено" 
+            };
+
+            _context.Notifications.Add(paymentNotification);
+
             _context.SaveChanges();
 
             TempData["SuccessVol"] = "Доставка успішно оплачена!";

@@ -38,9 +38,11 @@
         <ul>
             @foreach (var notification in Model)
             {
-                var statusClass = notification.Status == "Підтверджено" ? "comfirmed" :
+                    var statusClass = notification.Status == "Підтверджено" ? "comfirmed" :
                     notification.Status == "Скасовано" ? "canceled" :
-                    notification.Status == "Оцінено" ? "rated" : "default-status";
+                    notification.Status == "Оцінено" ? "rated" :
+                    notification.Status == "Оплачено" ? "paid" : "default-status";
+
                 <li class="notification-item @statusClass">
                     <div class="notification-content">
                         <span>@notification.Message</span>

@@ -186,3 +186,8 @@
         padding: 1rem 0.5rem;
     }
 }
+.paid {
+    color: #7c3aed; 
+    background-color: #ede9fe;
+    font-weight: bold;
+}
