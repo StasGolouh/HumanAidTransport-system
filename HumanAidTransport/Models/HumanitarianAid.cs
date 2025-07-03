@@ -40,6 +40,8 @@ namespace HumanAidTransport.Models
         [Required]
         public DateTime? ExpectedDeliveryTime { get; set; }
 
+        public DateTime? CompletedAt { get; set; }
+
         [Required]
         public string DeliveryAddressFrom { get; set; }
 

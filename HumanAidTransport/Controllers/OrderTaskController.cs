@@ -80,22 +80,25 @@ namespace HumanAidTransport.Controllers
             var deliveryRequest = await _context.DeliveryRequests.FirstOrDefaultAsync(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
             var humanAid = await _context.HumanitarianAids.FirstOrDefaultAsync(h => h.HumanAidId == deliveryRequest.HumanAidId);
 
-            // ❗ Перевірка PIN-коду має бути першою
+            // Перевірка PIN-коду має бути першою
             if (humanAid == null || enteredCode != humanAid.PinCode)
             {
                 TempData["CancelMessage"] = "❌ Невірний PIN-код. Спробуйте ще раз.";
                 return RedirectToAction("CarrierOrderList", new { carrierId = order.CarrierId });
             }
 
-            // ✅ PIN правильний, тепер оновлюємо статуси
+            // PIN правильний, тепер оновлюємо статуси
             order.Status = "Виконано";
             humanAid.Status = "Виконано";
+
+            humanAid.CompletedAt = DateTime.Now;
 
             var notification = new Notification
             {
                 VolunteerId = order.VolunteerId,
                 CarrierId = order.CarrierId,
-                Message = $"Ваше призначене завдання (Замовлення '{order.Name}') було успішно виконано",
+                Message = $"Ваше призначене завдання (Замовлення '{order.Name}') було успішно виконано. Сплатіть доставку в найближчі 3 години, " +
+                $"аби не отримати 1,5 кратний штраф",
                 CreatedAt = DateTime.UtcNow,
                 Status = "Виконано"
             };

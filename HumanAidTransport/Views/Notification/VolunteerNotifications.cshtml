@@ -40,7 +40,11 @@
             @foreach (var notification in Model)
             {
                 var statusClass = notification.Status == "Виконано" ? "completed" :
-                    notification.Status == "Відхилено" ? "rejected" : notification.Status == "В процесі" ? "in-progress" : "default-status";
+                notification.Status == "Відхилено" ? "rejected" :
+                notification.Status == "В процесі" ? "in-progress" :
+                notification.Status == "Штраф Волонтеру" ? "penalty" :
+                "default-status";
+
                 <li class="notification-item @statusClass">
                     <div class="notification-content">
                         <span>@notification.Message</span>

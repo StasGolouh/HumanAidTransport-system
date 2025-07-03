@@ -49,7 +49,7 @@ namespace HumanAidTransport.Controllers
 
                     // Підрахунок нових сповіщень
                     int newNotificationsCount = await _context.Notifications
-                        .Where(n => n.CarrierId == Carrier.Id && (n.Status == "Підтверджено" || n.Status == "Скасовано" || n.Status == "Оцінено" || n.Status == "Оплачено"))
+                        .Where(n => n.CarrierId == Carrier.Id && (n.Status == "Підтверджено" || n.Status == "Скасовано" || n.Status == "Оцінено" || n.Status == "Оплачено" || n.Status == "Штраф Перевізнику" || n.Status == "Компенсація Перевізнику"))
                         .CountAsync();
 
                     // Передаємо кількість нових завдань та сповіщень у View

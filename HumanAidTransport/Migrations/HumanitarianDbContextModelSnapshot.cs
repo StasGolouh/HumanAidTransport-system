@@ -171,6 +171,9 @@ namespace HumanAidTransport.Migrations
                     b.Property<int?>("CarrierId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DeliveryAddressFrom")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -322,6 +325,9 @@ namespace HumanAidTransport.Migrations
                     b.Property<string>("CardNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Debt")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()

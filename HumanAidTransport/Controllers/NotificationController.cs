@@ -16,7 +16,7 @@ namespace HumanAidTransport.Controllers
         public async Task<IActionResult> VolunteerNotifications(int volunteerId)
         {
             var notifications = await _context.Notifications
-                .Where(n => n.VolunteerId == volunteerId && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status =="В процесі"))
+                .Where(n => n.VolunteerId == volunteerId && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status =="В процесі" || n.Status == "Штраф Волонтеру" || n.Status == "Компенсація Волонтеру"))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 
@@ -26,7 +26,7 @@ namespace HumanAidTransport.Controllers
         public async Task<IActionResult> CarrierNotifications(int carrierId)
         {
             var notifications = await _context.Notifications
-                .Where(n => n.CarrierId == carrierId && (n.Status == "Підтверджено" || n.Status == "Скасовано" || n.Status == "Оцінено" || n.Status == "Оплачено"))
+                .Where(n => n.CarrierId == carrierId && (n.Status == "Підтверджено" || n.Status == "Скасовано" || n.Status == "Оцінено" || n.Status == "Оплачено" || n.Status == "Штраф Перевізнику" || n.Status == "Компенсація Перевізнику"))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 

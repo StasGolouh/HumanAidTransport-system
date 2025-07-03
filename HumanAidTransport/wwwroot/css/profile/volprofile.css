@@ -598,6 +598,22 @@
     border-radius: 5px;
 }
 
+.task-penalized {
+    background-color: #2c2c2c; 
+    border-left: 5px solid #e74c3c; 
+    color: #e74c3c; 
+}
+
+.status-penalized {
+    color: #e74c3c; 
+    font-weight: bold;
+    background-color: #1a1a1a; 
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
 @media (max-width: 768px) {
 
     .navbar-brand{

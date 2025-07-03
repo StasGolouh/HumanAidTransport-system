@@ -62,6 +62,8 @@ namespace HumanAidTransport.Controllers
         {
             if (Volunteer != null)
             {
+                await CheckUnpaidOverdueTasks(Volunteer.Id);
+
                 // Завантаження волонтера з бази даних і його завдань
                 var volunteerFromDb = await _context.Volunteers
                     .Include(v => v.Tasks)
@@ -83,7 +85,7 @@ namespace HumanAidTransport.Controllers
 
                     //Лічильник сповіщень
                     int newNotificationsCount = await _context.Notifications
-                      .Where(n => n.VolunteerId == Volunteer.Id && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status == "В процесі"))
+                      .Where(n => n.VolunteerId == Volunteer.Id && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status == "В процесі" || n.Status == "Штраф Волонтеру"))
                       .CountAsync();
 
                     ViewBag.NewNotificationsCount = newNotificationsCount;
@@ -95,6 +97,83 @@ namespace HumanAidTransport.Controllers
 
             return RedirectToAction("VolunteerLogin", "Volunteer");
         }
+
+        private async Task CheckUnpaidOverdueTasks(int volunteerId)
+        {
+            var unpaidTasks = await _context.HumanitarianAids
+                .Where(t => t.VolunteerId == volunteerId && t.Status == "Виконано" && t.CompletedAt != null)
+                .ToListAsync();
+
+            foreach (var task in unpaidTasks)
+            {
+                var completedAtUtc = TimeZoneInfo.ConvertTimeToUtc(task.CompletedAt.Value, TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time"));
+                var hoursSinceCompleted = (DateTime.UtcNow - completedAtUtc).TotalMinutes;
+
+                if (hoursSinceCompleted > 1)
+                {
+                    var volunteer = await _context.Volunteers.FirstOrDefaultAsync(v => v.Id == task.VolunteerId);
+
+                    var deliveryRequest = _context.DeliveryRequests
+                        .FirstOrDefault(dr => dr.HumanAidId == task.HumanAidId);
+
+                    var carrier = _context.Carriers.FirstOrDefault(c => c.Id == deliveryRequest.CarrierId);
+
+                    if (volunteer != null && carrier != null && task.Payment.HasValue)
+                    {
+                        double penaltyAmount = task.Payment.Value * 1.5;
+
+                        if (volunteer.Balance >= penaltyAmount)
+                        {
+                            volunteer.Balance -= penaltyAmount;
+                            carrier.Balance += penaltyAmount;
+
+                            task.Status = "Оштрафовано";
+
+                            _context.Notifications.Add(new Notification
+                            {
+                                VolunteerId = volunteer.Id,
+                                CarrierId = carrier.Id,
+                                Message = $"Не сплачено вчасно. Списано {penaltyAmount} грн (штраф).",
+                                CreatedAt = DateTime.UtcNow,
+                                Status = "Штраф Волонтеру"
+                            });
+                        }
+                        else
+                        {
+                            double debt = penaltyAmount - volunteer.Balance;
+                            carrier.Balance += volunteer.Balance;
+                            volunteer.Balance = 0;
+
+                            volunteer.Debt += debt;
+
+                            task.Status = "Оштрафований (борг)";
+
+                            _context.Notifications.Add(new Notification
+                            {
+                                VolunteerId = volunteer.Id,
+                                CarrierId = carrier.Id,
+                                Message = $"Не сплачено вчасно. Частково списано {penaltyAmount - debt} грн, залишок боргу {debt} грн.",
+                                CreatedAt = DateTime.UtcNow,
+                                Status = "Штраф Волонтеру"
+                            });
+                        }
+
+                        // Додаткове сповіщення про компенсацію
+                        _context.Notifications.Add(new Notification
+                        {
+                            CarrierId = carrier.Id,
+                            VolunteerId = volunteer.Id,
+                            Message = $"Вибачте за очікування, ось Ваша компенсація {penaltyAmount} грн за доставку завдання \"{task.Name}\".",
+                            CreatedAt = DateTime.UtcNow,
+                            Status = "Компенсація Перевізнику"
+                        });
+
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> PostTask(HumanitarianAid newTask)
@@ -166,8 +245,6 @@ namespace HumanAidTransport.Controllers
             TempData["SuccessVol"] = "Завдання успішно додано";
             return RedirectToAction("VolunteerProfile");
         }
-
-
         [HttpPost]
         public async Task<IActionResult> CancelTask(int taskId)
         {
@@ -341,18 +418,43 @@ namespace HumanAidTransport.Controllers
                 return RedirectToAction("VolunteerProfile");
             }
 
-            // Тут ти можеш перевірити чи selectedCard дійсно належить волонтеру (для безпеки)
             if (selectedCard != volunteerFromDb.CardNumber)
             {
                 TempData["Error"] = "Оберіть коректну картку";
                 return RedirectToAction("VolunteerProfile");
             }
 
-            volunteerFromDb.Balance += amountToAdd;
+            double remainingAmount = amountToAdd;
+
+            if (volunteerFromDb.Debt > 0)
+            {
+                if (remainingAmount >= volunteerFromDb.Debt)
+                {
+                    // повністю погашаємо борг
+                    remainingAmount -= volunteerFromDb.Debt;
+                    TempData["SuccessVol"] = $"Борг у розмірі {volunteerFromDb.Debt} грн погашено.";
+                    volunteerFromDb.Debt = 0;
+                }
+                else
+                {
+                    // частково погашаємо борг
+                    volunteerFromDb.Debt -= remainingAmount;
+                    TempData["SuccessVol"] = $"Частково погашено борг на {amountToAdd} грн. Залишок боргу: {volunteerFromDb.Debt} грн.";
+                    remainingAmount = 0;
+                }
+            }
+
+            // Додаємо залишок на баланс
+            volunteerFromDb.Balance += remainingAmount;
+
             _context.Volunteers.Update(volunteerFromDb);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessVol"] = $"Баланс успішно поповнено на {amountToAdd} грн.";
+            if (remainingAmount > 0)
+            {
+                TempData["SuccessVol"] += $" Баланс поповнено на {remainingAmount} грн.";
+            }
+
             return RedirectToAction("VolunteerProfile");
         }
 
@@ -422,7 +524,6 @@ namespace HumanAidTransport.Controllers
             TempData["SuccessVol"] = "Доставка успішно оплачена!";
             return RedirectToAction("VolunteerProfile");
         }
-
 
         public IActionResult LogOut()
         {

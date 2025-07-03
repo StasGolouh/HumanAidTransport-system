@@ -149,6 +149,7 @@
                         <option value="В процесі">В процесі</option>
                         <option value="Відхилено">Відхилено</option>
                         <option value="Оплачено">Оплачено</option>
+                        <option value="Оштрафовано">Оштрафовано</option>
                     </select>
 
                     <select id="taskSort" onchange="sortTasksByPriority()">
@@ -170,7 +171,8 @@
                               (task.Status == "Виконано" ? "task-completed" :
                               (task.Status == "В процесі" ? "task-progress" :
                               (task.Status == "Відхилено" ? "task-rejected" :
-                              (task.Status == "Оплачено" ? "task-paid" : ""))))))))" data-name="@task.Name" data-status="@task.Status">
+                              (task.Status == "Оплачено" ? "task-paid" :
+                              (task.Status == "Оштрафовано" ? "task-penalized" : "")))))))))" data-name="@task.Name" data-status="@task.Status">
 
                                 <strong>@task.Name</strong><br>
                                 Тип: <strong>
@@ -214,7 +216,8 @@
                                       (task.Status == "Виконано" ? "status-completed" :
                                       (task.Status == "В процесі" ? "status-progress" :
                                       (task.Status == "Відхилено" ? "status-rejected" :
-                                      (task.Status == "Оплачено" ? "status-paid" : "")))))))">
+                                      (task.Status == "Оплачено" ? "status-paid" :
+                                      (task.Status == "Оштрафовано" ? "status-penalized" : ""))))))))">
                                     @task.Status
                                 </span>
 
@@ -227,7 +230,7 @@
                                         </form>
                                     }
 
-                                    @if (task.Status != "Виконано" && task.Status != "Відхилено" && task.Status != "Скасовано" && task.Status != "Оплачено")
+                                    @if (task.Status != "Виконано" && task.Status != "Відхилено" && task.Status != "Скасовано" && task.Status != "Оплачено" && task.Status != "Оштрафовано")
                                     {
                                         <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId">
                                             <button type="submit" class="btn-danger">Скасувати завдання</button>

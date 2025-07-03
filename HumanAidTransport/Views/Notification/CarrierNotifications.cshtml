@@ -41,7 +41,8 @@
                     var statusClass = notification.Status == "Підтверджено" ? "comfirmed" :
                     notification.Status == "Скасовано" ? "canceled" :
                     notification.Status == "Оцінено" ? "rated" :
-                    notification.Status == "Оплачено" ? "paid" : "default-status";
+                    notification.Status == "Компенсація Перевізнику" ? "compensation-carrier" :
+                    "default-status";
 
                 <li class="notification-item @statusClass">
                     <div class="notification-content">

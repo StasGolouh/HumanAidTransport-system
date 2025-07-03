@@ -24,6 +24,9 @@ public class Volunteer
     [Required]
     public double Balance { get; set; }
 
+    [Required]
+    public double Debt { get; set; } = 0;
+
     public List<HumanitarianAid> Tasks { get; set; } = new List<HumanitarianAid>();
 
     public List<DeliveryRequest> DeliveryRequests { get; set; } = new List<DeliveryRequest>();
