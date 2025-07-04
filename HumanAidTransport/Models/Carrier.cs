@@ -42,6 +42,12 @@ public class Carrier
     [Required]
     public double Balance { get; set; }
 
+    [Required]
+    public double Debt { get; set; } = 0;
+
+    [Required]
+    public int ViolationsCount { get; set; } = 0;
+
     public List<HumanitarianAid> AvailableTasks { get; set; } = new List<HumanitarianAid>();
 
     public List<CarrierRating> Ratings { get; set; } = new List<CarrierRating>();

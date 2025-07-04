@@ -816,6 +816,28 @@
         color: #1b4332;
     }
 
+.debt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #7f1d1d; 
+    background-color: #fee2e2;
+    border: 1px solid #fca5a5; 
+    padding: 10px 15px;
+    margin: 5px 0 20px 0;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 10px;
+}
+
+    .debt span {
+        font-weight: bold;
+        color: #991b1b; 
+    }
+
+
 /* Кнопка додавання балансу*/
 .topup-button {
     display: flex;
@@ -1031,3 +1053,4 @@
         border-radius: 8px;
     }
 }
+

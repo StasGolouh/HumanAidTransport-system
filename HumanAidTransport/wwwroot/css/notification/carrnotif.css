@@ -192,6 +192,15 @@
     font-weight: bold;
 }
 
+.penalty {
+    background-color: #000000;
+    color: #dc2626;
+    font-weight: 700;
+    border-left: 4px solid #b91c1c;
+    padding-left: 0.5rem;
+    border-radius: 0.25rem;
+}
+
 .compensation-carrier {
     color: #065f46; 
     background-color: #d1fae5; 

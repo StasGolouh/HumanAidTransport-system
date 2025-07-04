@@ -107,9 +107,9 @@ namespace HumanAidTransport.Controllers
             foreach (var task in unpaidTasks)
             {
                 var completedAtUtc = TimeZoneInfo.ConvertTimeToUtc(task.CompletedAt.Value, TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time"));
-                var hoursSinceCompleted = (DateTime.UtcNow - completedAtUtc).TotalMinutes;
+                var hoursSinceCompleted = (DateTime.UtcNow - completedAtUtc).TotalHours;
 
-                if (hoursSinceCompleted > 1)
+                if (hoursSinceCompleted > 3)
                 {
                     var volunteer = await _context.Volunteers.FirstOrDefaultAsync(v => v.Id == task.VolunteerId);
 
@@ -129,6 +129,8 @@ namespace HumanAidTransport.Controllers
 
                             task.Status = "Оштрафовано";
 
+                            volunteer.ViolationsCount++;
+
                             _context.Notifications.Add(new Notification
                             {
                                 VolunteerId = volunteer.Id,
@@ -146,7 +148,7 @@ namespace HumanAidTransport.Controllers
 
                             volunteer.Debt += debt;
 
-                            task.Status = "Оштрафований (борг)";
+                            task.Status = "Оштрафовано";
 
                             _context.Notifications.Add(new Notification
                             {
@@ -227,6 +229,12 @@ namespace HumanAidTransport.Controllers
                 return RedirectToAction("VolunteerProfile");
             }
 
+            if (volunteerFromDb.Debt > 0)
+            {
+                TempData["Error"] = $"У вас є непогашений борг {volunteerFromDb.Debt} грн. Погасіть його, щоб створювати нові завдання.";
+                return RedirectToAction("VolunteerProfile");
+            }
+
             if (volunteerFromDb.Balance < newTask.Payment)
             {
                 TempData["Error"] = "Недостатньо коштів, щоб розплатитися за завдання. Поповніть баланс або зменшіть ціну за доставку.";
@@ -245,6 +253,7 @@ namespace HumanAidTransport.Controllers
             TempData["SuccessVol"] = "Завдання успішно додано";
             return RedirectToAction("VolunteerProfile");
         }
+
         [HttpPost]
         public async Task<IActionResult> CancelTask(int taskId)
         {

@@ -43,6 +43,7 @@
                 notification.Status == "Відхилено" ? "rejected" :
                 notification.Status == "В процесі" ? "in-progress" :
                 notification.Status == "Штраф Волонтеру" ? "penalty" :
+                notification.Status == "Компенсація Волонтеру" ? "compensation-volunteer" :
                 "default-status";
 
                 <li class="notification-item @statusClass">
