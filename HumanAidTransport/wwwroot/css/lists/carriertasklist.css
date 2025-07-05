@@ -77,7 +77,6 @@
         border-left: 10px solid #f39c12; 
     }
 
-
     .order-card.completed {
         background: #d4edda;
         border-left: 10px solid #28a745;
@@ -86,6 +85,12 @@
     .order-card.rejected {
         background: #f8d7da;
         border-left: 10px solid #dc3545;
+    }
+
+    .order-card.overdue {
+        background-color: #3a1a1a;
+        border-left: 10px solid #ff4d4d;
+        color: red;
     }
 
 
@@ -105,22 +110,22 @@
 
 .order-details {
     width: 100%;
+    margin: 8px 0;
+    font-size: 18px;
+    color: #333;
 }
-
-    .order-details p {
-        margin: 8px 0;
-        font-size: 18px;
-        color: #333;
+    .order-details.overdue {
+        color: red;
     }
 
-.status {
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    min-width: 120px;
-    text-align: center;
-}
+    .status {
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-size: 18px;
+        font-weight: bold;
+        min-width: 120px;
+        text-align: center;
+    }
 
     .status.new {
         background: #d5e9f7;
@@ -140,6 +145,11 @@
     .status.rejected {
         background: #f5c6cb;
         color: #721c24;
+    }
+
+    .status.overdue {
+        background-color: #2c0d0d;
+        color: #ff4d4d;
     }
 
 .order-actions {
@@ -220,76 +230,6 @@
 .progress-alert {
     background: #fff3cd;
     color: #856404;
-}
-
-@media (max-width: 768px) {
-    .title {
-        font-size: 24px;
-        margin-bottom: 20px;
-        letter-spacing: 1px;
-    }
-
-    .no-requests {
-        font-size: 16px;
-        margin-top: 15px;
-    }
-
-    .task-filters {
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 15px;
-        align-items: center;
-    }
-
-    .filter-input, .filter-dropdown {
-        width: 90%;
-        font-size: 14px;
-        padding: 8px;
-    }
-
-    .orders-container {
-        flex-direction: column;
-        gap: 20px;
-        padding: 0 10px;
-    }
-
-    .order-card {
-        width: 100%;
-        padding: 20px;
-    }
-
-    .order-header h3 {
-        font-size: 20px;
-    }
-
-    .order-details p {
-        font-size: 16px;
-    }
-
-    .status {
-        font-size: 16px;
-        padding: 8px 12px;
-        min-width: auto;
-    }
-
-    .order-actions {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .btn {
-        font-size: 16px;
-        padding: 10px;
-    }
-
-    .alert {
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    .navbar-brand {
-        margin-top: 7px;
-    }
 }
 
 /* Стилі для модульного вінка введення PIN-коду*/
@@ -393,3 +333,73 @@
     .confirm-btn:hover {
         background-color: #218838;
     }
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    .no-requests {
+        font-size: 16px;
+        margin-top: 15px;
+    }
+
+    .task-filters {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+        align-items: center;
+    }
+
+    .filter-input, .filter-dropdown {
+        width: 90%;
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .orders-container {
+        flex-direction: column;
+        gap: 20px;
+        padding: 0 10px;
+    }
+
+    .order-card {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .order-header h3 {
+        font-size: 20px;
+    }
+
+    .order-details p {
+        font-size: 16px;
+    }
+
+    .status {
+        font-size: 16px;
+        padding: 8px 12px;
+        min-width: auto;
+    }
+
+    .order-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .alert {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .navbar-brand {
+        margin-top: 7px;
+    }
+}

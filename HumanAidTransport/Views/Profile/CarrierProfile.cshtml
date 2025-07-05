@@ -25,8 +25,15 @@
         <p class="role">Перевізник</p>
 
             <div class="balance-row">
-                <div class="balance">
-                    Баланс: <span>@Model.Balance грн</span>
+                <div class="@(Model.Debt > 0 ? "debt" : "balance")">
+                    @if (Model.Debt > 0)
+                    {
+                        <span>Борг: <span>@Model.Debt грн</span></span>
+                    }
+                    else
+                    {
+                        <span>Баланс: <span>@Model.Balance грн</span></span>
+                    }
                     <button type="button" class="topup-button" onclick="openAddBalanceModal()">+</button>
                 </div>
             </div>

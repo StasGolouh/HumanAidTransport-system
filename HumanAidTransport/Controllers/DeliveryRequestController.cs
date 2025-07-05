@@ -18,8 +18,17 @@ public class DeliveryRequestController : Controller
         if (ModelState.IsValid)
         {
             var carrier = await _context.Carriers
-                .Include(c => c.Ratings) 
-                .FirstOrDefaultAsync(c => c.Id == carrierId);
+             .Include(c => c.Ratings)
+             .FirstOrDefaultAsync(c => c.Id == carrierId);
+
+            if (carrier == null)
+                return NotFound(new { message = "Перевізник не знайдено." });
+
+            if (carrier.Debt > 0)
+            {
+                TempData["ErrorMessage"] = "У вас є непогашений борг. Ви не можете відгукнутися на завдання, поки борг не буде погашено.";
+                return RedirectToAction("CarrierProfile", "CarrierProfile");
+            }
 
             var humanitarianAid = await _context.HumanitarianAids.FirstOrDefaultAsync(h => h.HumanAidId == humanAidId);
 

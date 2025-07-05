@@ -530,7 +530,53 @@
         font-size: 12px;
         padding: 3px 6px;
     }
+
+    .modal-window {
+        width: 95%;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .card-item.mastercard {
+        width: 100%;
+        padding: 15px;
+        border-radius: 12px;
+        font-size: 14px;
+    }
+
+    .card-number {
+        font-size: 14px;
+    }
+
+    .card-cvv {
+        font-size: 12px;
+    }
+
+    .card-logo {
+        width: 32px;
+        top: 8px;
+        right: 8px;
+    }
+
+    .modal-header h5 {
+        font-size: 18px;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .btn-green, .btn-red {
+        width: 100%;
+        padding: 12px 0;
+        font-size: 16px;
+        border-radius: 8px;
+    }
 }
+
+
 /* Баланс*/
 .balance-row {
     display: flex;
@@ -558,6 +604,27 @@
     .balance span {
         font-weight: bold;
         color: #1b4332;
+    }
+
+.debt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #7f1d1d;
+    background-color: #fee2e2;
+    border: 1px solid #fca5a5;
+    padding: 10px 15px;
+    margin: 5px 0 20px 0;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 10px;
+}
+
+    .debt span {
+        font-weight: bold;
+        color: #991b1b;
     }
 
 /* Кнопка додавання балансу*/
@@ -730,48 +797,6 @@
     }
 
 @media (max-width: 768px) {
-    .modal-window {
-        width: 95%;
-        padding: 15px;
-        border-radius: 8px;
-    }
-
-    .card-item.mastercard {
-        width: 100%;
-        padding: 15px;
-        border-radius: 12px;
-        font-size: 14px;
-    }
-
-    .card-number {
-        font-size: 14px;
-    }
-
-    .card-cvv {
-        font-size: 12px;
-    }
-
-    .card-logo {
-        width: 32px;
-        top: 8px;
-        right: 8px;
-    }
-
-    .modal-header h5 {
-        font-size: 18px;
-    }
-
-    .modal-footer {
-        flex-direction: column;
-        gap: 10px;
-        justify-content: center;
-    }
-
-    .btn-green, .btn-red {
-        width: 100%;
-        padding: 12px 0;
-        font-size: 16px;
-        border-radius: 8px;
-    }
+   
 }
 

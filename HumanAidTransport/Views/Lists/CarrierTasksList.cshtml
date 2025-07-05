@@ -47,6 +47,7 @@
             <option value="В процесі">В процесі</option>
             <option value="Виконано">Виконано</option>
             <option value="Відхилено">Відхилено</option>
+            <option value="Прострочено">Прострочено</option>
         </select>
     </div>
 
@@ -56,19 +57,23 @@
             @foreach (var order in Model)
             {
                 <div class="order-card @(order.Status == "Виконано" ? "completed" :
-                        order.Status == "Відхилено" ? "rejected" :
-                        order.Status == "Новий" ? "new" :
-                        order.Status == "В процесі" ? "in-progress" : "")">
+                      order.Status == "Відхилено" ? "rejected" :
+                      order.Status == "Новий" ? "new" :
+                      order.Status == "В процесі" ? "in-progress" :
+                      order.Status == "Прострочено" ? "overdue" : "")">
 
                     <div class="order-header">
                         <h3>🚚 @order.Name</h3>
                         <span class="status @(order.Status == "Виконано" ? "completed" :
-                        order.Status == "Відхилено" ? "rejected" :
-                        order.Status == "Новий" ? "new" :
-                        order.Status == "В процесі" ? "in-progress" : "")">@order.Status</span>
+                             order.Status == "Відхилено" ? "rejected" :
+                             order.Status == "Новий" ? "new" :
+                             order.Status == "В процесі" ? "in-progress" :
+                             order.Status == "Прострочено" ? "overdue" : "")">
+                            @order.Status
+                        </span>
                     </div>
 
-                    <div class="order-details">
+                    <div class="order-details @(order.Status == "Прострочено" ? "overdue": "")">
                         <p><strong>Звідки:</strong> @order.DeliveryAddressFrom</p>
                         <p><strong>До:</strong> @order.DeliveryAddressTo</p>
                         <p><strong>Ціна:</strong> 💰@order.Payment грн</p>
@@ -91,7 +96,7 @@
                                 <button type="submit" class="btn cancel-btn">❌ Відхилити</button>
                             </form>
                         }
-                        @if (order.Status == "Виконано" || order.Status == "Відхилено")
+                        @if (order.Status == "Виконано" || order.Status == "Відхилено" || order.Status == "Прострочено")
                         {
                             <form method="post" asp-action="DeleteTask" asp-route-orderId="@order.OrderId" asp-controller="OrderTask">
                                 <button type="submit" class="btn delete-btn">🗑️ Видалити</button>

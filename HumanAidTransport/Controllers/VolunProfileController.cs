@@ -85,7 +85,8 @@ namespace HumanAidTransport.Controllers
 
                     //Лічильник сповіщень
                     int newNotificationsCount = await _context.Notifications
-                      .Where(n => n.VolunteerId == Volunteer.Id && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status == "В процесі" || n.Status == "Штраф Волонтеру"))
+                      .Where(n => n.VolunteerId == Volunteer.Id && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status == "В процесі" 
+                      || n.Status == "Штраф Волонтеру" || n.Status == "Компенсація Волонтеру"))
                       .CountAsync();
 
                     ViewBag.NewNotificationsCount = newNotificationsCount;
@@ -143,7 +144,7 @@ namespace HumanAidTransport.Controllers
                         else
                         {
                             double debt = penaltyAmount - volunteer.Balance;
-                            carrier.Balance += volunteer.Balance;
+                            carrier.Balance += penaltyAmount;
                             volunteer.Balance = 0;
 
                             volunteer.Debt += debt;
@@ -175,7 +176,6 @@ namespace HumanAidTransport.Controllers
                 }
             }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> PostTask(HumanitarianAid newTask)

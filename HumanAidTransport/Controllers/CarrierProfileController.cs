@@ -1,4 +1,5 @@
-﻿using HumanitarianTransport.Data;
+﻿using HumanAidTransport.Models;
+using HumanitarianTransport.Data;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace HumanAidTransport.Controllers
         {
             if (Carrier != null)
             {
+                await CheckOverOrders(Carrier.Id);
                 // Завантажуємо доступні завдання зі статусами "Новий" або "В очікуванні"
                 var availableTasks = await _context.Volunteers
                     .SelectMany(v => v.Tasks)
@@ -63,6 +65,89 @@ namespace HumanAidTransport.Controllers
             return RedirectToAction("CarrierLogin", "Carrier");
         }
 
+        private async Task CheckOverOrders(int carrierId)
+        {
+            var utcNow = DateTime.UtcNow;
+            var ukraineTimeZone = TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time"); 
+            var now = TimeZoneInfo.ConvertTimeFromUtc(utcNow, ukraineTimeZone);
+
+            var overdueOrders = await _context.TransportOrders
+                .Where(orders => orders.CarrierId == carrierId
+                             && orders.Status != "Виконано"
+                             && orders.Status != "Прострочено"
+                             && orders.ExpectedDeliveryTime <= now.AddMinutes(-1))
+                .ToListAsync();
+
+            var carrier = await _context.Carriers.FirstOrDefaultAsync(c => c.Id == carrierId);
+
+            foreach (var order in overdueOrders)
+            {
+                var task = await _context.HumanitarianAids.FirstOrDefaultAsync(aids => aids.HumanAidId == order.HumanAidId);
+
+                if (task.Status != "Прострочено") task.Status = "Прострочено";
+
+                if (order.Status != "Прострочено") order.Status = "Прострочено";
+
+                double penaltyAmount = task.Payment.Value * 0.5;
+
+                double debt = 0;
+
+                string carrierNotificationMessage;
+
+                if (carrier.Balance >= penaltyAmount)
+                {
+                    carrier.Balance -= penaltyAmount;
+                    carrierNotificationMessage =
+                        $"Доставка завдання \"{task.Name}\" прострочена більш ніж на 6 годин. Штраф {penaltyAmount} грн.";
+                }
+                else
+                {
+                    debt = penaltyAmount - carrier.Balance;
+                    carrier.Balance = 0;
+                    carrier.Debt += debt;
+
+                    carrierNotificationMessage =
+                        $"Доставка завдання \"{task.Name}\" прострочена більш ніж на 6 годин. Частково списано {penaltyAmount} грн, залишок боргу {debt} грн.";
+                }
+
+                carrier.ViolationsCount++;
+
+                // Сповіщення перевізнику
+                _context.Notifications.Add(new Notification
+                {
+                    CarrierId = carrier.Id,
+                    VolunteerId = task.VolunteerId,
+                    Message = carrierNotificationMessage,
+                    CreatedAt = now,
+                    Status = "Штраф Перевізнику"
+                });
+
+                // Компенсація волонтеру
+                var volunteer = await _context.Volunteers.FirstOrDefaultAsync(v => v.Id == task.VolunteerId);
+                if (volunteer != null)
+                {
+                    volunteer.Balance += penaltyAmount;
+
+                    _context.Notifications.Add(new Notification
+                    {
+                        VolunteerId = volunteer.Id,
+                        CarrierId = carrier.Id,
+                        Message =
+                            $"Вам нараховано компенсацію {penaltyAmount} грн за прострочену доставку завдання \"{task.Name}\" перевізником.",
+                        CreatedAt = now,
+                        Status = "Компенсація Волонтеру"
+                    });
+
+                    _context.Volunteers.Update(volunteer);
+                }
+
+                _context.HumanitarianAids.Update(task);
+            }
+
+            _context.Carriers.Update(carrier);
+            await _context.SaveChangesAsync();
+        }
+
         [HttpPost]
         public async Task<IActionResult> CarrierAddBalance(int amountToAdd, string selectedCard)
         {
@@ -86,18 +171,40 @@ namespace HumanAidTransport.Controllers
                 return RedirectToAction("CarrierProfile");
             }
 
-            // Перевірка, що вибрана картка належить перевізнику
             if (selectedCard != carrierFromDb.CardNumber)
             {
                 TempData["ErrorMessage"] = "Оберіть коректну картку";
                 return RedirectToAction("CarrierProfile");
             }
 
-            carrierFromDb.Balance += amountToAdd;
+            double remainingAmount = amountToAdd;
+
+            if (carrierFromDb.Debt > 0)
+            {
+                if (remainingAmount >= carrierFromDb.Debt)
+                {
+                    remainingAmount -= carrierFromDb.Debt;
+                    TempData["SuccessMessage"] = $"Борг у розмірі {carrierFromDb.Debt} грн погашено.";
+                    carrierFromDb.Debt = 0;
+                }
+                else
+                {
+                    carrierFromDb.Debt -= remainingAmount;
+                    TempData["SuccessMessage"] = $"Частково погашено борг на {amountToAdd} грн. Залишок боргу: {carrierFromDb.Debt} грн.";
+                    remainingAmount = 0;
+                }
+            }
+
+            carrierFromDb.Balance += remainingAmount;
+
             _context.Carriers.Update(carrierFromDb);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = $"Баланс успішно поповнено на {amountToAdd} грн.";
+            if (remainingAmount > 0)
+            {
+                TempData["SuccessMessage"] += $" Баланс поповнено на {remainingAmount} грн.";
+            }
+
             return RedirectToAction("CarrierProfile");
         }
 
