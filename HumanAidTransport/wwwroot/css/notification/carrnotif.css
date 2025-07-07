@@ -33,18 +33,38 @@
 
 .comfirmed {
     color: #16a34a;
+    background-color: #dcfce7; 
+    font-weight: 600;
+    border-left: 4px solid #16a34a;
+    padding-left: 0.5rem;
+    border-radius: 0.25rem;
 }
 
 .canceled {
     color: #dc2626;
+    background-color: #fee2e2; 
+    font-weight: 600;
+    border-left: 4px solid #dc2626;
+    padding-left: 0.5rem;
+    border-radius: 0.25rem;
 }
 
 .rated {
     color: orange;
+    background-color: #fff7e6;
+    font-weight: 600;
+    border-left: 4px solid orange;
+    padding-left: 0.5rem;
+    border-radius: 0.25rem;
 }
 
 .default-status {
     color: #6b7280;
+    background-color: #f3f4f6; 
+    font-weight: 500;
+    border-left: 4px solid #6b7280;
+    padding-left: 0.5rem;
+    border-radius: 0.25rem;
 }
 
 .notification-date {
@@ -208,4 +228,94 @@
     border-left: 4px solid #10b981;
     padding-left: 0.5rem;
     border-radius: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .notification-title {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+        padding: 0 10px;
+    }
+
+    .notification-container {
+        padding: 0.8rem;
+        border-radius: 0.4rem;
+    }
+
+    .notification-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .notification-content {
+        font-size: 0.95rem;
+        width: 100%;
+    }
+
+    .notification-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .notification-date {
+        font-size: 0.8rem;
+        width: 100%;
+        color: #9ca3af;
+    }
+
+    .mark-read-button,
+    .save-rating-button {
+        width: 100%;
+        padding: 0.6rem;
+        font-size: 0.9rem;
+        border-radius: 0.4rem;
+    }
+
+    .rating-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+        width: 100%;
+    }
+
+    .rating-slider {
+        width: 100%;
+    }
+
+    .rating-value {
+        font-size: 0.95rem;
+    }
+
+    .alert.alert-danger,
+    .alert.alert-success {
+        font-size: 0.95rem;
+        padding: 0.8rem;
+        text-align: center;
+        width: 100%;
+    }
+
+    .already-rated {
+        font-size: 0.85rem;
+        text-align: center;
+        width: 100%;
+    }
+
+    .paid,
+    .penalty,
+    .compensation-carrier,
+    .comfirmed,
+    .canceled,
+    .rated,
+    .default-status {
+        width: 100%;
+        box-sizing: border-box;
+        padding-left: 0.75rem;
+        border-radius: 0.3rem;
+        margin-bottom: 0.4rem;
+    }
 }

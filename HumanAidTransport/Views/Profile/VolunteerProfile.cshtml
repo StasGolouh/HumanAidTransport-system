@@ -181,7 +181,8 @@
                               (task.Status == "Відхилено" ? "task-rejected" :
                               (task.Status == "Оплачено" ? "task-paid" :
                               (task.Status == "Прострочено" ? "task-overdue" :
-                              (task.Status == "Оштрафовано" ? "task-penalized" : ""))))))))))" data-name="@task.Name" data-status="@task.Status">
+                              (task.Status == "Необрано" ? "task-nochosen" :
+                              (task.Status == "Оштрафовано" ? "task-penalized" : "")))))))))))" data-name="@task.Name" data-status="@task.Status">
 
                                 <strong>@task.Name</strong><br>
                                 Тип: <strong>
@@ -227,7 +228,8 @@
                                       (task.Status == "Відхилено" ? "status-rejected" :
                                       (task.Status == "Оплачено" ? "status-paid" :
                                       (task.Status == "Прострочено" ? "status-overdue" :
-                                      (task.Status == "Оштрафовано" ? "status-penalized" : "")))))))))">
+                                      (task.Status == "Необрано" ? "status-nochosen" :
+                                      (task.Status == "Оштрафовано" ? "status-penalized" : ""))))))))))">
                                     @task.Status
                                 </span>
 
@@ -240,7 +242,8 @@
                                         </form>
                                     }
 
-                                    @if (task.Status != "Виконано" && task.Status != "Відхилено" && task.Status != "Скасовано" && task.Status != "Оплачено" && task.Status != "Оштрафовано" && task.Status != "Прострочено")
+                                    @if (task.Status != "Виконано" && task.Status != "Відхилено" && task.Status != "Скасовано" && task.Status != "Оплачено" 
+                                    && task.Status != "Оштрафовано" && task.Status != "Прострочено" && task.Status != "Необрано")
                                     {
                                         <form method="post" asp-action="CancelTask" asp-route-taskId="@task.HumanAidId">
                                             <button type="submit" class="btn-danger">Скасувати завдання</button>

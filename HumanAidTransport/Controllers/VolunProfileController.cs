@@ -62,7 +62,11 @@ namespace HumanAidTransport.Controllers
         {
             if (Volunteer != null)
             {
+                // Метод, який перевіряє завдання, яке неоплачено
                 await CheckUnpaidOverdueTasks(Volunteer.Id);
+
+                // Метод виявлення необраних завдань
+                await CheckUnclaimedTasks();
 
                 // Завантаження волонтера з бази даних і його завдань
                 var volunteerFromDb = await _context.Volunteers
@@ -86,7 +90,7 @@ namespace HumanAidTransport.Controllers
                     //Лічильник сповіщень
                     int newNotificationsCount = await _context.Notifications
                       .Where(n => n.VolunteerId == Volunteer.Id && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status == "В процесі" 
-                      || n.Status == "Штраф Волонтеру" || n.Status == "Компенсація Волонтеру"))
+                      || n.Status == "Штраф Волонтеру" || n.Status == "Компенсація Волонтеру" || n.Status == "Необрано"))
                       .CountAsync();
 
                     ViewBag.NewNotificationsCount = newNotificationsCount;
@@ -175,6 +179,35 @@ namespace HumanAidTransport.Controllers
                     }
                 }
             }
+        }
+
+        public async Task CheckUnclaimedTasks()
+        {
+            // Отримуємо поточний час у Київському часовому поясі
+            TimeZoneInfo kyivTimeZone = TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time");
+            DateTime kyivNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, kyivTimeZone);
+
+            var unclaimedTasks = await _context.HumanitarianAids
+                .Where(t => t.ExpectedDeliveryTime < kyivNow && t.Status == "Новий")
+                .ToListAsync();
+
+            foreach (var task in unclaimedTasks)
+            {
+                task.Status = "Необрано";
+
+                // Додамо сповіщення для волонтера
+                var notification = new Notification
+                {
+                    VolunteerId = task.VolunteerId,
+                    Message = $"Ваше завдання \"{task.Name}\" не було обране до {task.ExpectedDeliveryTime?.ToString("g")}.Завдання більше не доступне.",
+                    CreatedAt = DateTime.UtcNow,
+                    Status = "Необрано"
+                };
+
+                _context.Notifications.Add(notification);
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         [HttpPost]

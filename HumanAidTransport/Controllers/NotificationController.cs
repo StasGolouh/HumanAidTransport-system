@@ -17,7 +17,7 @@ namespace HumanAidTransport.Controllers
         {
             var notifications = await _context.Notifications
                 .Where(n => n.VolunteerId == volunteerId && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status =="В процесі" 
-                || n.Status == "Штраф Волонтеру" || n.Status == "Компенсація Волонтеру"))
+                || n.Status == "Штраф Волонтеру" || n.Status == "Компенсація Волонтеру" || n.Status == "Необрано"))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 
