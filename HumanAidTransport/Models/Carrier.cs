@@ -48,6 +48,9 @@ public class Carrier
     [Required]
     public int ViolationsCount { get; set; } = 0;
 
+    [Required]
+    public bool isBaned { get; set; } = false;
+
     public List<HumanitarianAid> AvailableTasks { get; set; } = new List<HumanitarianAid>();
 
     public List<CarrierRating> Ratings { get; set; } = new List<CarrierRating>();

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HumanAidTransport.Migrations
 {
     [DbContext(typeof(HumanitarianDbContext))]
-    [Migration("20250703114020_HumanAidDtBase")]
-    partial class HumanAidDtBase
+    [Migration("20250708212149_AidHumanDb")]
+    partial class AidHumanDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,6 +51,9 @@ namespace HumanAidTransport.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Debt")
+                        .HasColumnType("float");
+
                     b.Property<string>("Dimensions")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -78,6 +81,9 @@ namespace HumanAidTransport.Migrations
                     b.Property<string>("VehicleNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ViolationsCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -161,6 +167,31 @@ namespace HumanAidTransport.Migrations
                     b.HasIndex("VolunteerId");
 
                     b.ToTable("DeliveryRequests");
+                });
+
+            modelBuilder.Entity("HumanAidTransport.Models.Admin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePhotoURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("HumanAidTransport.Models.HumanitarianAid", b =>
@@ -329,6 +360,9 @@ namespace HumanAidTransport.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Debt")
+                        .HasColumnType("float");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -340,6 +374,9 @@ namespace HumanAidTransport.Migrations
                     b.Property<string>("ProfilePhotoURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ViolationsCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

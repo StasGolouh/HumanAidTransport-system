@@ -30,6 +30,9 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AdminId")
+                        .HasColumnType("int");
+
                     b.Property<double>("Balance")
                         .HasColumnType("float");
 
@@ -82,7 +85,12 @@ namespace HumanAidTransport.Migrations
                     b.Property<int>("ViolationsCount")
                         .HasColumnType("int");
 
+                    b.Property<bool>("isBaned")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AdminId");
 
                     b.ToTable("Carriers");
                 });
@@ -164,6 +172,31 @@ namespace HumanAidTransport.Migrations
                     b.HasIndex("VolunteerId");
 
                     b.ToTable("DeliveryRequests");
+                });
+
+            modelBuilder.Entity("HumanAidTransport.Models.Admin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePhotoURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("HumanAidTransport.Models.HumanitarianAid", b =>
@@ -321,6 +354,9 @@ namespace HumanAidTransport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AdminId")
+                        .HasColumnType("int");
+
                     b.Property<double>("Balance")
                         .HasColumnType("float");
 
@@ -350,9 +386,21 @@ namespace HumanAidTransport.Migrations
                     b.Property<int>("ViolationsCount")
                         .HasColumnType("int");
 
+                    b.Property<bool>("isBaned")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("AdminId");
+
                     b.ToTable("Volunteers");
+                });
+
+            modelBuilder.Entity("Carrier", b =>
+                {
+                    b.HasOne("HumanAidTransport.Models.Admin", null)
+                        .WithMany("Carriers")
+                        .HasForeignKey("AdminId");
                 });
 
             modelBuilder.Entity("CarrierRating", b =>
@@ -420,11 +468,25 @@ namespace HumanAidTransport.Migrations
                     b.Navigation("HumanitarianAid");
                 });
 
+            modelBuilder.Entity("Volunteer", b =>
+                {
+                    b.HasOne("HumanAidTransport.Models.Admin", null)
+                        .WithMany("Volunteers")
+                        .HasForeignKey("AdminId");
+                });
+
             modelBuilder.Entity("Carrier", b =>
                 {
                     b.Navigation("AvailableTasks");
 
                     b.Navigation("Ratings");
+                });
+
+            modelBuilder.Entity("HumanAidTransport.Models.Admin", b =>
+                {
+                    b.Navigation("Carriers");
+
+                    b.Navigation("Volunteers");
                 });
 
             modelBuilder.Entity("Volunteer", b =>

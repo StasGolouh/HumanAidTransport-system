@@ -30,6 +30,9 @@ public class Volunteer
     [Required]
     public int ViolationsCount { get; set; } = 0;
 
+    [Required]
+    public bool isBaned { get; set; } = false;
+
     public List<HumanitarianAid> Tasks { get; set; } = new List<HumanitarianAid>();
 
     public List<DeliveryRequest> DeliveryRequests { get; set; } = new List<DeliveryRequest>();

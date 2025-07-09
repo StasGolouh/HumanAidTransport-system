@@ -1,0 +1,51 @@
+﻿@model HumanAidTransport.Models.Admin
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] ?? "Логін Адміністратора"</title>
+
+    <link rel="stylesheet" href="~/css/login/admlogin.css" asp-append-version="true" />
+
+    <script src="~/js/login/admlogin.js" asp-append-version="true" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Логін Адміністратора</h2>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @Html.ValidationSummary(true, "Виправте наступні помилки:", new { @class = "text-danger" })
+            </div>
+        }
+
+        @if (TempData["RegistMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["RegistMessage"]
+            </div>
+        }
+
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Name">Ім'я Адміністратора</label>
+                <input type="text" asp-for="Name" class="form-control" required />
+
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password">Пароль</label>
+                <input type="password" asp-for="Password" class="form-control" required />
+
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+
+            <button type="submit" class="btn">Увійти</button>
+        </form>
+    </div>
+</body>
+</html>

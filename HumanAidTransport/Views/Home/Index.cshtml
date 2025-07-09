@@ -34,6 +34,7 @@
         <select id="role" name="role" style="padding: 10px; font-size: 16px; margin-bottom: 20px;">
                 <option value="Volunteer">Волонтер</option>
                 <option value="Carrier">Перевізник</option>
+                <option value="Admin">Адмін</option>
         </select>
     </form>
 
@@ -62,6 +63,10 @@
             url = '/Carrier/CarrierRegistration'; 
         }
 
+        else if (role === 'Admin') {
+            url = '/Admin/AdminRegister';
+        }
+
         // Переадресація на відповідну форму логіну
         window.location.href = url;
     });
@@ -77,6 +82,10 @@
         } 
         else if (role === 'Carrier') {
             url = '/Carrier/CarrierLogin'; 
+        }
+
+        else if (role === 'Admin') {
+            url = '/Admin/AdminLogin';
         }
 
         window.location.href = url;

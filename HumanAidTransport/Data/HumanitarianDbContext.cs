@@ -10,6 +10,7 @@ namespace HumanitarianTransport.Data
         }
         public DbSet<Volunteer> Volunteers { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
+        public DbSet<Admin> Admins { get; set; }
         public DbSet<HumanitarianAid> HumanitarianAids { get; set; }
         public DbSet<DeliveryRequest> DeliveryRequests { get; set; }
         public DbSet<TransportOrder> TransportOrders { get; set; }

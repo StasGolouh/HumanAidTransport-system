@@ -33,12 +33,13 @@ namespace HumanAidTransport.Controllers
 
             if (string.IsNullOrEmpty(name))
             {
-                TempData["Message"] = "Вам потрібно увійти або зареєструватися як Волонтер чи Перевізник.";
+                TempData["Message"] = "Вам потрібно увійти або зареєструватися як Волонтер, Перевізник.";
                 return RedirectToAction("Index", "Home");
             }
 
             var carrier = _context.Carriers.FirstOrDefault(c => c.Name == name);
             var volunteer = _context.Volunteers.FirstOrDefault(v => v.Name == name);
+            var admin = _context.Admins.FirstOrDefault(a => a.Name == name);
 
             if (carrier != null)
             {
@@ -49,6 +50,11 @@ namespace HumanAidTransport.Controllers
             {
                 // Перенаправляємо на профіль волонтера
                 return RedirectToAction("VolunteerProfile", "VolunProfile", new { id = volunteer.Id });
+            }
+            else if (admin != null)
+            {
+                // Перенаправляємо на профіль адміна
+                return RedirectToAction("AdminProfile", "AdminProfile", new { id = admin.Id });
             }
             else
             {
