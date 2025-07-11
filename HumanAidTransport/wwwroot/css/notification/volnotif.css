@@ -153,6 +153,14 @@
     font-weight: bold;
     border-left: 4px solid #f06292;
 }
+.volunteer-ban {
+    color: #b45309; 
+    background-color: #fef3c7; 
+    font-weight: 700;
+    border-left: 4px solid #f59e0b; 
+    padding-left: 0.5rem;
+    border-radius: 0.25rem;
+}
 
 @media (max-width: 768px) {
     .navbar-brand {
@@ -238,14 +246,14 @@
         padding: 1rem 0.5rem;
     }
 
-    /* Адаптація для статусів */
     .completed,
     .rejected,
     .in-progress,
     .default-status,
     .penalty,
     .compensation-volunteer,
-    .notification-item.nochosen {
+    .notification-item.nochosen,
+    .volunteer-ban {
         width: 100%;
         box-sizing: border-box;
         padding-left: 0.75rem;

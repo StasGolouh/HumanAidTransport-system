@@ -24,6 +24,12 @@ public class DeliveryRequestController : Controller
             if (carrier == null)
                 return NotFound(new { message = "Перевізник не знайдено." });
 
+            if (carrier.isBaned)
+            {
+                TempData["ErrorMessage"] = "Ваш акаунт заблоковано. Ви не можете відгукуватися на завдання.";
+                return RedirectToAction("CarrierProfile", "CarrierProfile");
+            }
+
             if (carrier.Debt > 0)
             {
                 TempData["ErrorMessage"] = "У вас є непогашений борг. Ви не можете відгукнутися на завдання, поки борг не буде погашено.";
@@ -110,6 +116,12 @@ public class DeliveryRequestController : Controller
             return NotFound(new { message = "Волонтера не знайдено." });
         }
 
+        if (volunteer.isBaned)
+        {
+            TempData["RejectMessage"] = "Ваш акаунт заблоковано. Ви не можете приймати заявки.";
+            return View("~/Views/Lists/VolunteerRequestList.cshtml", volunteer.DeliveryRequests);
+        }
+
         // Отримуємо гуманітарну допомогу, яка була вказана в заявці
         var humanitarianAid = await _context.HumanitarianAids
             .FirstOrDefaultAsync(h => h.HumanAidId == deliveryRequest.HumanAidId);
@@ -186,6 +198,12 @@ public class DeliveryRequestController : Controller
         if (volunteer == null)
         {
             return NotFound(new { message = "Волонтера не знайдено." });
+        }
+
+        if (volunteer.isBaned)
+        {
+            TempData["RejectMessage"] = "Ваш акаунт заблоковано. Ви не можете відхиляти заявки.";
+            return View("~/Views/Lists/VolunteerRequestList.cshtml", volunteer.DeliveryRequests);
         }
 
         var humanitarianAid = await _context.HumanitarianAids

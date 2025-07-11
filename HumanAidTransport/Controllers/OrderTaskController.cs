@@ -36,6 +36,19 @@ namespace HumanAidTransport.Controllers
                 return NotFound(new { message = "Замовлення не знайдено." });
             }
 
+            var carrier = await _context.Carriers.FirstOrDefaultAsync(c => c.Id == order.CarrierId);
+            if (carrier == null)
+            {
+                TempData["CancelMessage"] = "Перевізника не знайдено.";
+                return RedirectToAction("CarrierOrderList", new { carrierId = order.CarrierId });
+            }
+
+            if (carrier.isBaned)
+            {
+                TempData["CancelMessage"] = "Ваш обліковий запис перевізника заблоковано. Ви можете лише скасувати завдання, щоб не отримати борг.";
+                return RedirectToAction("CarrierOrderList", new { carrierId = order.CarrierId });
+            }
+
             var deliveryRequest = _context.DeliveryRequests.FirstOrDefault(dr => dr.DeliveryRequestId == order.DeliveryRequestId);
 
             order.Status = "В процесі";
@@ -155,6 +168,20 @@ namespace HumanAidTransport.Controllers
         {
             var order = await _context.TransportOrders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            var carrier = await _context.Carriers.FirstOrDefaultAsync(c => c.Id == order.CarrierId);
+
+            if (carrier == null)
+            {
+                TempData["CancelMessage"] = "Перевізник не знайдений.";
+                return RedirectToAction("CarrierOrderList");
+            }
+
+            if (carrier.isBaned)
+            {
+                TempData["CancelMessage"] = "Ваш акаунт заблоковано. Ви не можете видаляти завдання.";
+                return RedirectToAction("CarrierOrderList", new { carrierId = carrier.Id });
+            }
 
             _context.TransportOrders.Remove(order);
             await _context.SaveChangesAsync(); 

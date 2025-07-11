@@ -19,6 +19,13 @@
         </div>
     }
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger custom-alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
     <div class="profile-container">
         <div class="profile-sidebar">
             <div class="profile-pic-container">
@@ -73,7 +80,7 @@
             <div class="users-container">
                 @foreach (var carrier in Model.Carriers)
                 {
-                    <div class="user-card @(carrier.ViolationsCount >= 2 ? "warning" : "")"
+                    <div class="user-card @(carrier.ViolationsCount >= 2 ? "warning" : "") @(carrier.isBaned ? " banned" : "")"
                          data-violations="@carrier.ViolationsCount"
                          data-banned="@(carrier.isBaned.ToString().ToLower())"
                          data-role="carrier">
@@ -83,16 +90,30 @@
                         <p><strong>Дані авто:</strong> @carrier.VehicleName @carrier.VehicleModel (@carrier.VehicleNumber)</p>
                         <p><strong>Порушення:</strong> <span class="@(carrier.ViolationsCount > 2 ? "text-warning" : "")">@carrier.ViolationsCount</span></p>
                         <p><strong>Заблокований:</strong> <span>@(carrier.isBaned ? "Так" : "Ні")</span></p>
+
                         <div class="action-buttons">
-                            <button class="btn btn-danger">Заблокувати</button>
-                            <button class="btn btn-success">Розблокувати</button>
+                            <form method="post" asp-controller="AdminProfile" asp-action="ChangeCarrierBanStatus" class="d-inline">
+                                <input type="hidden" name="id" value="@carrier.Id" />
+                                <input type="hidden" name="isBanned" value="true" />
+                                <button type="submit" class="btn btn-danger">
+                                    Заблокувати
+                                </button>
+                            </form>
+
+                            <form method="post" asp-controller="AdminProfile" asp-action="ChangeCarrierBanStatus" class="d-inline">
+                                <input type="hidden" name="id" value="@carrier.Id" />
+                                <input type="hidden" name="isBanned" value="false" />
+                                <button type="submit" class="btn btn-success">
+                                    Розблокувати
+                                </button>
+                            </form>
                         </div>
                     </div>
                 }
 
                 @foreach (var volunteer in Model.Volunteers)
                 {
-                    <div class="user-card @(volunteer.ViolationsCount >= 2 ? "warning" : "")"
+                    <div class="user-card @(volunteer.ViolationsCount >= 2 ? "warning" : "") @(volunteer.isBaned ? " banned" : "")"
                          data-violations="@volunteer.ViolationsCount"
                          data-banned="@(volunteer.isBaned.ToString().ToLower())"
                          data-role="volunteer">
@@ -102,16 +123,28 @@
                         <p><strong>Дані авто:</strong> -</p>
                         <p><strong>Порушення:</strong> <span class="@(volunteer.ViolationsCount > 2 ? "text-warning" : "")">@volunteer.ViolationsCount</span></p>
                         <p><strong>Заблокований:</strong> <span>@(volunteer.isBaned ? "Так" : "Ні")</span></p>
+
                         <div class="action-buttons">
-                            <button class="btn btn-danger">Заблокувати</button>
-                            <button class="btn btn-success">Розблокувати</button>
+                            <form method="post" asp-controller="AdminProfile" asp-action="ChangeVolunteerBanStatus" class="d-inline">
+                                <input type="hidden" name="id" value="@volunteer.Id" />
+                                <input type="hidden" name="isBanned" value="true" />
+                                <button type="submit" class="btn btn-danger">
+                                    Заблокувати
+                                </button>
+                            </form>
+
+                            <form method="post" asp-controller="AdminProfile" asp-action="ChangeVolunteerBanStatus" class="d-inline">
+                                <input type="hidden" name="id" value="@volunteer.Id" />
+                                <input type="hidden" name="isBanned" value="false" />
+                                <button type="submit" class="btn btn-success">
+                                    Розблокувати
+                                </button>
+                            </form>
                         </div>
                     </div>
                 }
             </div>
         </div>
     </div>
-
-    <script src="~/js/profile/adminprofile.js" asp-append-version="true"></script>
 </body>
 </html>

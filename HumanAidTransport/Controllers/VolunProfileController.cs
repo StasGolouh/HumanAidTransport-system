@@ -90,7 +90,8 @@ namespace HumanAidTransport.Controllers
                     //Лічильник сповіщень
                     int newNotificationsCount = await _context.Notifications
                       .Where(n => n.VolunteerId == Volunteer.Id && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status == "В процесі" 
-                      || n.Status == "Штраф Волонтеру" || n.Status == "Компенсація Волонтеру" || n.Status == "Необрано"))
+                      || n.Status == "Штраф Волонтеру" || n.Status == "Компенсація Волонтеру" 
+                      || n.Status == "Необрано" || n.Status == "Блокування Волонтера"))
                       .CountAsync();
 
                     ViewBag.NewNotificationsCount = newNotificationsCount;
@@ -262,6 +263,12 @@ namespace HumanAidTransport.Controllers
                 return RedirectToAction("VolunteerProfile");
             }
 
+            if (volunteerFromDb.isBaned)
+            {
+                TempData["Error"] = "Ваш обліковий запис заблоковано. Ви не можете постити завдання.";
+                return RedirectToAction("VolunteerProfile");
+            }
+
             if (volunteerFromDb.Debt > 0)
             {
                 TempData["Error"] = $"У вас є непогашений борг {volunteerFromDb.Debt} грн. Погасіть його, щоб створювати нові завдання.";
@@ -296,6 +303,12 @@ namespace HumanAidTransport.Controllers
                 var volunteerFromDb = await _context.Volunteers
                     .Include(v => v.Tasks)
                     .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
+
+                if (volunteerFromDb.isBaned)
+                {
+                    TempData["Error"] = "Ваш обліковий запис заблоковано. Ви не можете скасовувати завдання.";
+                    return RedirectToAction("VolunteerProfile");
+                }
 
                 if (volunteerFromDb != null)
                 {
@@ -333,6 +346,13 @@ namespace HumanAidTransport.Controllers
                     .Include(v => v.Tasks)
                     .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
 
+
+                if (volunteerFromDb.isBaned)
+                {
+                    TempData["Error"] = "Ваш обліковий запис заблоковано. Ви не можете відновити завдання.";
+                    return RedirectToAction("VolunteerProfile");
+                }
+
                 if (volunteerFromDb != null)
                 {
                     var taskToRestore = volunteerFromDb.Tasks.FirstOrDefault(t => t.HumanAidId == taskId);
@@ -362,6 +382,12 @@ namespace HumanAidTransport.Controllers
                 var volunteerFromDb = await _context.Volunteers
                     .Include(v => v.Tasks)
                     .FirstOrDefaultAsync(v => v.Id == Volunteer.Id);
+
+                if (volunteerFromDb.isBaned)
+                {
+                    TempData["Error"] = "Ваш обліковий запис заблоковано. Ви не можете видаляти завдання.";
+                    return RedirectToAction("VolunteerProfile");
+                }
 
                 if (volunteerFromDb != null)
                 {

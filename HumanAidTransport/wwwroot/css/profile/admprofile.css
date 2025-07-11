@@ -329,3 +329,61 @@ h2 {
             padding: 6px 8px;
         }
 }
+
+.custom-alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    min-width: 250px;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0.95;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Успіх */
+.alert-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+/* Помилка */
+.alert-danger {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+/* Попередження */
+.alert-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+}
+
+/* fadeIn анімація */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -10px);
+    }
+
+    to {
+        opacity: 0.95;
+        transform: translate(-50%, 0);
+    }
+}
+
+.user-card.banned {
+    background-color: #451818;
+    color: #ffdede;
+    border: 2px solid #ff4c4c;
+    box-shadow: 0 0 10px 2px rgba(255, 75, 75, 0.7);
+}

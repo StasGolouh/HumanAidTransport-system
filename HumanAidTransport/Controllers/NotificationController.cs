@@ -17,7 +17,7 @@ namespace HumanAidTransport.Controllers
         {
             var notifications = await _context.Notifications
                 .Where(n => n.VolunteerId == volunteerId && (n.Status == "Виконано" || n.Status == "Відхилено" || n.Status =="В процесі" 
-                || n.Status == "Штраф Волонтеру" || n.Status == "Компенсація Волонтеру" || n.Status == "Необрано"))
+                || n.Status == "Штраф Волонтеру" || n.Status == "Компенсація Волонтеру" || n.Status == "Необрано" || n.Status == "Блокування Волонтера"))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 
@@ -28,7 +28,7 @@ namespace HumanAidTransport.Controllers
         {
             var notifications = await _context.Notifications
                 .Where(n => n.CarrierId == carrierId && (n.Status == "Підтверджено" || n.Status == "Скасовано" || n.Status == "Оцінено" 
-                || n.Status == "Оплачено" || n.Status == "Штраф Перевізнику" || n.Status == "Компенсація Перевізнику"))
+                || n.Status == "Оплачено" || n.Status == "Штраф Перевізнику" || n.Status == "Компенсація Перевізнику" || n.Status == "Блокування Перевізника"))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 
