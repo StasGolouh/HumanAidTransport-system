@@ -14,15 +14,20 @@
 </head>
 <body>
 
-<div class="profile-container">
+    <div class="profile-container @(Model.isBaned ? "banned" : "")">
     <div class="profile-sidebar">
         <div class="profile-pic-container">
             <img src="@Model.ProfilePhotoURL" alt="Profile photo" class="profile-pic" id="profilePic">
             <input type="file" id="uploadPic" hidden>
                 <label for="uploadPic" class="upload-btn">Змінити фото</label>
         </div>
-        <h2 class="clientname">@Model.Name</h2>
-        <p class="role">Перевізник</p>
+            <h2 class="clientname">@Model.Name</h2>
+            <p class="role">Перевізник</p>
+
+            @if (Model.isBaned)
+            {
+                <p class="banned-label">🚫 Заблокований</p>
+            }
 
             <div class="balance-row">
                 <div class="@(Model.Debt > 0 ? "debt" : "balance")">

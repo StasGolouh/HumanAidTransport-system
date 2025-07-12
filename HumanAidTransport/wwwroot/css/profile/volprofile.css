@@ -18,6 +18,11 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+    .profile-container.banned {
+        border: 2px solid #c82333;
+        box-shadow: 0 0 10px rgba(200, 35, 51, 0.5);
+    }
+
 .profile-sidebar {
     width: 300px;
     background: #f9f9f9;
@@ -259,6 +264,13 @@
         color: #3498db;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
+
+.banned-label {
+    color: red;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-top: 0.5em;
+}
 
 .paragtask {
     font-family: 'Arial', sans-serif;

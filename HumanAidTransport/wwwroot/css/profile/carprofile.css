@@ -11,12 +11,17 @@
 
 .profile-container {
     display: flex;
-    flex: 1;
     width: 100%;
     height: 100%;
     background: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+    .profile-container.banned {
+        border: 2px solid #c82333;
+        box-shadow: 0 0 10px rgba(200, 35, 51, 0.5);
+    }
+
 
 .profile-sidebar {
     width: 300px;
@@ -149,11 +154,17 @@
     margin-bottom: 10px;
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
-
     .clientname:hover {
         color: #3498db;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
+
+.banned-label {
+    color: red;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-top: 0.5em;
+}
 
 .paragtask {
     font-family: 'Arial', sans-serif;
