@@ -119,7 +119,7 @@
                          data-role="volunteer">
                         <h3>@volunteer.Name</h3>
                         <p><strong>Роль:</strong> Волонтер</p>
-                        <p><strong>Контакти:</strong> -</p>
+                        <p><strong>Контакти:</strong> @volunteer.Contacts</p>
                         <p><strong>Дані авто:</strong> -</p>
                         <p><strong>Порушення:</strong> <span class="@(volunteer.ViolationsCount > 2 ? "text-warning" : "")">@volunteer.ViolationsCount</span></p>
                         <p><strong>Заблокований:</strong> <span>@(volunteer.isBaned ? "Так" : "Ні")</span></p>

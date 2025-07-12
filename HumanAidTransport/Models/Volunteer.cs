@@ -13,6 +13,9 @@ public class Volunteer
     public string Password { get; set; }
 
     [Required]
+    public string? Contacts { get; set; }
+
+    [Required]
     public string ProfilePhotoURL { get; set; } = "/images/profile_photos/photodef.jpg";
 
     [Required]

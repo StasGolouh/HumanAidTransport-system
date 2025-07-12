@@ -38,6 +38,21 @@ namespace HumanAidTransport.Controllers
                 ModelState.AddModelError("Name", "Це ім’я вже використовується перевізником. Оберіть інше.");
             }
 
+            // Перевірка контактів (номер телефону у форматі +380XXXXXXXXX)
+            if (!System.Text.RegularExpressions.Regex.IsMatch(volunteer.Contacts ?? "", @"^\+380\d{9}$"))
+            {
+                ModelState.AddModelError("Contacts", "Номер телефону має бути у форматі +380XXXXXXXXX.");
+            }
+
+            // Перевірка унікальності контактів
+            bool contactsUsed = _context.Volunteers.Any(v => v.Contacts == volunteer.Contacts) ||
+                                _context.Carriers.Any(c => c.Contacts == volunteer.Contacts);
+
+            if (contactsUsed)
+            {
+                ModelState.AddModelError("Contacts", "Цей номер телефону вже використовується.");
+            }
+
             // Перевірка платіжних даних
             if (!System.Text.RegularExpressions.Regex.IsMatch(volunteer.CardNumber ?? "", @"^\d{16}$"))
                 ModelState.AddModelError("CardNumber", "Номер картки має складатися з 16 цифр.");
@@ -45,9 +60,8 @@ namespace HumanAidTransport.Controllers
             if (!System.Text.RegularExpressions.Regex.IsMatch(volunteer.CVV ?? "", @"^\d{3}$"))
                 ModelState.AddModelError("CVV", "CVV має складатися з 3 цифр.");
 
-
             bool cardUsed = _context.Volunteers.Any(v => v.CardNumber == volunteer.CardNumber) ||
-                _context.Carriers.Any(c => c.CardNumber == volunteer.CardNumber);
+                            _context.Carriers.Any(c => c.CardNumber == volunteer.CardNumber);
 
             if (cardUsed)
             {
