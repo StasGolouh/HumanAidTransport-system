@@ -77,7 +77,7 @@ namespace HumanAidTransport.Controllers
                 .Where(orders => orders.CarrierId == carrierId
                              && orders.Status != "Виконано"
                              && orders.Status != "Прострочено"
-                             && orders.ExpectedDeliveryTime <= now.AddMinutes(-1))
+                             && orders.ExpectedDeliveryTime <= now.AddHours(-6))
                 .ToListAsync();
 
             var carrier = await _context.Carriers.FirstOrDefaultAsync(c => c.Id == carrierId);
