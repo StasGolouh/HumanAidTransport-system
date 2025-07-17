@@ -88,7 +88,7 @@
                         <p><strong>Роль:</strong> Перевізник</p>
                         <p><strong>Контакти:</strong> @carrier.Contacts</p>
                         <p><strong>Дані авто:</strong> @carrier.VehicleName @carrier.VehicleModel (@carrier.VehicleNumber)</p>
-                        <p><strong>Порушення:</strong> <span class="@(carrier.ViolationsCount > 2 ? "text-warning" : "")">@carrier.ViolationsCount</span></p>
+                        <p><strong>Порушення:</strong> <span class="@(carrier.ViolationsCount >= 2 ? "text-warning" : "")">@carrier.ViolationsCount</span></p>
                         <p><strong>Заблокований:</strong> <span>@(carrier.isBaned ? "Так" : "Ні")</span></p>
 
                         <div class="action-buttons">
