@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-public enum AidType
+namespace HumanAidTransport.Models
+{
+    public enum AidType
 {
     Food,
     Medicine,
@@ -18,9 +20,6 @@ public enum Priority
     High
 }
 
-
-namespace HumanAidTransport.Models
-{
     public class HumanitarianAid
     {
         [Key]

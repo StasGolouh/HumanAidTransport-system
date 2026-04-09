@@ -16,7 +16,6 @@ namespace HumanAidTransport.Controllers
             _context = context;
         }
 
-        // Алгоритм розподілу гуманітарних вантажів, враховуєчи терміновість, критичність(дата) та тип 
         private Priority CalculatePriorityScore(HumanitarianAid task)
         {
             // Множник типу допомоги
